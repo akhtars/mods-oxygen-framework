@@ -1,0 +1,167 @@
+@namespace oxy "http://www.oxygenxml.com/extensions/author";
+@namespace mods "http://www.loc.gov/mods/v3";
+
+/* by Shaun Akhtar for the Dartmouth College Library, 
+    copyright 2015 Trustees of Dartmouth College */
+
+* {
+    background-color: #FFFFF9;
+    font-family: "Calisto MT", Georgia, serif;
+    font-size: large;
+    visibility: visible;
+    -oxy-display-tags: none;
+}
+
+mods|mods {
+    visibility: -oxy-collapse-text;
+    white-space: -oxy-trim-when-ws-only;
+    -oxy-append-content: "\A";
+}
+
+mods|mods *:before {
+    content: oxy_label(text, oxy_concat(oxy_local-name(), " "), styles, "color:#000096;");
+    -oxy-append-content: oxy_label(text, oxy_concat(oxy_xpath("string-join(@*, ', ')"), " "), styles, "color:#993300;");
+}
+
+mods|mods > *:before,
+mods|relatedItem > *:before {
+    content: oxy_label(text, oxy_concat(oxy_local-name(), " "), styles, "font-weight:bold;color:#000096;");
+    -oxy-append-content: oxy_label(text, oxy_concat(oxy_xpath("string-join(@*, ', ')"), " "), styles, "font-weight:bold;color:#993300;");
+}
+
+/* Hierarchical spacing */
+
+mods|mods > *:before {
+    -oxy-prepend-content: "   ";
+}
+
+mods|mods > * > *:before {
+    -oxy-prepend-content: "      ";
+}
+
+mods|mods > * > * > *:before {
+    -oxy-prepend-content: "         ";
+}
+
+/* Top-level elements */
+
+mods|mods > *:after {
+    content: "\A";
+}
+
+mods|mods > mods|recordInfo:after {
+    content: "";
+}
+
+/* Top-level container elements */
+
+mods|titleInfo,
+mods|name,
+mods|originInfo,
+mods|language,
+mods|physicalDescription,
+mods|subject,
+mods|relatedItem,
+mods|location,
+mods|extension,
+mods|recordInfo {
+/*    visibility: -oxy-collapse-text;*/
+    -oxy-append-content: "\A";
+}
+
+/* Other container elements */
+
+mods|role,
+mods|place,
+mods|hierarchicalGeographic,
+mods|cartographics,
+mods|languageOfCataloging {
+    -oxy-append-content: "\A";
+}
+
+/* Text elements */
+
+mods|titleInfo > *:after,
+mods|mods > mods|name > *:after,
+mods|typeOfResource:after,
+mods|mods > mods|genre:after,
+mods|originInfo > *:after,
+mods|mods > mods|language > *:after,
+mods|physicalDescription > *:after,
+mods|abstract:after,
+mods|tableOfContents:after,
+mods|mods > mods|note:after,
+mods|subject > *:after,
+mods:classification:after,
+mods|relatedItem *:after,
+mods|identifier:after,
+mods|location > *:after,
+mods|accessCondition:after,
+mods|extension > *:after,
+mods|recordInfo > *:after,
+mods|place > *:after,
+mods|subject > mods|name > *:after,
+mods|hierarchicalGeographic > *:after,
+mods|cartographics > *:after,
+mods|languageOfCataloging > *:after {
+    content: "\A";
+}
+
+mods|mods > mods|typeOfResource:after,
+mods|mods > mods|genre:after,
+mods|mods > mods|abstract:after,
+mods|mods > mods|note:after,
+mods|mods > mods|identifier:after,
+mods|mods > mods|accessCondition:after {
+    content: "\A\A";
+}
+
+mods|titleInfo > *,
+mods|mods > mods|name > *,
+mods|typeOfResource,
+mods|mods > mods|genre,
+mods|originInfo > *,
+mods|mods > mods|language > *,
+mods|physicalDescription > *,
+mods|abstract,
+mods|tableOfContents,
+mods|mods > mods|note,
+mods|subject > *,
+mods:classification,
+mods|relatedItem *,
+mods|identifier,
+mods|location > *,
+mods|accessCondition,
+mods|extension > *,
+mods|recordInfo > *,
+mods|role > *,
+mods|place > *,
+mods|subject > mods|name > *,
+mods|hierarchicalGeographic > *,
+mods|cartographics > *,
+mods|languageOfCataloging > * {
+    display: inline-block;
+    margin: 0px;
+}
+
+/* Final text elements */
+
+mods|titleInfo:last-child:after,
+mods|mods > mods|name:last-child:after,
+mods|originInfo:last-child:after,
+mods|mods > mods|language:last-child:after,
+mods|physicalDescription:last-child:after,
+mods|mods > mods|note:after,
+mods|subject:last-child:after,
+mods|relatedItem *:after,
+mods|location:last-child:after,
+mods|extension:last-child:after,
+mods|recordInfo:last-child:after,
+mods|role:last-child:after,
+mods|place:last-child:after,
+mods|subject > mods|name:last-child:after,
+mods|hierarchicalGeographic:last-child:after,
+mods|cartographics:last-child:after,
+mods|languageOfCataloging:last-child:after {
+    -oxy-append-content: "";
+}

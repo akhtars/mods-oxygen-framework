@@ -8,6 +8,7 @@
 
     <title>Dartmouth College Library MODS Implementation</title>
     <ns uri="http://www.loc.gov/mods/v3" prefix="mods"/>
+    <ns uri="http://www.dartmouth.edu/~library/catmet/" prefix="drb"/>
     
     <!-- RECORD STRUCTURE -->
 
@@ -193,6 +194,16 @@
             </assert>
         </rule>
     </pattern>
+    
+    <!-- extension -->
+    
+    <pattern>
+        <rule context="mods:mods/mods:extension/drb:flag">
+            <assert test="matches(@registered, '^$') or matches(@registered, '^[0-9]{4}(-[0-9]{2}){2}$')">
+                @registered should either be blank or have a YYYY-MM-DD date.
+            </assert>
+        </rule>
+    </pattern>
 
     <!-- recordInfo -->
 
@@ -204,6 +215,9 @@
             <assert test="mods:recordContentSource[@authority='oclcorg']='DRB'">
                 <name/> should have mods:recordContentSource with @authority="oclcorg" and a value of "DRB".
             </assert> <!-- Level 5 -->
+            <assert test="mods:recordCreationDate">
+                <name/> should have mods:recordCreationDate.
+            </assert>
             <assert test="mods:languageOfCataloging/mods:languageTerm[@type='text']='English'">
                 <name/> should have mods:languageOfCataloging/mods:languageTerm with @type="text" and a value of "English".
             </assert> <!-- Level 4 -->
@@ -231,7 +245,7 @@
 
     <pattern>
         <!-- CANDIDATE FOR W3C SCHEMA OVERRIDE -->
-        <rule context="*[contains(name(.),'date')][normalize-space(text())]">
+        <rule context="*[contains(name(.),'Date')][normalize-space(text())]">
             <assert test="@encoding='w3cdtf' or @encoding='marc'">
                 All non-empty dates should be marked as W3CDTF or MARC.
             </assert>
@@ -239,17 +253,17 @@
     </pattern>
     
     <pattern>
-        <rule context="*[contains(name(.),'date')][@encoding='w3cdtf']">
+        <rule context="*[contains(name(.),'Date')][@encoding='w3cdtf']">
             <assert
                 test="matches(.,'^[0-9]{4}(-[0-9]{2}){0,2}$') or
                 matches(.,'^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2})$')">
-                W3CDTF dates should match the specified format.
+                W3CDTF dates should match the specified format (YYYY-MM-DD, YYYY-MM, or YYYY).
             </assert>
         </rule>
     </pattern>
 
     <pattern>
-        <rule context="*[contains(name(.),'date')][not(normalize-space(text()))]">
+        <rule context="*[contains(name(.),'Date')][not(normalize-space(text()))]">
             <assert test="@point='end'">
                 All empty dates should be the end of a date range.
             </assert>

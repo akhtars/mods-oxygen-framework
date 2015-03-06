@@ -16,6 +16,7 @@
                         <!-- Altered definition -->
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
+                                <xs:enumeration value="additional physical form"/>
                                 <xs:enumeration value="contact information"/>
                                 <xs:enumeration value="issuing body"/>
                                 <xs:enumeration value="statement of responsibility"/>
@@ -88,6 +89,43 @@
                 </xs:simpleContent>
             </xs:complexType>
         </xs:element>
+        
+        <!-- Limited roleTerm authority -->
+        
+        <xs:complexType name="roleTermDefinition">
+            <xs:simpleContent>
+                <!-- Altered definition -->
+                <xs:extension base="stringPlusLanguage">
+                    <xs:attribute name="type" type="codeOrText"/>
+                    <xs:attribute name="authority" fixed="marcrelator"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+        
+        <!-- Limited identifier displayLabels -->
+        
+        <xs:complexType name="identifierDefinition">
+            <xs:simpleContent>
+                <xs:extension base="stringPlusLanguage">
+                    <xs:attribute name="displayLabel">
+                        <!-- Altered definition -->
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="Electronic book"/>
+                                <xs:enumeration value="Electronic database"/>
+                                <xs:enumeration value="Electronic image"/>
+                                <xs:enumeration value="Streaming audio"/>
+                                <xs:enumeration value="Streaming video"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="type" type="xs:string"/>
+                    <xs:attribute name="typeURI" type="xs:anyURI"/>
+                    <xs:attribute name="invalid" fixed="yes"/>
+                    <xs:attribute name="altRepGroup" type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
 
     </xs:override>
 
