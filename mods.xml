@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xt:extensions xmlns:xt="http://www.oxygenxml.com/ns/extension"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
+    <xt:extension id="mods">
+        <xt:location href="mods_0-9-1.zip"/>
+        <xt:version>0.9.1</xt:version>
+        <xt:oxy_version>14.0+</xt:oxy_version>
+        <xt:type>framework</xt:type>
+        <xt:author>Dartmouth College Library</xt:author>
+        <xt:name>MODS (Metadata Object Description Schema)</xt:name>
+        <xt:description xmlns="http://www.w3.org/1999/xhtml">
+            <p>The Dartmouth College Library's local implementation of MODS, the Metadata Object Description Schema.</p>
+        </xt:description>
+        <xt:license>Copyright 2015 Trustees of Dartmouth College</xt:license>
+    </xt:extension>
+</xt:extensions>

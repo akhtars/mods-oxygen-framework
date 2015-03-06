@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns="http://www.loc.gov/mods/v3"
+    targetNamespace="http://www.loc.gov/mods/v3" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" vc:minVersion="1.1">
+
+    <xs:override schemaLocation="mods-3-5-annotated.xsd">
+
+        <!-- Limited note types -->
+
+        <xs:complexType name="noteDefinition">
+            <xs:simpleContent>
+                <xs:extension base="stringPlusLanguage">
+                    <xs:attribute name="displayLabel" type="xs:string"/>
+                    <xs:attribute name="type">
+                        <!-- Altered definition -->
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="contact information"/>
+                                <xs:enumeration value="issuing body"/>
+                                <xs:enumeration value="statement of responsibility"/>
+                                <xs:enumeration value="system details"/>
+                                <xs:enumeration value="thesis"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="typeURI" type="xs:anyURI"/>
+                    <xs:attributeGroup ref="xlink:simpleLink"/>
+                    <xs:attribute name="ID" type="xs:ID"/>
+                    <xs:attribute name="altRepGroup" type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+
+        <!-- Limited originInfo eventType types -->
+
+        <xs:complexType name="originInfoDefinition">
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="place"/>
+                <xs:element ref="publisher"/>
+                <xs:element ref="dateIssued"/>
+                <xs:element ref="dateCreated"/>
+                <xs:element ref="dateCaptured"/>
+                <xs:element ref="dateValid"/>
+                <xs:element ref="dateModified"/>
+                <xs:element ref="copyrightDate"/>
+                <xs:element ref="dateOther"/>
+                <xs:element ref="edition"/>
+                <xs:element ref="issuance"/>
+                <xs:element ref="frequency"/>
+            </xs:choice>
+            <xs:attributeGroup ref="languageAttributeGroup"/>
+            <xs:attribute name="displayLabel" type="xs:string"/>
+            <xs:attribute name="altRepGroup" type="xs:string"/>
+            <xs:attribute name="eventType">
+                <!-- Altered definition -->
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="production"/>
+                        <xs:enumeration value="publication"/>
+                        <xs:enumeration value="distribution"/>
+                        <xs:enumeration value="manufacture"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+
+        <!-- Limited internetMediaType types -->
+        <!-- Currently missing: video formats -->
+
+        <xs:element name="internetMediaType">
+            <!-- Altered definition -->
+            <xs:annotation>
+                <xs:documentation>An identification of the electronic format type, or the data
+                    representation of the resource.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+                <xs:simpleContent>
+                    <xs:restriction base="stringPlusLanguage">
+                        <xs:enumeration value="application/epub+zip"/>
+                        <xs:enumeration value="application/x-mobipocket-ebook"/>
+                        <xs:enumeration value="application/pdf"/>
+                        <xs:enumeration value="application/xhtml+xml"/>
+                        <xs:enumeration value="audio/mpeg"/>
+                        <xs:enumeration value="text/html"/>
+                        <xs:enumeration value="image/jp2"/>
+                    </xs:restriction>
+                </xs:simpleContent>
+            </xs:complexType>
+        </xs:element>
+
+    </xs:override>
+
+</xs:schema>

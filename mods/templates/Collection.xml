@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
+    version="3.5">
+    <mods:titleInfo>
+        <mods:title></mods:title>
+    </mods:titleInfo>
+    <mods:name type="" usage="primary">
+        <mods:namePart></mods:namePart>
+    </mods:name>
+    <mods:typeOfResource></mods:typeOfResource>
+    <mods:genre type="content" authority="rdacontent"></mods:genre>
+    <mods:originInfo eventType="">
+        <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
+    </mods:originInfo>
+    <mods:language>
+        <mods:languageTerm type="text"></mods:languageTerm>
+        <mods:languageTerm type="code" authority="iso639-2b"></mods:languageTerm>
+    </mods:language>
+    <mods:physicalDescription>
+        <mods:form type="media" authority="rdamedia">computer</mods:form>
+        <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
+        <mods:internetMediaType></mods:internetMediaType>
+        <mods:extent></mods:extent>
+        <mods:digitalOrigin></mods:digitalOrigin>
+    </mods:physicalDescription>
+    <mods:abstract></mods:abstract>
+    <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
+    <mods:subject></mods:subject>
+    <mods:accessCondition type="use and reproduction"></mods:accessCondition>
+    <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/"></mods:extension>
+    <mods:recordInfo>
+        <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
+        <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
+        <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
+        <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
+        <languageOfCataloging>
+            <languageTerm type="text">English</languageTerm>
+            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+        </languageOfCataloging>
+    </mods:recordInfo>
+</mods:mods>

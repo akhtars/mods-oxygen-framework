@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <uri name="http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
+        uri="schema/mods-3-5-local.xsd"/>
+    <uri name="http://www.loc.gov/standards/marcxml/xslt/MARC21slimUtils.xsl"
+        uri="xsl/MARC21slimUtils.xsl"/>
+</catalog>
