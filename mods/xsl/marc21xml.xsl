@@ -16,6 +16,10 @@
 	
 	<xsl:strip-space elements="*"/> <!-- SA addition 2013-10-21 -->
 	
+	<xsl:param name="create001" select="'yes'"/> <!-- SA addition 2015-03-25 -->
+	
+	<!-- SA change authority identifier from "marc" to "marcgt" 2015-03-25 -->
+	
 	<xsl:template match="/">
 		<xsl:result-document>
 			<xsl:apply-templates/>
@@ -88,10 +92,10 @@
 
 	<xsl:template name="controlField008-24-27">
 		<xsl:variable name="chars">
-			<xsl:for-each select="mods:genre[@authority='marc']">
+			<xsl:for-each select="mods:genre[@authority='marcgt']">
 				<xsl:choose>
 					<xsl:when test=".='abstract of summary'">a</xsl:when>
-					<xsl:when test=".='bibliography'">b</xsl:when>
+					<xsl:when test=".='bibliography' or following-sibling::mods:note[@type='bibliography']">b</xsl:when> <!-- SA change 2015-04-02 -->
 					<xsl:when test=".='catalog'">c</xsl:when>
 					<xsl:when test=".='dictionary'">d</xsl:when>
 					<xsl:when test=".='directory'">r</xsl:when>
@@ -110,7 +114,7 @@
 					<xsl:when test=".='statistics'">s</xsl:when>
 					<xsl:when test=".='survey of literature'">n</xsl:when>
 					<xsl:when test=".='technical report'">t</xsl:when>
-					<xsl:when test=".='theses'">m</xsl:when>
+					<xsl:when test=".='thesis'">m</xsl:when> <!-- SA fix 2015-04-02 -->
 					<xsl:when test=".='treaty'">z</xsl:when>
 				</xsl:choose>
 			</xsl:for-each>
@@ -123,7 +127,7 @@
 
 	<xsl:template name="controlField008-30-31">
 		<xsl:variable name="chars">
-			<xsl:for-each select="mods:genre[@authority='marc']">
+			<xsl:for-each select="mods:genre[@authority='marcgt']">
 				<xsl:choose>
 					<xsl:when test=".='biography'">b</xsl:when>
 					<xsl:when test=".='conference publication'">c</xsl:when>
@@ -219,19 +223,19 @@
 			<xsl:call-template name="controlRecordInfo"/>
 			<!-- SA enhance 2014-10-08 -->
 			<xsl:choose>
-				<xsl:when test="mods:genre[@authority='marc']='atlas'">
+				<xsl:when test="mods:genre[@authority='marcgt']='atlas'">
 					<marc:controlfield tag="007">ad||||||</marc:controlfield>
 				</xsl:when>
-				<xsl:when test="mods:genre[@authority='marc']='model'">
+				<xsl:when test="mods:genre[@authority='marcgt']='model'">
 					<marc:controlfield tag="007">aq||||||</marc:controlfield>
 				</xsl:when>
-				<xsl:when test="mods:genre[@authority='marc']='remote sensing image'">
+				<xsl:when test="mods:genre[@authority='marcgt']='remote sensing image'">
 					<marc:controlfield tag="007">ar||||||</marc:controlfield>
 				</xsl:when>
-				<xsl:when test="mods:genre[@authority='marc']='map'">
+				<xsl:when test="mods:genre[@authority='marcgt']='map'">
 					<marc:controlfield tag="007">aj||||||</marc:controlfield>
 				</xsl:when>
-				<xsl:when test="mods:genre[@authority='marc']='globe'">
+				<xsl:when test="mods:genre[@authority='marcgt']='globe'">
 					<marc:controlfield tag="007">d|||||</marc:controlfield>
 				</xsl:when>
 				<xsl:otherwise>
@@ -323,12 +327,12 @@
 				<xsl:choose>
 					<xsl:when test="$typeOf008='SE'">
 						<xsl:choose>
-							<xsl:when test="mods:genre[@authority='marc']='database'">d</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='loose-leaf'">l</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='newspaper'">n</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='periodical'">p</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='series'">m</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='web site'">w</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='database'">d</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='loose-leaf'">l</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='newspaper'">n</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='periodical'">p</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='series'">m</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='web site'">w</xsl:when>
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
@@ -366,8 +370,8 @@
 					<xsl:when test="$typeOf008='MP'">
 						<xsl:text>|</xsl:text>
 						<xsl:choose>
-							<xsl:when test="mods:genre[@authority='marc']='atlas'">e</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='globe'">d</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='atlas'">e</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='globe'">d</xsl:when>
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 						<xsl:text>||</xsl:text>
@@ -375,11 +379,11 @@
 					<xsl:when test="$typeOf008='CF'">
 						<xsl:text>||</xsl:text>
 						<xsl:choose>
-							<xsl:when test="mods:genre[@authority='marc']='database'">e</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='font'">f</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='game'">g</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='numerical data'">a</xsl:when>
-							<xsl:when test="mods:genre[@authority='marc']='sound'">h</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='database'">e</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='font'">f</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='game'">g</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='numerical data'">a</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='sound'">h</xsl:when>
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 						<xsl:text>|</xsl:text>
@@ -394,7 +398,7 @@
 				<xsl:choose>
 					<xsl:when test="$typeOf008='BK' or $typeOf008='SE'">
 						<xsl:choose>
-							<xsl:when test="mods:genre[@authority='marc']='conference publication'">1</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='conference publication'">1</xsl:when>
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
@@ -418,10 +422,13 @@
 					</xsl:when>
 					<xsl:when test="$typeOf008='BK'">
 						<xsl:choose>
-							<xsl:when test="mods:genre[@authority='marc']='festschrift'">1</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='festschrift'">1</xsl:when>
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
-						<xsl:text>|</xsl:text>
+						<xsl:choose> <!-- SA change 2015-04-02 -->
+							<xsl:when test="contains(mods:note[@type='bibliography'], 'index')">1</xsl:when>
+							<xsl:otherwise>|</xsl:otherwise>
+						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>||</xsl:text>
@@ -433,38 +440,38 @@
 				<xsl:choose>
 					<xsl:when test="$typeOf008='VM'">
 						<xsl:choose>
-						<xsl:when test="mods:genre[@authority='marc']='art originial'">a</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='art reproduction'">c</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='chart'">n</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='diorama'">d</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='filmstrip'">f</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='flash card'">o</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='graphic'">k</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='kit'">b</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='technical drawing'">l</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='slide'">s</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='realia'">r</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='picture'">i</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='motion picture'">m</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='model'">q</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='microscope slide'">p</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='toy'">w</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='transparency'">t</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='videorecording'">v</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='art original'">a</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='art reproduction'">c</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='chart'">n</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='diorama'">d</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='filmstrip'">f</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='flash card'">o</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='graphic'">k</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='kit'">b</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='technical drawing'">l</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='slide'">s</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='realia'">r</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='picture'">i</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='motion picture'">m</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='model'">q</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='microscope slide'">p</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='toy'">w</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='transparency'">t</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='videorecording'">v</xsl:when>
 						<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
 					<xsl:when test="$typeOf008='BK'">
 						<xsl:choose>
-						<xsl:when test="mods:genre[@authority='marc']='comic strip'">c</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='fiction'">1</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='essay'">e</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='drama'">d</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='humor, satire'">h</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='letter'">i</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='novel'">f</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='short story'">j</xsl:when>
-						<xsl:when test="mods:genre[@authority='marc']='speech'">s</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='comic strip'">c</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='fiction'">1</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='essay'">e</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='drama'">d</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='humor, satire'">h</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='letter'">i</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='novel'">f</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='short story'">j</xsl:when>
+						<xsl:when test="mods:genre[@authority='marcgt']='speech'">s</xsl:when>
 						<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
@@ -474,7 +481,7 @@
 				<xsl:choose>
 					<xsl:when test="$typeOf008='BK'">
 						<xsl:choose>
-							<xsl:when test="mods:genre[@authority='marc']='biography'">d</xsl:when>
+							<xsl:when test="mods:genre[@authority='marcgt']='biography'">d</xsl:when>
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
@@ -945,19 +952,20 @@
 			</xsl:call-template>
 		</xsl:for-each>
 		<xsl:call-template name="datafield">
+			<!-- SA change 2015-04-02 to create 264 based on @eventType, not @displayLabel -->
 			<xsl:with-param name="tag">
 				<xsl:choose>
-					<xsl:when test="@displayLabel='producer' or @displayLabel='publisher' 
-						or @displayLabel='manufacturer' or @displayLabel='distributor'">264</xsl:when>
+					<xsl:when test="@eventType='production' or @eventType='publication' 
+						or @eventType='manufacture' or @eventType='distribution'">264</xsl:when>
 					<xsl:otherwise>260</xsl:otherwise>
 				</xsl:choose>
 			</xsl:with-param>
 			<xsl:with-param name="ind2">
 				<xsl:choose>
-					<xsl:when test="@displayLabel='producer'">0</xsl:when>
-					<xsl:when test="@displayLabel='publisher'">1</xsl:when> 
-					<xsl:when test="@displayLabel='manufacturer'">2</xsl:when>
-					<xsl:when test="@displayLabel='distributor'">3</xsl:when>
+					<xsl:when test="@eventType='production'">0</xsl:when>
+					<xsl:when test="@eventType='publication'">1</xsl:when> 
+					<xsl:when test="@eventType='manufacture'">2</xsl:when>
+					<xsl:when test="@eventType='distribution'">3</xsl:when>
 					<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise> <!-- SA fix 2013-08-21 for blank ind2 -->
 				</xsl:choose>
 			</xsl:with-param>
@@ -1236,6 +1244,7 @@
 					<xsl:when test="@type='venue'">518</xsl:when>
 					<xsl:when test="@type='thesis'">502</xsl:when> <!-- SA fix 2013-08-22 -->
 					<xsl:when test="@type='additional physical form'">530</xsl:when> <!-- SA add 2014-10-08 -->
+					<xsl:when test="@type='bibliography'">504</xsl:when> <!-- SA add 2015-04-02 -->
 					<xsl:otherwise>500</xsl:otherwise>
 				</xsl:choose>
 			</xsl:with-param>
@@ -1309,10 +1318,12 @@
 	<!-- 1/04 fix -->
 	<xsl:template name="controlRecordInfo">
 		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier">
-			<marc:controlfield tag="001"><xsl:value-of select="."/></marc:controlfield>
-			<xsl:for-each select="@source">
-				<marc:controlfield tag="003"><xsl:value-of select="."/></marc:controlfield>			
-			</xsl:for-each>
+			<xsl:if test="$create001 = 'yes'"> <!-- SA change 2015-03-25 -->
+				<marc:controlfield tag="001"><xsl:value-of select="."/></marc:controlfield>
+				<xsl:for-each select="@source">
+					<marc:controlfield tag="003"><xsl:value-of select="."/></marc:controlfield>			
+				</xsl:for-each>
+			</xsl:if>
 		</xsl:for-each>
 		<xsl:for-each select="mods:recordInfo/mods:recordChangeDate[@encoding='iso8601']">
 			<marc:controlfield tag="005"><xsl:value-of select="."/></marc:controlfield>
@@ -2322,25 +2333,34 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	<!-- SA disable 2014-10-08 -->
-	<!--<xsl:template match="mods:relatedItem[@type='host']">
+	<xsl:template match="mods:relatedItem[@type='host']">
+		<xsl:call-template name="datafield"> <!-- SA add 2015-04-02 -->
+			<xsl:with-param name="tag">580</xsl:with-param>
+			<xsl:with-param name="subfields">
+				<marc:subfield code="a">
+					<xsl:text>Part of the </xsl:text>
+					<xsl:value-of select="mods:titleInfo/mods:title"/>
+					<xsl:text> digital collection.</xsl:text>
+				</marc:subfield>
+			</xsl:with-param>
+		</xsl:call-template>
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">773</xsl:with-param>
 			<xsl:with-param name="ind1">0</xsl:with-param>
 			<xsl:with-param name="subfields">
-				<!-\- v3 displaylabel -\->
+				<!-- v3 displaylabel -->
 				<xsl:for-each select="@displaylabel">
 					<marc:subfield code="3">
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:for-each>
-				<!-\- v3 part/text -\->
+				<!-- v3 part/text -->
 				<xsl:for-each select="mods:part/mods:text">
 					<marc:subfield code="g">
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:for-each>
-				<!-\- v3 sici part/detail 773$q 	1:2:3<4-\->			
+				<!-- v3 sici part/detail 773$q 	1:2:3<4-->			
 				<xsl:if test="mods:part/mods:detail">
 					<xsl:variable name="parts">				
 						<xsl:for-each select="mods:part/mods:detail">
@@ -2354,7 +2374,7 @@
 				<xsl:call-template name="relatedItem76X-78X"/>
 			</xsl:with-param>		
 		</xsl:call-template>
-	</xsl:template>-->
+	</xsl:template>
 
 	<xsl:template match="mods:relatedItem[@type='constituent']">
 		<xsl:call-template name="datafield">

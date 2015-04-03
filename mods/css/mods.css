@@ -165,3 +165,10 @@ mods|cartographics:last-child:after,
 mods|languageOfCataloging:last-child:after {
     -oxy-append-content: "";
 }
+
+/* modsCollection formatting */
+
+mods|mods ~ mods|mods:before {
+    content: "   ––––––––––\A";
+    color: #000096;
+}

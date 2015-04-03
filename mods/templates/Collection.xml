@@ -35,9 +35,9 @@
         <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
         <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
         <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
-        <languageOfCataloging>
-            <languageTerm type="text">English</languageTerm>
-            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
-        </languageOfCataloging>
+        <mods:languageOfCataloging>
+            <mods:languageTerm type="text">English</mods:languageTerm>
+            <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>
+        </mods:languageOfCataloging>
     </mods:recordInfo>
 </mods:mods>

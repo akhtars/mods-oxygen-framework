@@ -1,94 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
-           version="3.5">
-   <mods:titleInfo>
-      <mods:nonSort></mods:nonSort> 
-      <mods:title></mods:title>
-      <mods:subTitle></mods:subTitle>
-   </mods:titleInfo>
-   <mods:titleInfo type="uniform">
-      <mods:title>Dartmouth Winter Carnival Posters</mods:title>
-   </mods:titleInfo>
-   <mods:name type="personal" usage="primary">
-      <mods:namePart></mods:namePart>
-      <mods:role>
-         <mods:roleTerm type="text" authority="marcrelator">Artist</mods:roleTerm>
-      </mods:role>
-   </mods:name>
-   <mods:name type="corporate">
-      <mods:namePart>Dartmouth College</mods:namePart>
-      <mods:namePart>Winter Carnival</mods:namePart>
-   </mods:name>
-   <mods:typeOfResource>still image</mods:typeOfResource>
-   <mods:genre type="content" authority="rdacontent">still image</mods:genre>
-   <mods:originInfo eventType="publication">
-      <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
-   </mods:originInfo>
-   <mods:language>
-      <mods:languageTerm type="text">English</mods:languageTerm>
-      <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>
-   </mods:language>
-   <mods:physicalDescription>
-      <mods:form type="media" authority="rdamedia">computer</mods:form>
-      <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
-      <mods:internetMediaType>image/jp2</mods:internetMediaType>
-      <mods:extent>1 online resource</mods:extent>
-      <mods:digitalOrigin></mods:digitalOrigin>
-      <mods:note type="physical description" displayLabel="Size of original"/>
-      <mods:note type="technique" displayLabel="Original">digital print</mods:note>
-   </mods:physicalDescription>
-   <mods:note type="contact information">Rauner Special Collections Library, 6065 Webster Hall, Hanover, NH 03755, USA, Phone: 603-646-0538, Email: rauner.special.collections.reference@dartmouth.edu, URL: http://www.dartmouth.edu/~library/rauner/</mods:note>
-   <mods:note/>
-   <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
-   <mods:subject authority="lcsh">
-      <mods:name type="corporate">
-         <mods:namePart>Dartmouth College</mods:namePart>
-         <mods:namePart>Winter Carnival</mods:namePart>
-      </mods:name>
-      <mods:genre>Posters</mods:genre>
-   </mods:subject>
-   <mods:subject authority="lcsh">
-      <mods:name type="corporate">
-         <mods:namePart>Dartmouth College</mods:namePart>
-      </mods:name>
-      <mods:topic>Poster collections</mods:topic>
-   </mods:subject>
-   <mods:subject authority="lcsh">
-      <mods:topic>Sports posters</mods:topic>
-      <mods:geographic>New Hampshire</mods:geographic>
-      <mods:geographic>Hanover</mods:geographic>
-   </mods:subject>
-   <mods:relatedItem type="host">
-      <mods:titleInfo>
-         <mods:title>Dartmouth Winter Carnival Posters</mods:title>
-      </mods:titleInfo>
-      <mods:typeOfResource collection="yes">still image</mods:typeOfResource>
-      <mods:identifier type="doi">http://dx.doi.org/10.1349/ddlp.1378</mods:identifier>
-      <mods:location>
-         <mods:url usage="primary" access="object in context">http://www.dartmouth.edu/~library/digital/collections/other/WinterCarnivalPosters.html</mods:url>
-      </mods:location>
-   </mods:relatedItem>
-   <mods:identifier type="doi" displayLabel="Electronic image"></mods:identifier>
-   <mods:location>
-      <mods:url usage="primary" access="object in context"></mods:url>
-      <mods:url access="preview"></mods:url>
-   </mods:location>
-   <mods:accessCondition type="use and reproduction">Made available by the Trustees of Dartmouth College under a Creative Commons Attribution non-Commercial license - http://creativecommons.org/licenses/by-nc/3.0/</mods:accessCondition>
-   <mods:accessCondition type="use and reproduction">Materials may be copyrighted by U. S. Copyright Law Title 17 U. S. C. .</mods:accessCondition>
-   <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
-      <drb:flag type="doi" agency="CrossRef" registered=""/>
-      <drb:filename type="master"></drb:filename>
-   </mods:extension>
-   <mods:recordInfo>
-      <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
-      <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
-      <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
-      <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
-      <mods:languageOfCataloging>
-         <mods:languageTerm type="text">English</mods:languageTerm>
-         <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>
-      </mods:languageOfCataloging>
-   </mods:recordInfo>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
+    version="3.5">
+    <mods:titleInfo>
+        <mods:nonSort></mods:nonSort> 
+        <mods:title></mods:title>
+        <mods:subTitle></mods:subTitle>
+    </mods:titleInfo>
+    <mods:titleInfo type="uniform">
+        <mods:title>Dartmouth Winter Carnival Posters</mods:title>
+    </mods:titleInfo>
+    <mods:name type="personal" usage="primary">
+        <mods:namePart></mods:namePart>
+        <mods:role>
+            <mods:roleTerm type="text" authority="marcrelator">Artist</mods:roleTerm>
+        </mods:role>
+    </mods:name>
+    <mods:name type="corporate">
+        <mods:namePart>Dartmouth College</mods:namePart>
+        <mods:namePart>Winter Carnival</mods:namePart>
+    </mods:name>
+    <mods:typeOfResource>still image</mods:typeOfResource>
+    <mods:genre type="content" authority="rdacontent">still image</mods:genre>
+    <mods:genre authority="marcgt">picture</mods:genre>
+    <mods:originInfo eventType="publication">
+        <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
+    </mods:originInfo>
+    <mods:language>
+        <mods:languageTerm type="text">English</mods:languageTerm>
+        <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>
+    </mods:language>
+    <mods:physicalDescription>
+        <mods:form type="media" authority="rdamedia">computer</mods:form>
+        <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
+        <mods:internetMediaType>image/jp2</mods:internetMediaType>
+        <mods:extent>1 online resource</mods:extent>
+        <mods:digitalOrigin></mods:digitalOrigin>
+        <mods:note type="physical description" displayLabel="Size of original"/>
+        <mods:note type="technique" displayLabel="Original">digital print</mods:note>
+    </mods:physicalDescription>
+    <mods:note type="contact information">Rauner Special Collections Library, 6065 Webster Hall, Hanover, NH 03755, USA, Phone: 603-646-0538, Email: rauner.special.collections.reference@dartmouth.edu, URL: http://www.dartmouth.edu/~library/rauner/</mods:note>
+    <mods:note></mods:note>
+    <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
+    <mods:subject authority="lcsh">
+        <mods:name type="corporate">
+            <mods:namePart>Dartmouth College</mods:namePart>
+            <mods:namePart>Winter Carnival</mods:namePart>
+        </mods:name>
+        <mods:genre>Posters</mods:genre>
+    </mods:subject>
+    <mods:subject authority="lcsh">
+        <mods:name type="corporate">
+            <mods:namePart>Dartmouth College</mods:namePart>
+        </mods:name>
+        <mods:topic>Poster collections</mods:topic>
+    </mods:subject>
+    <mods:subject authority="lcsh">
+        <mods:topic>Sports posters</mods:topic>
+        <mods:geographic>New Hampshire</mods:geographic>
+        <mods:geographic>Hanover</mods:geographic>
+    </mods:subject>
+    <mods:relatedItem type="host">
+        <mods:titleInfo>
+            <mods:title>Dartmouth Winter Carnival Posters</mods:title>
+        </mods:titleInfo>
+        <mods:typeOfResource collection="yes">still image</mods:typeOfResource>
+        <mods:identifier type="doi">http://dx.doi.org/10.1349/ddlp.1378</mods:identifier>
+        <mods:location>
+            <mods:url usage="primary" access="object in context">http://www.dartmouth.edu/~library/digital/collections/other/WinterCarnivalPosters.html</mods:url>
+        </mods:location>
+    </mods:relatedItem>
+    <mods:identifier type="doi" displayLabel="Electronic image"></mods:identifier>
+    <mods:location>
+        <mods:url usage="primary" access="object in context"></mods:url>
+        <mods:url access="preview"></mods:url>
+    </mods:location>
+    <mods:accessCondition type="use and reproduction">Made available by the Trustees of Dartmouth College under a Creative Commons Attribution non-Commercial license - http://creativecommons.org/licenses/by-nc/3.0/</mods:accessCondition>
+    <mods:accessCondition type="use and reproduction">Materials may be copyrighted by U. S. Copyright Law Title 17 U. S. C. .</mods:accessCondition>
+    <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
+        <drb:flag type="doi" agency="CrossRef" registered=""></drb:flag>
+        <drb:filename type="master"></drb:filename>
+    </mods:extension>
+    <mods:recordInfo>
+        <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
+        <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
+        <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
+        <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
+        <mods:languageOfCataloging>
+            <mods:languageTerm type="text">English</mods:languageTerm>
+            <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>
+        </mods:languageOfCataloging>
+    </mods:recordInfo>
 </mods:mods>

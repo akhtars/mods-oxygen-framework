@@ -31,7 +31,7 @@
     
     <xsl:include href="local-functions.xsl"/>
     
-    <xsl:variable name="now" select="format-dateTime(current-dateTime(), '[M][D][Y0001][H][m01][s01][f01]')"/>
+    <xsl:variable name="now" select="format-dateTime(current-dateTime(), '[Y0001][M01][D01][H01][m01][s01][f01]')"/>
     
     <xsl:param name="location" select="."/> <!-- Replaced by ${pdu} in Oxygen parameter configuration -->
     

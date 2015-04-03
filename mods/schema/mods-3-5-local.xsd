@@ -17,6 +17,7 @@
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
                                 <xs:enumeration value="additional physical form"/>
+                                <xs:enumeration value="bibliography"/>
                                 <xs:enumeration value="contact information"/>
                                 <xs:enumeration value="issuing body"/>
                                 <xs:enumeration value="statement of responsibility"/>

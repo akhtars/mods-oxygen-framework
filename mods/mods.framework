@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<serialized version="16.0" xml:space="preserve">
+<serialized version="16.1" xml:space="preserve">
 	<serializableOrderedMap>
 		<entry>
 			<String>document.types</String>
@@ -222,6 +222,9 @@
 								<field name="outputFile">
 									<File>${pd}/${xpath_eval(substring-before('${cfn}', 'mods'))}marc.xml</File>
 								</field>
+								<field name="outputResource">
+									<String>${pd}\${xpath_eval(substring-before('${cfn}', 'mods'))}marc.xml</String>
+								</field>
 								<field name="openOtherLocationInBrowser">
 									<Boolean>false</Boolean>
 								</field>
@@ -247,7 +250,29 @@
 									<Boolean>true</Boolean>
 								</field>
 								<field name="xsltParams">
-									<list/>
+									<list>
+										<transformationParameter>
+											<field name="paramDescription">
+												<paramDescriptor>
+													<field name="localName">
+														<String>create001</String>
+													</field>
+													<field name="prefix">
+														<null/>
+													</field>
+													<field name="namespace">
+														<null/>
+													</field>
+												</paramDescriptor>
+											</field>
+											<field name="value">
+												<String>${ask('Should mods:recordIdentifier be copied to the 001 and 003 fields?', radio, ('yes':'Yes';'no':'No'))}</String>
+											</field>
+											<field name="hasXPathValue">
+												<Boolean>false</Boolean>
+											</field>
+										</transformationParameter>
+									</list>
 								</field>
 								<field name="cascadingStylesheets">
 									<String-array/>
@@ -357,7 +382,172 @@
 									<Boolean>false</Boolean>
 								</field>
 								<field name="outputFile">
-									<File>${pd}/crossref-${xpath_eval(format-dateTime(current-dateTime(), '[M][D][Y0001][H][m01][s01][f01]'))}.xml</File>
+									<File>${pd}/crossref-${xpath_eval(format-dateTime(current-dateTime(), '[Y0001][M01][D01][H01][m01][s01][f01]'))}.xml</File>
+								</field>
+								<field name="outputResource">
+									<String>${pd}\crossref-${xpath_eval(format-dateTime(current-dateTime(), '[Y0001][M01][D01][H01][m01][s01][f01]'))}.xml</String>
+								</field>
+								<field name="openOtherLocationInBrowser">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="locationToOpenInBrowserURL">
+									<null/>
+								</field>
+								<field name="openInEditor">
+									<Boolean>true</Boolean>
+								</field>
+								<field name="showInHTMLPane">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="showInXMLPane">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="showInSVGPane">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="showInResultSetPane">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="useXSLTInput">
+									<Boolean>true</Boolean>
+								</field>
+								<field name="xsltParams">
+									<list>
+										<transformationParameter>
+											<field name="paramDescription">
+												<paramDescriptor>
+													<field name="localName">
+														<String>location</String>
+													</field>
+													<field name="prefix">
+														<null/>
+													</field>
+													<field name="namespace">
+														<null/>
+													</field>
+												</paramDescriptor>
+											</field>
+											<field name="value">
+												<String>${pdu}</String>
+											</field>
+											<field name="hasXPathValue">
+												<Boolean>false</Boolean>
+											</field>
+										</transformationParameter>
+									</list>
+								</field>
+								<field name="cascadingStylesheets">
+									<String-array/>
+								</field>
+								<field name="xslTransformer">
+									<String>Saxon-PE</String>
+								</field>
+								<field name="extensionURLs">
+									<String-array/>
+								</field>
+							</scenario>
+							<scenario>
+								<field name="advancedOptionsMap">
+									<serializableOrderedMap>
+										<entry>
+											<String>Saxon-PE</String>
+											<xsltSaxonBAdvancedOptions>
+												<field name="allowCallsOnExtensionFunctions">
+													<Boolean>true</Boolean>
+												</field>
+												<field name="registerSaxonCEExtensions">
+													<Boolean>true</Boolean>
+												</field>
+												<field name="showVersionWarnings">
+													<Boolean>false</Boolean>
+												</field>
+												<field name="dtdSourceValidation">
+													<Boolean>false</Boolean>
+												</field>
+												<field name="dtdSourceValidationRecover">
+													<Boolean>false</Boolean>
+												</field>
+												<field name="lineNumbering">
+													<Boolean>false</Boolean>
+												</field>
+												<field name="initialMode">
+													<null/>
+												</field>
+												<field name="initialTemplate">
+													<String>collection</String>
+												</field>
+												<field name="traceXPathExpression">
+													<Boolean>true</Boolean>
+												</field>
+												<field name="expandAttributeDefaults">
+													<Boolean>true</Boolean>
+												</field>
+												<field name="errorRecoverPolicy">
+													<String>saxon.recover.with.warning</String>
+												</field>
+												<field name="stripWS">
+													<String>saxon.strip.ws.none</String>
+												</field>
+												<field name="optimizationLevel">
+													<String>10</String>
+												</field>
+												<field name="useConfigFile">
+													<Boolean>false</Boolean>
+												</field>
+												<field name="configSystemID">
+													<null/>
+												</field>
+												<field name="initializer">
+													<String></String>
+												</field>
+											</xsltSaxonBAdvancedOptions>
+										</entry>
+									</serializableOrderedMap>
+								</field>
+								<field name="name">
+									<String>MODS Combination</String>
+								</field>
+								<field name="baseURL">
+									<String></String>
+								</field>
+								<field name="footerURL">
+									<String></String>
+								</field>
+								<field name="fOPMethod">
+									<String>pdf</String>
+								</field>
+								<field name="fOProcessorName">
+									<String>Apache FOP</String>
+								</field>
+								<field name="headerURL">
+									<String></String>
+								</field>
+								<field name="inputXSLURL">
+									<String>${framework}/xsl/mods-combine.xsl</String>
+								</field>
+								<field name="inputXMLURL">
+									<null/>
+								</field>
+								<field name="defaultScenario">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="isFOPPerforming">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="type">
+									<String>XML</String>
+								</field>
+								<field name="saveAs">
+									<Boolean>true</Boolean>
+								</field>
+								<field name="openInBrowser">
+									<Boolean>false</Boolean>
+								</field>
+								<field name="outputFile">
+									<File>${pd}/mods-batch-${xpath_eval(format-dateTime(current-dateTime(), '[Y0001][M01][D01][H01][m01][s01][f01]'))}.xml</File>
+								</field>
+								<field name="outputResource">
+									<String>${pd}\mods-batch-${xpath_eval(format-dateTime(current-dateTime(), '[Y0001][M01][D01][H01][m01][s01][f01]'))}.xml</String>
 								</field>
 								<field name="openOtherLocationInBrowser">
 									<Boolean>false</Boolean>
