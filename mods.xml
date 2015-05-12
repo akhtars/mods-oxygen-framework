@@ -3,20 +3,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
     <xt:extension id="mods">
-        <xt:location href="mods_0-9-3.zip"/>
-        <xt:version>0.9.3</xt:version>
+        <xt:location href="mods_0-9-4.zip"/>
+        <xt:version>0.9.4</xt:version>
         <xt:oxy_version>14.0+</xt:oxy_version>
         <xt:type>framework</xt:type>
         <xt:author>Dartmouth College Library</xt:author>
         <xt:name>MODS (Metadata Object Description Schema)</xt:name>
         <xt:description xmlns="http://www.w3.org/1999/xhtml">
             <p>The Dartmouth College Library's local implementation of MODS, the Metadata Object Description Schema.</p>
-            <p>Release notes for version 0.9.3:</p>
+            <p>Release notes for version 0.9.4:</p>
             <ul>
-                <li>Timestamp algorithm changed in crossref.xsl to produce consistently sortable output. [issue #1]</li>
-                <li>New MODS transformation scenario, "MODS Combination", defined to batch up records in separate files into a single file within the mods:modsCollection container element.</li>
-                <li>"MODS-to-MARCXML" transformation now gives user option to copy local record identifier to 001 and 003 fields.</li>
-                <li>Update Dissertation and Winter Carnival Poster templates.</li>
+                <li>Build in flag to identify Dartmouth Digital Library Program materials. [issue #2]</li>
+                <li>Update Dissertation template.</li>
+                <li>"MODS-to-MARCXML" transformation now produces 884 field and 300 subfields $b, $c.</li>
             </ul>
         </xt:description>
         <xt:license>Copyright 2015 Trustees of Dartmouth College</xt:license>

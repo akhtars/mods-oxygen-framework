@@ -8,6 +8,7 @@
         <mods:title><!-- Enter Title here --></mods:title>
         <mods:subTitle></mods:subTitle>
     </mods:titleInfo>
+    <mods:note type="statement of responsibility"><!-- Enter Statement of Responsibility here --></mods:note>
     <mods:name type="personal" usage="primary">
         <mods:namePart type="family"><!-- Enter Family here --></mods:namePart>
         <mods:namePart type="given"><!-- Enter Given here --></mods:namePart>
@@ -39,13 +40,14 @@
         <mods:form type="media" authority="rdamedia">computer</mods:form>
         <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
         <mods:internetMediaType>application/pdf</mods:internetMediaType>
-        <mods:extent><!-- Enter Extent here (MARC 300) --></mods:extent>
+        <mods:extent><!-- Enter Extent here (MARC 300$a) --></mods:extent>
         <mods:digitalOrigin>born digital</mods:digitalOrigin>
+        <mods:note type="other physical details"><!-- Enter Other physical details here (MARC 300$b) --></mods:note>
+        <mods:note type="dimensions"><!-- Enter Dimensions here (MARC 300$c) --></mods:note>
     </mods:physicalDescription>
     <mods:abstract displayLabel="Abstract"><!-- Enter Abstract here --></mods:abstract>
     <mods:note type="thesis"><!-- Enter Thesis Note here --></mods:note>
     <mods:note type="bibliography"><!-- Enter Bibliography Note here --></mods:note>
-    <mods:note type="statement of responsibility"><!-- Enter Statement of Responsibility here --></mods:note>
     <mods:note type="additional physical form">Also available in print.</mods:note>
     <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
     <mods:relatedItem type="host">
@@ -60,13 +62,15 @@
     </mods:location>
     <mods:accessCondition type="use and reproduction">All rights reserved. No part of this book may be reproduced in any form by any electronic or mechanical means without permission in writing from the author.</mods:accessCondition>
     <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
+        <drb:flag type="program" value="ddlp"/>
         <drb:flag type="doi" agency="CrossRef" registered=""/>
     </mods:extension>
     <mods:recordInfo>
         <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
         <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
+        <mods:recordContentSource><!-- Enter Cataloger's Initials here --></mods:recordContentSource>
         <mods:recordCreationDate encoding="w3cdtf"><!-- Enter Creation Date here --></mods:recordCreationDate>
-        <mods:recordIdentifier source="DRB"><!-- Enter Record ID (dcdis-[first initial][last name][year]) here --></mods:recordIdentifier>
+        <mods:recordIdentifier source="DRB"><!-- Enter Record ID (dcdis-[last name][year]) here --></mods:recordIdentifier>
         <mods:languageOfCataloging>
             <mods:languageTerm type="text">English</mods:languageTerm>
             <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>

@@ -29,10 +29,13 @@
     <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
     <mods:subject></mods:subject>
     <mods:accessCondition type="use and reproduction"></mods:accessCondition>
-    <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/"></mods:extension>
+    <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
+        <drb:flag type="program" value="ddlp"/>
+    </mods:extension>
     <mods:recordInfo>
         <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
         <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
+        <mods:recordContentSource></mods:recordContentSource>
         <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
         <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
         <mods:languageOfCataloging>

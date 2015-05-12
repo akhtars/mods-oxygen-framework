@@ -510,6 +510,22 @@
 			<xsl:if test="mods:classification[@authority='lcc']">
 				<xsl:call-template name="lcClassification"/>
 			</xsl:if>
+			
+			<!-- SA add 2015-05-12 -->
+			<xsl:call-template name="datafield">
+				<xsl:with-param name="tag">884</xsl:with-param>
+				<xsl:with-param name="subfields">
+					<marc:subfield code="a">
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.4</xsl:text>
+					</marc:subfield>
+					<marc:subfield code="g">
+						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
+					</marc:subfield>
+					<marc:subfield code="q">
+						<xsl:text>NhD</xsl:text>
+					</marc:subfield>
+				</xsl:with-param>
+			</xsl:call-template>
 		</marc:record>
 	</xsl:template>
 
@@ -1107,8 +1123,49 @@
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">300</xsl:with-param>
 			<xsl:with-param name="subfields">
+				<!-- SA add subfields b and c with ISBD punctuation 2015-05-04 -->
 				<marc:subfield code='a'>
-					<xsl:choose> <!-- SA add 2015-02-05 -->
+					<xsl:value-of select="."/>
+					<xsl:choose>
+						<xsl:when test="following-sibling::mods:note[@type='other physical details']">
+							<xsl:text> :</xsl:text>
+						</xsl:when>
+						<xsl:when test="following-sibling::mods:note[@type='dimensions']">
+							<xsl:text> ;</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:if test="not(ends-with(., '.'))">
+								<xsl:text>.</xsl:text>
+							</xsl:if>
+						</xsl:otherwise>
+					</xsl:choose>
+				</marc:subfield>
+				<xsl:if test="following-sibling::mods:note[@type='other physical details']">
+					<marc:subfield code='b'>
+						<xsl:value-of select="following-sibling::mods:note[@type='other physical details']"/>
+						<xsl:choose>
+							<xsl:when test="following-sibling::mods:note[@type='dimensions']">
+								<xsl:text> ;</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="not(ends-with(., '.'))">
+									<xsl:text>.</xsl:text>
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+					</marc:subfield>
+				</xsl:if>
+				<xsl:if test="following-sibling::mods:note[@type='dimensions']">
+					<marc:subfield code='c'>
+						<xsl:value-of select="following-sibling::mods:note[@type='dimensions']"/>
+						<xsl:if test="not(ends-with(following-sibling::mods:note[@type='dimensions'], '.'))">
+							<xsl:text>.</xsl:text>
+						</xsl:if>
+					</marc:subfield>
+				</xsl:if>
+				
+				<!--<marc:subfield code='a'>
+					<xsl:choose> <!-\- SA add 2015-02-05 -\->
 						<xsl:when test="not(ends-with(., '.'))">
 							<xsl:value-of select="."/>
 							<xsl:text>.</xsl:text>
@@ -1117,7 +1174,7 @@
 							<xsl:value-of select="."/>
 						</xsl:otherwise>
 					</xsl:choose>
-				</marc:subfield>
+				</marc:subfield>-->
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
@@ -1236,7 +1293,7 @@
 
 <!-- Note -->	
 	<!-- 1/04 fix -->
-	<xsl:template match="mods:note[not(@type='statement of responsibility' or @type='contact information')]"> <!-- SA addition 2013-08-23 filter out "additional" notes, update 2015-01-20 -->
+	<xsl:template match="mods:note[not(@type='statement of responsibility' or @type='contact information' or @type='other physical details' or @type='dimensions')]"> <!-- SA addition 2013-08-23 filter out "additional" notes, update 2015-01-20, update 2015-05-04 -->
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">
 				<xsl:choose>
@@ -2024,6 +2081,11 @@
 				<!-- v3 displayLabel -->
 				<xsl:for-each select="@displayLabel">
 					<marc:subfield code="3">
+						<xsl:value-of select="."/>
+					</marc:subfield>
+				</xsl:for-each>
+				<xsl:for-each select="@note"> <!-- SA add 2015-05-04 -->
+					<marc:subfield code="z">
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:for-each>

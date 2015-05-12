@@ -15,7 +15,10 @@
     <!-- Top-level elements -->
 
     <pattern>
-        <rule context="mods:mods">
+        
+        <!-- Digital Library Program materials -->
+        
+        <rule context="mods:mods[mods:extension/drb:flag[@type='program'][@value='ddlp']]">
             <assert test="mods:titleInfo">
                 The record should have mods:title.
             </assert>
@@ -34,8 +37,8 @@
             </assert>
             <!--<assert test="mods:tableOfContents"></assert>-->
             <!--<assert test="mods:targetAudience"></assert>-->
-            <assert test="mods:note">
-                The record should have mods:note.
+            <assert test="mods:note[not(@*)][matches(text(), 'Made available through the Dartmouth Digital Library.')]">
+                The record should have the note "Made available through the Dartmouth Digital Library."
             </assert>
             <!--<assert test="mods:classification"></assert>-->
             <!--<assert test="mods:relatedItem"></assert>-->
@@ -54,6 +57,7 @@
                 The record should have mods:recordInfo.
             </assert>
         </rule>
+        
     </pattern>
     
     <!-- Elements for collection-level records -->
@@ -157,14 +161,6 @@
     
     <!-- note -->
     
-    <pattern>
-        <rule context="mods:mods">
-            <assert test="mods:note[not(@*)][matches(text(), 'Made available through the Dartmouth Digital Library.')]">
-                The record should have the note "Made available through the Dartmouth Digital Library."
-            </assert>
-        </rule>
-    </pattern>
-    
     <!-- classification -->
     
     <pattern>
@@ -198,7 +194,7 @@
     <!-- extension -->
     
     <pattern>
-        <rule context="mods:mods/mods:extension/drb:flag">
+        <rule context="mods:mods/mods:extension/drb:flag[@type='doi']">
             <assert test="matches(@registered, '^$') or matches(@registered, '^[0-9]{4}(-[0-9]{2}){2}$')">
                 @registered should either be blank or have a YYYY-MM-DD date.
             </assert>
@@ -272,8 +268,8 @@
 
     <pattern>
         <rule context="*[@keyDate]">
-            <assert test="count(preceding::*[@keyDate])=0">
-                @keyDate should only be used once per record.
+            <assert test="count(ancestor::mods:mods//*[@keyDate])=1">
+                @keyDate should be used exactly once per record.
             </assert> <!-- Level 2 -->
             <assert test=".[@encoding='w3cdtf']">
                 @keyDate should be expressed using W3CDTF.

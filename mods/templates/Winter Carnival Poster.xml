@@ -42,7 +42,6 @@
     </mods:physicalDescription>
     <mods:note type="contact information">Rauner Special Collections Library, 6065 Webster Hall, Hanover, NH 03755, USA, Phone: 603-646-0538, Email: rauner.special.collections.reference@dartmouth.edu, URL: http://www.dartmouth.edu/~library/rauner/</mods:note>
     <mods:note></mods:note>
-    <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
     <mods:subject authority="lcsh">
         <mods:name type="corporate">
             <mods:namePart>Dartmouth College</mods:namePart>
@@ -79,12 +78,14 @@
     <mods:accessCondition type="use and reproduction">Made available by the Trustees of Dartmouth College under a Creative Commons Attribution non-Commercial license - http://creativecommons.org/licenses/by-nc/3.0/</mods:accessCondition>
     <mods:accessCondition type="use and reproduction">Materials may be copyrighted by U. S. Copyright Law Title 17 U. S. C. .</mods:accessCondition>
     <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
+        <drb:flag type="program" value="ddlp"/>
         <drb:flag type="doi" agency="CrossRef" registered=""></drb:flag>
         <drb:filename type="master"></drb:filename>
     </mods:extension>
     <mods:recordInfo>
         <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
         <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
+        <mods:recordContentSource></mods:recordContentSource>
         <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
         <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
         <mods:languageOfCataloging>
