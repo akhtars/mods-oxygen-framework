@@ -3,19 +3,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
     <xt:extension id="mods">
-        <xt:location href="mods_0-9-4.zip"/>
-        <xt:version>0.9.4</xt:version>
+        <xt:location href="mods_0-9-5.zip"/>
+        <xt:version>0.9.5</xt:version>
         <xt:oxy_version>14.0+</xt:oxy_version>
         <xt:type>framework</xt:type>
         <xt:author>Dartmouth College Library</xt:author>
         <xt:name>MODS (Metadata Object Description Schema)</xt:name>
         <xt:description xmlns="http://www.w3.org/1999/xhtml">
             <p>The Dartmouth College Library's local implementation of MODS, the Metadata Object Description Schema.</p>
-            <p>Release notes for version 0.9.4:</p>
+            <p>Release notes for version 0.9.5:</p>
             <ul>
-                <li>Build in flag to identify Dartmouth Digital Library Program materials. [issue #2]</li>
                 <li>Update Dissertation template.</li>
-                <li>"MODS-to-MARCXML" transformation now produces 884 field and 300 subfields $b, $c.</li>
             </ul>
         </xt:description>
         <xt:license>Copyright 2015 Trustees of Dartmouth College</xt:license>

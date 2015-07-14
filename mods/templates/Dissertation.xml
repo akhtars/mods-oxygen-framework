@@ -18,7 +18,7 @@
     </mods:name>
     <mods:name type="corporate">
         <mods:namePart><!-- Enter College Name here --></mods:namePart>
-        <mods:namePart><!-- Enter College Department here (MARC 710$b) --></mods:namePart>
+        <mods:namePart><!-- Enter College Department here --></mods:namePart>
     </mods:name>
     <mods:name type="corporate">
         <mods:namePart>Dartmouth College</mods:namePart>
@@ -40,10 +40,9 @@
         <mods:form type="media" authority="rdamedia">computer</mods:form>
         <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
         <mods:internetMediaType>application/pdf</mods:internetMediaType>
-        <mods:extent><!-- Enter Extent here (MARC 300$a) --></mods:extent>
+        <mods:extent><!-- Enter Extent here --></mods:extent>
         <mods:digitalOrigin>born digital</mods:digitalOrigin>
-        <mods:note type="other physical details"><!-- Enter Other physical details here (MARC 300$b) --></mods:note>
-        <mods:note type="dimensions"><!-- Enter Dimensions here (MARC 300$c) --></mods:note>
+        <mods:note type="other physical details"><!-- Enter Other physical details here --></mods:note>
     </mods:physicalDescription>
     <mods:abstract displayLabel="Abstract"><!-- Enter Abstract here --></mods:abstract>
     <mods:note type="thesis"><!-- Enter Thesis Note here --></mods:note>
