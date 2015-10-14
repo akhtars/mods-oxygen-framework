@@ -134,7 +134,7 @@
             <assert test="@eventType">
                 <name/> should have @eventType.
             </assert>
-            <assert test="child::*[contains(name(.),'date')][normalize-space(text())]">
+            <assert test="child::*[matches(name(.), 'date', 'i')][normalize-space(text())]">
                 <name/> should have a non-blank date element.
             </assert> <!-- Level 1 -->
         </rule>
@@ -241,7 +241,7 @@
 
     <pattern>
         <!-- CANDIDATE FOR W3C SCHEMA OVERRIDE -->
-        <rule context="*[contains(name(.),'Date')][normalize-space(text())]">
+        <rule context="*[matches(name(.), 'date', 'i')][normalize-space(text())]">
             <assert test="@encoding='w3cdtf' or @encoding='marc'">
                 All non-empty dates should be marked as W3CDTF or MARC.
             </assert>
@@ -249,7 +249,7 @@
     </pattern>
     
     <pattern>
-        <rule context="*[contains(name(.),'Date')][@encoding='w3cdtf']">
+        <rule context="*[matches(name(.), 'date', 'i')][@encoding='w3cdtf']">
             <assert
                 test="matches(.,'^[0-9]{4}(-[0-9]{2}){0,2}$') or
                 matches(.,'^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2})$')">
@@ -259,7 +259,7 @@
     </pattern>
 
     <pattern>
-        <rule context="*[contains(name(.),'Date')][not(normalize-space(text()))]">
+        <rule context="*[matches(name(.), 'date', 'i')][not(normalize-space(text()))]">
             <assert test="@point='end'">
                 All empty dates should be the end of a date range.
             </assert>
@@ -277,6 +277,14 @@
             <assert test="ancestor::mods:originInfo">
                 @keyDate should appear within mods:originInfo.
             </assert>
+        </rule>
+    </pattern>
+    
+    <!-- DOIs -->
+    
+    <pattern>
+        <rule context="mods:mods/mods:identifier[@type='doi']">
+            <assert test="matches(., '^http(s)?://dx\.doi\.org/10\.\d{4,9}/[-._;()/:A-Z0-9]+$', 'i')">DOIs should match the specified format (http://dx.doi.org/[prefix]/[suffix]).</assert>
         </rule>
     </pattern>
     

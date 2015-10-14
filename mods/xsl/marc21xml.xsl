@@ -16,8 +16,6 @@
 	
 	<xsl:strip-space elements="*"/> <!-- SA addition 2013-10-21 -->
 	
-	<xsl:param name="create001" select="'yes'"/> <!-- SA addition 2015-03-25 -->
-	
 	<!-- SA change authority identifier from "marc" to "marcgt" 2015-03-25 -->
 	
 	<xsl:template match="/">
@@ -511,12 +509,12 @@
 				<xsl:call-template name="lcClassification"/>
 			</xsl:if>
 			
-			<!-- SA add 2015-05-12 -->
+			<!-- SA add 2015-10-12 -->
 			<xsl:call-template name="datafield">
 				<xsl:with-param name="tag">884</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
-						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.4</xsl:text>
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.6</xsl:text>
 					</marc:subfield>
 					<marc:subfield code="g">
 						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
@@ -1374,13 +1372,11 @@
 	</xsl:template>
 	<!-- 1/04 fix -->
 	<xsl:template name="controlRecordInfo">
-		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier">
-			<xsl:if test="$create001 = 'yes'"> <!-- SA change 2015-03-25 -->
-				<marc:controlfield tag="001"><xsl:value-of select="."/></marc:controlfield>
-				<xsl:for-each select="@source">
-					<marc:controlfield tag="003"><xsl:value-of select="."/></marc:controlfield>			
-				</xsl:for-each>
-			</xsl:if>
+		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier[@source='OCoLC']"> <!-- SA change 2015-10-14 -->
+			<marc:controlfield tag="001"><xsl:value-of select="."/></marc:controlfield>
+			<xsl:for-each select="@source">
+				<marc:controlfield tag="003"><xsl:value-of select="."/></marc:controlfield>			
+			</xsl:for-each>
 		</xsl:for-each>
 		<xsl:for-each select="mods:recordInfo/mods:recordChangeDate[@encoding='iso8601']">
 			<marc:controlfield tag="005"><xsl:value-of select="."/></marc:controlfield>
@@ -1388,7 +1384,7 @@
 	</xsl:template>
 	
 	<xsl:template name="recordIdentifier"> <!-- SA add 2015-01-23 -->
-		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier"> <!-- SA change 2015-01-23 -->
+		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier[not(@source='OCoLC')]"> <!-- SA change 2015-10-12 -->
 			<xsl:call-template name="datafield">
 				<xsl:with-param name="tag">035</xsl:with-param>
 				<xsl:with-param name="subfields">
@@ -1444,6 +1440,12 @@
 					<xsl:value-of select="*[1]"/>
 				</marc:subfield>
 				<xsl:apply-templates select="*[position()>1]"/>
+				<!-- SA add 2015-10-14 -->
+				<xsl:if test="@authority and not(@authority='lcsh') and not(@authority='lcshac') and not(@authority='mesh') and not(@authority='csh') and not(@authority='nal') and not(@authority='rvm')">
+					<marc:subfield code="2">
+						<xsl:value-of select="@authority"/>
+					</marc:subfield>
+				</xsl:if>
 			</xsl:with-param>
 		</xsl:call-template>	
 	</xsl:template>
@@ -1469,6 +1471,12 @@
 					<xsl:call-template name="titleInfo"/>
 				</xsl:for-each>
 				<xsl:apply-templates select="*[position()>1]"/>				
+				<!-- SA add 2015-10-14 -->
+				<xsl:if test="@authority and not(@authority='lcsh') and not(@authority='lcshac') and not(@authority='mesh') and not(@authority='csh') and not(@authority='nal') and not(@authority='rvm')">
+					<marc:subfield code="2">
+						<xsl:value-of select="@authority"/>
+					</marc:subfield>
+				</xsl:if>
 			</xsl:with-param>
 		</xsl:call-template>	
 		
@@ -1538,6 +1546,12 @@
 							</xsl:for-each>
 							<!--<xsl:apply-templates select="*[position()>1]"/>-->
 							<xsl:apply-templates select="ancestor-or-self::mods:subject/*[position()>1]"/>
+							<!-- SA add 2015-10-14 -->
+							<xsl:if test="ancestor-or-self::mods:subject/@authority and not(ancestor-or-self::mods:subject/@authority='lcsh') and not(ancestor-or-self::mods:subject/@authority='lcshac') and not(ancestor-or-self::mods:subject/@authority='mesh') and not(ancestor-or-self::mods:subject/@authority='csh') and not(ancestor-or-self::mods:subject/@authority='nal') and not(ancestor-or-self::mods:subject/@authority='rvm')">
+								<marc:subfield code="2">
+									<xsl:value-of select="ancestor-or-self::mods:subject/@authority"/>
+								</marc:subfield>
+							</xsl:if>
 							
 						</xsl:with-param>
 					</xsl:call-template>	
@@ -1558,6 +1572,12 @@
 								</marc:subfield>
 							</xsl:for-each>
 							<xsl:apply-templates select="*[position()>1]"/>
+							<!-- SA add 2015-10-14 -->
+							<xsl:if test="@authority and not(@authority='lcsh') and not(@authority='lcshac') and not(@authority='mesh') and not(@authority='csh') and not(@authority='nal') and not(@authority='rvm')">
+								<marc:subfield code="2">
+									<xsl:value-of select="@authority"/>
+								</marc:subfield>
+							</xsl:if>
 						</xsl:with-param>
 					</xsl:call-template>	
 				</xsl:when>
@@ -1574,6 +1594,12 @@
 					<xsl:value-of select="*[1]"/>
 				</marc:subfield>
 				<xsl:apply-templates select="*[position()>1]"/>
+				<!-- SA add 2015-10-14 -->
+				<xsl:if test="@authority and not(@authority='lcsh') and not(@authority='lcshac') and not(@authority='mesh') and not(@authority='csh') and not(@authority='nal') and not(@authority='rvm')">
+					<marc:subfield code="2">
+						<xsl:value-of select="@authority"/>
+					</marc:subfield>
+				</xsl:if>
 			</xsl:with-param>
 		</xsl:call-template>	
 	</xsl:template>
@@ -1587,6 +1613,12 @@
 					<xsl:value-of select="*[1]"/>
 				</marc:subfield>
 				<xsl:apply-templates select="*[position()>1]"/>
+				<!-- SA add 2015-10-14 -->
+				<xsl:if test="@authority and not(@authority='lcsh') and not(@authority='lcshac') and not(@authority='mesh') and not(@authority='csh') and not(@authority='nal') and not(@authority='rvm')">
+					<marc:subfield code="2">
+						<xsl:value-of select="@authority"/>
+					</marc:subfield>
+				</xsl:if>
 			</xsl:with-param>
 		</xsl:call-template>	
 	</xsl:template>
@@ -1611,7 +1643,7 @@
 	</xsl:template>
 
 	<!-- 1/04 fix was 630 -->
-	<xsl:template match="mods:subject/mods:heirarchialGeographic">
+	<xsl:template match="mods:subject/mods:hierarchicalGeographic">
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">752</xsl:with-param>
 			<xsl:with-param name="subfields">

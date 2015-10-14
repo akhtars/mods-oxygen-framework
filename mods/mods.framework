@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<serialized version="16.1" xml:space="preserve">
+<serialized version="17.0" xml:space="preserve">
 	<serializableOrderedMap>
 		<entry>
 			<String>document.types</String>
@@ -45,6 +45,9 @@
 								</cssFile-array>
 							</field>
 							<field name="mergeCSSsFromDocument">
+								<Boolean>false</Boolean>
+							</field>
+							<field name="multipleAlternateSelectionEnabled">
 								<Boolean>false</Boolean>
 							</field>
 							<field name="actionDescriptors">
@@ -250,29 +253,7 @@
 									<Boolean>true</Boolean>
 								</field>
 								<field name="xsltParams">
-									<list>
-										<transformationParameter>
-											<field name="paramDescription">
-												<paramDescriptor>
-													<field name="localName">
-														<String>create001</String>
-													</field>
-													<field name="prefix">
-														<null/>
-													</field>
-													<field name="namespace">
-														<null/>
-													</field>
-												</paramDescriptor>
-											</field>
-											<field name="value">
-												<String>${ask('Should mods:recordIdentifier be copied to the 001 and 003 fields?', radio, ('yes':'Yes';'no':'No'))}</String>
-											</field>
-											<field name="hasXPathValue">
-												<Boolean>false</Boolean>
-											</field>
-										</transformationParameter>
-									</list>
+									<list/>
 								</field>
 								<field name="cascadingStylesheets">
 									<String-array/>
