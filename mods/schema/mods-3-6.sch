@@ -227,6 +227,16 @@
     
     <!-- GENERAL REQUIREMENTS -->
     
+    <!-- MODS Version -->
+    
+    <pattern>
+        <rule context="mods:mods">
+            <report test="@version &lt; '3.6'">
+                This record has not been upgraded to MODS version 3.6.
+            </report>
+        </rule>
+    </pattern>
+    
     <!-- Text -->
     
     <pattern>

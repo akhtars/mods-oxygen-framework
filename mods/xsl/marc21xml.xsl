@@ -179,8 +179,11 @@
 			<marc:leader>
 				<!-- 00-04 -->				
 				<xsl:text>     </xsl:text>
-				<!-- 05 -->
-				<xsl:text>n</xsl:text>
+				<!-- 05 --> <!-- SA change 2015-10-15 -->
+				<xsl:choose>
+					<xsl:when test="mods:recordInfo/mods:recordIdentifier[@source='OCoLC']">c</xsl:when>
+					<xsl:otherwise>n</xsl:otherwise>
+				</xsl:choose>
 				<!-- 06 -->
 				<xsl:apply-templates mode="leader" select="mods:typeOfResource[1]"/>
 				<!-- 07 -->
@@ -514,7 +517,7 @@
 				<xsl:with-param name="tag">884</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
-						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.6</xsl:text>
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.7</xsl:text>
 					</marc:subfield>
 					<marc:subfield code="g">
 						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
@@ -535,7 +538,7 @@
 			<xsl:with-param name="tag">245</xsl:with-param>
 			<xsl:with-param name="ind1"> <!-- SA fix 2015-02-11 to accomodate no main entry -->
 				<xsl:choose>
-					<xsl:when test="following-sibling::mods:name[@usage='primary']">1</xsl:when>
+					<xsl:when test="following-sibling::mods:name[@usage='primary']|preceding-sibling::mods:name[@usage='primary']">1</xsl:when>
 					<xsl:otherwise>0</xsl:otherwise>
 				</xsl:choose>
 			</xsl:with-param>
@@ -863,7 +866,13 @@
 		</xsl:variable>
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag"><xsl:value-of select="$dfv"/></xsl:with-param>
-				<!--<xsl:with-param name="ind2">7</xsl:with-param>--> <!--SA comment out 2013-10-25 -->
+			 <!-- SA change 2015-10-15 -->
+			<xsl:with-param name="ind2">
+				<xsl:choose>
+					<xsl:when test="$dfv = '655'"><xsl:call-template name="authorityInd"/></xsl:when>
+					<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
+				</xsl:choose>
+			</xsl:with-param>
 			<xsl:with-param name="subfields">
 				<marc:subfield code='a'>
 					<xsl:value-of select="."/>
@@ -1420,6 +1429,11 @@
 					<marc:subfield code="c"> <!-- SA addition 2014-09-23 -->
 						<xsl:value-of select="."/>
 					</marc:subfield>
+					<xsl:for-each select="../mods:recordInfoNote[@authority='modifying agency']"> <!-- SA change 2015-11-05 -->
+						<marc:subfield code="d">
+							<xsl:value-of select="."/>
+						</marc:subfield>
+					</xsl:for-each>
 				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:for-each>
@@ -2163,14 +2177,14 @@
 	</xsl:template>
 	<xsl:template name="authorityInd">
 		<xsl:choose>
-			<!-- SA fix 2015-01-23 -->
-			<xsl:when test="ancestor-or-self::mods:subject/@authority='lcsh'">0</xsl:when>
-			<xsl:when test="ancestor-or-self::mods:subject/@authority='lcshac'">1</xsl:when>
-			<xsl:when test="ancestor-or-self::mods:subject/@authority='mesh'">2</xsl:when>
-			<xsl:when test="ancestor-or-self::mods:subject/@authority='csh'">3</xsl:when>
-			<xsl:when test="ancestor-or-self::mods:subject/@authority='nal'">5</xsl:when>
-			<xsl:when test="ancestor-or-self::mods:subject/@authority='rvm'">6</xsl:when>
-			<xsl:when test="ancestor-or-self::mods:subject/@authority">7</xsl:when>
+			<!-- SA change 2015-10-15 -->
+			<xsl:when test="(ancestor-or-self::mods:subject|ancestor-or-self::mods:genre)/@authority='lcsh'">0</xsl:when>
+			<xsl:when test="(ancestor-or-self::mods:subject|ancestor-or-self::mods:genre)/@authority='lcshac'">1</xsl:when>
+			<xsl:when test="(ancestor-or-self::mods:subject|ancestor-or-self::mods:genre)/@authority='mesh'">2</xsl:when>
+			<xsl:when test="(ancestor-or-self::mods:subject|ancestor-or-self::mods:genre)/@authority='csh'">3</xsl:when>
+			<xsl:when test="(ancestor-or-self::mods:subject|ancestor-or-self::mods:genre)/@authority='nal'">5</xsl:when>
+			<xsl:when test="(ancestor-or-self::mods:subject|ancestor-or-self::mods:genre)/@authority='rvm'">6</xsl:when>
+			<xsl:when test="(ancestor-or-self::mods:subject|ancestor-or-self::mods:genre)/@authority">7</xsl:when>
 			<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise><!-- v3 blank ind2 fix-->
 		</xsl:choose>
 	</xsl:template>

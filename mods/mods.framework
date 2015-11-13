@@ -17,7 +17,7 @@
 								<Integer>2</Integer>
 							</field>
 							<field name="uri">
-								<String>${framework}/schema/mods-3-5-local.xsd</String>
+								<String>${framework}/schema/mods-3-6-local.xsd</String>
 							</field>
 						</docTypeSchema>
 					</field>
@@ -409,7 +409,7 @@
 												</paramDescriptor>
 											</field>
 											<field name="value">
-												<String>${pdu}</String>
+												<String>${cfdu}</String>
 											</field>
 											<field name="hasXPathValue">
 												<Boolean>false</Boolean>
@@ -571,7 +571,7 @@
 												</paramDescriptor>
 											</field>
 											<field name="value">
-												<String>${pdu}</String>
+												<String>${cfdu}</String>
 											</field>
 											<field name="hasXPathValue">
 												<Boolean>false</Boolean>
@@ -678,7 +678,7 @@
 														<Integer>7</Integer>
 													</field>
 													<field name="uri">
-														<String>${framework}/schema/mods-3-5.sch</String>
+														<String>${framework}/schema/mods-3-6.sch</String>
 													</field>
 												</validationUnitSchema>
 											</field>
