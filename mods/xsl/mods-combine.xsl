@@ -27,7 +27,7 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
                 <xsl:for-each select="$source">
-                    <xsl:sort select="mods:mods/mods:recordInfo/mods:recordIdentifier"/>
+                    <xsl:sort select="mods:mods/mods:recordInfo/mods:recordIdentifier[@source='DRB']"/>
                     <xsl:apply-templates/>
                 </xsl:for-each>
             </mods:modsCollection>

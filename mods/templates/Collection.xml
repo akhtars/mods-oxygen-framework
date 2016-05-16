@@ -9,10 +9,18 @@
     <mods:name type="" usage="primary">
         <mods:namePart></mods:namePart>
     </mods:name>
-    <mods:typeOfResource></mods:typeOfResource>
+    <mods:typeOfResource collection="yes"></mods:typeOfResource>
     <mods:genre type="content" authority="rdacontent"></mods:genre>
+    <mods:genre authority="marcgt"></mods:genre>
+    <mods:genre authority="local"></mods:genre>
     <mods:originInfo eventType="">
+        <mods:publisher></mods:publisher>
+        <mods:place>
+            <mods:placeTerm></mods:placeTerm>
+        </mods:place>
         <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
+        <mods:issuance></mods:issuance>
+        <mods:frequency authority="marcfrequency"></mods:frequency>
     </mods:originInfo>
     <mods:language>
         <mods:languageTerm type="text"></mods:languageTerm>
@@ -25,9 +33,13 @@
         <mods:extent></mods:extent>
         <mods:digitalOrigin></mods:digitalOrigin>
     </mods:physicalDescription>
-    <mods:abstract></mods:abstract>
+    <mods:abstract displayLabel="Summary"></mods:abstract>
     <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
     <mods:subject></mods:subject>
+    <mods:identifier type="doi"></mods:identifier>
+    <mods:location>
+        <mods:url usage="primary" access="object in context"></mods:url>
+    </mods:location>
     <mods:accessCondition type="use and reproduction"></mods:accessCondition>
     <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
         <drb:flag type="program" value="ddlp"/>

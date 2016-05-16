@@ -176,6 +176,26 @@
         <dataset>
             
             <titles>
+                <xsl:for-each select="mods:titleInfo[1]">
+                    <xsl:choose>
+                        <xsl:when test="mods:subTitle">
+                            <title>
+                                <xsl:value-of select="normalize-space(concat(mods:nonSort, mods:title))"/>
+                            </title>
+                            <subtitle>
+                                <xsl:value-of select="mods:subTitle"/>
+                            </subtitle>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <title>
+                                <xsl:value-of select="normalize-space(child::*)"/>
+                            </title>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:for-each>
+            </titles>
+            
+            <!--<titles>
                 <xsl:choose>
                     <xsl:when test="not(mods:titleInfo[not(@*)]/mods:subTitle)">
                         <title>
@@ -192,7 +212,7 @@
                         </subtitle>
                     </xsl:otherwise>
                 </xsl:choose>
-            </titles>
+            </titles>-->
             
             <doi_data>
                 <doi>

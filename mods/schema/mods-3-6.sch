@@ -63,9 +63,15 @@
     <!-- Elements for collection-level records -->
     
     <pattern>
-        <rule context="mods:mods[child::mods:typeOfResource[@collection='yes']]">
+        <rule context="mods:mods[mods:typeOfResource[@collection='yes']]">
             <assert test="mods:name">
                 Collection-level records should have mods:name.
+            </assert>
+            <assert test="mods:genre[@authority='local']">
+                Collection-level records should have a local mods:genre term.
+            </assert>
+            <assert test="mods:genre[@authority='marcgt']">
+                Collection-level records should have a MARC mods:genre term.
             </assert>
             <assert test="mods:originInfo/mods:place">
                 Collection-level records should have mods:place.
@@ -73,11 +79,32 @@
             <assert test="mods:originInfo/mods:publisher">
                 Collection-level records should have mods:publisher.
             </assert>
+            <assert test="mods:originInfo/mods:issuance[matches(., '(single unit|multipart monograph|serial|integrating resource)')]">
+                Collection-level records should have mods:issuance with a value of "single unit", "multipart monograph", "serial", or "integrating resource".
+            </assert>
             <assert test="mods:abstract">
                 Collection-level records should have mods:abstract.
             </assert>
             <assert test="mods:subject">
                 Collection-level records should have mods:subject.
+            </assert>
+        </rule>
+        <rule context="mods:mods/mods:originInfo/mods:issuance[matches(., '(serial|integrating resource)')]">
+            <assert test="../mods:frequency[@authority='marcfrequency']">
+                Continuing resources should have mods:frequency.
+            </assert>
+        </rule>
+    </pattern>
+    
+    <!-- Elements for item-level records -->
+    
+    <pattern>
+        <rule context="mods:mods/mods:relatedItem[@type='host']">
+            <assert test="mods:titleInfo">
+                Item-level records should have mods:titleInfo for their collection under mods:relatedItem[@type='host'].
+            </assert>
+            <assert test="mods:typeOfResource[@collection='yes']">
+                Item-level records should have mods:typeOfResource for their collection under mods:relatedItem[@type='host'].
             </assert>
         </rule>
     </pattern>
@@ -199,6 +226,14 @@
                 @registered should either be blank or have a YYYY-MM-DD date.
             </assert>
         </rule>
+        <rule context="mods:mods/mods:extension/drb:filename">
+            <assert test="@type='master' or @type='component image'">
+                <name/> should have @type='master' or @type='component image'.
+            </assert>
+            <assert test="matches(., '^\S+\.\w{2,4}$')">
+                <name/> should include a file extension.
+            </assert>
+        </rule>
     </pattern>
 
     <!-- recordInfo -->
@@ -211,6 +246,9 @@
             <assert test="mods:recordContentSource[@authority='oclcorg']='DRB'">
                 <name/> should have mods:recordContentSource with @authority="oclcorg" and a value of "DRB".
             </assert> <!-- Level 5 -->
+            <assert test="not(mods:recordContentSource[not(@authority)])">
+                All mods:recordContentSource fields should have @authority.
+            </assert>
             <assert test="mods:recordCreationDate">
                 <name/> should have mods:recordCreationDate.
             </assert>
@@ -231,9 +269,9 @@
     
     <pattern>
         <rule context="mods:mods">
-            <report test="@version &lt; '3.6'">
+            <assert test="@version='3.6'">
                 This record has not been upgraded to MODS version 3.6.
-            </report>
+            </assert>
         </rule>
     </pattern>
     

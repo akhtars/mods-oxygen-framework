@@ -20,7 +20,9 @@
                                 <xs:enumeration value="bibliography"/>
                                 <xs:enumeration value="contact information"/>
                                 <xs:enumeration value="issuing body"/>
+                                <xs:enumeration value="language"/>
                                 <xs:enumeration value="modifying agency"/>
+                                <xs:enumeration value="regularity"/>
                                 <xs:enumeration value="statement of responsibility"/>
                                 <xs:enumeration value="system details"/>
                                 <xs:enumeration value="thesis"/>
@@ -128,6 +130,36 @@
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
+        
+        <!-- Limited frequency terms and authority -->
+        
+        <xs:element name="frequency">
+            <!-- Altered definition -->
+            <xs:complexType>
+                <xs:simpleContent>
+                    <xs:restriction base="stringPlusLanguagePlusAuthority">
+                        <xs:enumeration value="Continuously updated"/>
+                        <xs:enumeration value="Daily"/>
+                        <xs:enumeration value="Semiweekly"/>
+                        <xs:enumeration value="Three times a week"/>
+                        <xs:enumeration value="Weekly"/>
+                        <xs:enumeration value="Biweekly"/>
+                        <xs:enumeration value="Three times a month"/>
+                        <xs:enumeration value="Semimonthly"/>
+                        <xs:enumeration value="Monthly"/>
+                        <xs:enumeration value="Bimonthly"/>
+                        <xs:enumeration value="Quarterly"/>
+                        <xs:enumeration value="Three times a year"/>
+                        <xs:enumeration value="Semiannual"/>
+                        <xs:enumeration value="Annual"/>
+                        <xs:enumeration value="Biennial"/>
+                        <xs:enumeration value="Triennial"/>
+                        <xs:enumeration value="Completely irregular"/>
+                        <xs:enumeration value="Unknown"/>
+                    </xs:restriction>
+                </xs:simpleContent>
+            </xs:complexType>
+        </xs:element>
 
     </xs:override>
 

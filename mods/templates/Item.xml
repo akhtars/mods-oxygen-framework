@@ -29,6 +29,7 @@
         <mods:titleInfo>
             <mods:title></mods:title>
         </mods:titleInfo>
+        <mods:typeOfResource collection="yes"></mods:typeOfResource>
     </mods:relatedItem>
     <mods:accessCondition type="use and reproduction"></mods:accessCondition>
     <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">

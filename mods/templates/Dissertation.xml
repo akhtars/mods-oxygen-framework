@@ -53,6 +53,7 @@
         <mods:titleInfo>
             <mods:title>Dartmouth Dissertations</mods:title>
         </mods:titleInfo>
+        <mods:typeOfResource collection="yes">text</mods:typeOfResource>
     </mods:relatedItem>
     <mods:identifier type="doi" displayLabel="Electronic book"><!-- Enter DOI here --></mods:identifier>
     <mods:location>
