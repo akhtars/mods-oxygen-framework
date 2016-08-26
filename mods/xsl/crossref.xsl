@@ -33,7 +33,7 @@
     
     <xsl:variable name="now" select="format-dateTime(current-dateTime(), '[Y0001][M01][D01][H01][m01][s01][f01]')"/>
     
-    <xsl:param name="location" select="."/> <!-- Replaced by ${pdu} in Oxygen parameter configuration -->
+    <xsl:param name="location" select="."/> <!-- Replaced by ${cfdu} in Oxygen parameter configuration -->
     
     <xsl:param name="source" select="collection(concat($location, '?select=*-mods.xml'))"/>
     
@@ -109,18 +109,18 @@
             <!-- Incorporates main title, subtitle, and non-sort -->
             <titles>
                 <xsl:choose>
-                    <xsl:when test="not(mods:titleInfo/mods:subTitle)">
+                    <xsl:when test="not(mods:titleInfo[not(@*)]/mods:subTitle)">
                         <title>
-                            <xsl:value-of select="normalize-space(mods:titleInfo[child::*])"/>
+                            <xsl:value-of select="normalize-space(mods:titleInfo[not(@*)][child::*])"/>
                         </title>
                     </xsl:when>
                     <xsl:otherwise>
                         <title>
-                            <xsl:value-of select="normalize-space(concat(mods:titleInfo/mods:nonSort,
-                                mods:titleInfo/mods:title))"/>
+                            <xsl:value-of select="normalize-space(concat(mods:titleInfo[not(@*)]/mods:nonSort,
+                                mods:titleInfo[not(@*)]/mods:title))"/>
                         </title>
                         <subtitle>
-                            <xsl:value-of select="mods:titleInfo/mods:subTitle"/>
+                            <xsl:value-of select="mods:titleInfo[not(@*)]/mods:subTitle"/>
                         </subtitle>
                     </xsl:otherwise>
                 </xsl:choose>

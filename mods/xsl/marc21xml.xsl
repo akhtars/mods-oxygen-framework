@@ -98,7 +98,7 @@
 			<xsl:for-each select="mods:genre[@authority='marcgt']">
 				<xsl:choose>
 					<xsl:when test=".='abstract of summary'">a</xsl:when>
-					<xsl:when test=".='bibliography' or following-sibling::mods:note[@type='bibliography']">b</xsl:when> <!-- SA change 2015-04-02 -->
+					<xsl:when test=".='bibliography'">b</xsl:when>
 					<xsl:when test=".='catalog'">c</xsl:when>
 					<xsl:when test=".='dictionary'">d</xsl:when>
 					<xsl:when test=".='directory'">r</xsl:when>
@@ -121,6 +121,8 @@
 					<xsl:when test=".='treaty'">z</xsl:when>
 				</xsl:choose>
 			</xsl:for-each>
+			<!-- SA change 2015-04-02, 2016-08-16 -->
+			<xsl:if test="mods:note[@type='bibliography'] and not(mods:genre = 'bibliography')">b</xsl:if>
 		</xsl:variable>
 		<xsl:call-template name="makeSize">
 			<xsl:with-param name="string" select="$chars"/>
@@ -190,9 +192,9 @@
 			<marc:leader>
 				<!-- 00-04 -->				
 				<xsl:text>     </xsl:text>
-				<!-- 05 --> <!-- SA change 2015-10-15 -->
+				<!-- 05 --> <!-- SA change 2015-10-15, 2016-08-17 -->
 				<xsl:choose>
-					<xsl:when test="mods:recordInfo/mods:recordIdentifier[@source='OCoLC']">c</xsl:when>
+					<xsl:when test="mods:recordInfo/mods:recordInfoNote[@type='modifying agency']">c</xsl:when>
 					<xsl:otherwise>n</xsl:otherwise>
 				</xsl:choose>
 				<!-- 06 -->
@@ -272,15 +274,15 @@
 				<xsl:variable name="typeOf008"><xsl:apply-templates mode="ctrl008" select="mods:typeOfResource"/></xsl:variable>
 				<!-- 00-05 -->	
 				<xsl:choose>
-					<!-- 1/04 fix --> <!-- SA update 2016-05-16 -->
-					<xsl:when test="mods:recordInfo/mods:recordCreationDate[@encoding='marc']">
-						<xsl:value-of select="mods:recordInfo/mods:recordCreationDate[@encoding='marc']"/>
+					<!-- 1/04 fix --> <!-- SA update 2016-08-17 -->
+					<xsl:when test="mods:recordInfo/mods:recordInfoNote[@type='date entered as MARC']">
+						<xsl:value-of select="mods:recordInfo/mods:recordInfoNote[@type='date entered as MARC']"/>
 					</xsl:when>
 					<xsl:when test="mods:extension/drb:flag[@type='marc']/@created">
 						<xsl:value-of select="mods:extension/drb:flag[@type='marc']/@created"/>
 					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="format-date(mods:recordInfo/mods:recordCreationDate, '[Y01][M01][D01]')"/> <!-- SA change 2015-01-21 -->
+					<xsl:otherwise> <!-- SA change 2015-05-25 -->
+						<xsl:value-of select="format-date(current-date(), '[Y01][M01][D01]')"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<!-- 06 -->	<!-- SA rewrite to check for issuance subcategories 2016-05-16 -->
@@ -460,6 +462,7 @@
 					<xsl:when test="$typeOf008='BK' or $typeOf008='MU' or $typeOf008='SE' or $typeOf008='MM'">
 						<xsl:choose>
 							<xsl:when test="mods:physicalDescription/mods:form[@authority='marcform']='braille'">f</xsl:when>
+							<xsl:when test="mods:physicalDescription/mods:form[@authority='rdacarrier']='online resource'">o</xsl:when> <!-- SA add 2016-08-16 -->
 							<xsl:when test="mods:physicalDescription/mods:form[@authority='marcform']='electronic' or mods:physicalDescription/mods:form[@authority='rdamedia']='computer'">s</xsl:when> <!-- SA update 2015-11-23 -->
 							<xsl:when test="mods:physicalDescription/mods:form[@authority='marcform']='microfiche'">b</xsl:when>
 							<xsl:when test="mods:physicalDescription/mods:form[@authority='marcform']='microfilm'">a</xsl:when>
@@ -625,7 +628,7 @@
 				<xsl:with-param name="tag">884</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
-						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.8</xsl:text>
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.9</xsl:text>
 					</marc:subfield>
 					<marc:subfield code="g">
 						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
@@ -806,17 +809,22 @@
 						<xsl:otherwise/>
 					</xsl:choose>
 				</marc:subfield>
-				<xsl:if test="mods:namePart[@type='given'][2]"> <!-- SA add 2015-11-23, update 2016-03-21 -->
+				<xsl:if test="mods:namePart[@type='given'][2]"> <!-- SA add 2015-11-23, update 2016-03-21, 2016-08-15 -->
 					<marc:subfield code="q">
-						<xsl:text>(</xsl:text>
-						<xsl:value-of select="mods:namePart[@type='given'][2]"/>
-						<xsl:text>)</xsl:text>
+						<xsl:choose>
+							<xsl:when test="starts-with(mods:namePart[@type='given'][2], '(')">
+								<xsl:value-of select="mods:namePart[@type='given'][2]"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="concat('(', mods:namePart[@type='given'][2], ')')"/>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="not(child::mods:namePart[@type='termsOfAddress' or @type='date']) and not(ends-with(child::mods:namePart[last()], '.')) and not(mods:role)">.</xsl:when>
+							<xsl:when test="child::mods:namePart[@type='termsOfAddress' or @type='date'] or mods:role">,</xsl:when>
+							<xsl:otherwise/>
+						</xsl:choose>
 					</marc:subfield>
-					<xsl:choose>
-						<xsl:when test="not(child::mods:namePart[@type='termsOfAddress' or @type='date']) and not(ends-with(child::mods:namePart[last()], '.')) and not(mods:role)">.</xsl:when>
-						<xsl:when test="child::mods:namePart[@type='termsOfAddress' or @type='date'] or mods:role">,</xsl:when>
-						<xsl:otherwise/>
-					</xsl:choose>
 				</xsl:if>
 				<!-- v3 termsOfAddress -->
 				<xsl:for-each select="mods:namePart[@type='termsOfAddress']">
@@ -1475,7 +1483,7 @@
 			</xsl:with-param>
 			<xsl:with-param name="subfields">
 				<marc:subfield code="a">
-					<xsl:value-of select="."/>
+					<xsl:value-of select="normalize-space(.)"/> <!-- SA change 2016-07-14 -->
 				</marc:subfield>
 				<xsl:for-each select="@xlink:href">
 					<marc:subfield code="u">
@@ -1680,7 +1688,7 @@
 					<marc:subfield code="c"> <!-- SA addition 2014-09-23 -->
 						<xsl:value-of select="."/>
 					</marc:subfield>
-					<xsl:for-each select="../mods:recordInfoNote[@authority='modifying agency']"> <!-- SA change 2015-11-05 -->
+					<xsl:for-each select="../mods:recordInfoNote[@type='modifying agency']"> <!-- SA change 2015-11-05 -->
 						<marc:subfield code="d">
 							<xsl:value-of select="."/>
 						</marc:subfield>
@@ -2764,6 +2772,21 @@
 	</xsl:template>
 -->
 	<xsl:template name="relatedItem76X-78X">
+		<!-- SA move to front of field 2016-07-13 -->
+		<!-- v3 displaylabel -->
+		<xsl:for-each select="@displayLabel">
+			<marc:subfield code="i">
+				<xsl:value-of select="."/>
+			</marc:subfield>
+		</xsl:for-each>
+		<!-- SA rearrange 2016-07-13 -->
+		<xsl:if test="@type='otherFormat'">
+			<xsl:for-each select="../mods:name[@usage='primary']">
+				<marc:subfield code="a">
+					<xsl:value-of select="string-join(mods:namePart, ', ')"/>
+				</marc:subfield>
+			</xsl:for-each>
+		</xsl:if>
 		<xsl:for-each select="mods:titleInfo">
 			<xsl:for-each select="mods:title">
 				<xsl:choose>
@@ -2814,29 +2837,21 @@
 				</xsl:for-each>
 			</xsl:when>
 		</xsl:choose>
-		<!-- v3 displaylabel -->
-		<xsl:for-each select="@displayLabel">
-			<marc:subfield code="i">
-				<xsl:value-of select="."/>
-			</marc:subfield>
-		</xsl:for-each>
-		<!-- SA add 2014-09-23 -->
+		<!-- SA add 2014-09-23, revise 2016-07-13 -->
 		<xsl:if test="@type='otherFormat'">
-			<xsl:for-each select="../mods:name[@usage='primary']">
-				<marc:subfield code="a">
-					<xsl:value-of select="string-join(mods:namePart, ', ')"/>
-				</marc:subfield>
-			</xsl:for-each>
-			<xsl:for-each select="../mods:titleInfo">
-				<marc:subfield code="t">
-					<xsl:value-of select="normalize-space(.[child::*])"/>
-				</marc:subfield>
-			</xsl:for-each>
-			<xsl:for-each select="../mods:originInfo/*[@keyDate]"> <!-- SA add 2016-03-18 -->
-				<marc:subfield code="d">
-					<xsl:value-of select="concat('[', ., ']')"/>
-				</marc:subfield>
-			</xsl:for-each>
+			<xsl:choose> <!-- SA add 2016-05-26 -->
+				<xsl:when test="mods:originInfo/*[@encoding='w3cdtf']">
+					<marc:subfield code="d">
+						<xsl:value-of select="mods:originInfo/*[@encoding='w3cdtf']"/>
+					</marc:subfield>
+				</xsl:when>
+				<xsl:when test="../mods:originInfo/*[@keyDate]"> <!-- SA add 2016-03-18 -->
+					<marc:subfield code="d">
+						<xsl:value-of select="concat('[', ../mods:originInfo/*[@keyDate], ']')"/>
+					</marc:subfield>
+				</xsl:when>
+				<xsl:otherwise/>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:for-each select="mods:note">
 			<marc:subfield code="n">

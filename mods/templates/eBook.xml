@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
+    version="3.6">
+    <mods:titleInfo>
+        <mods:title></mods:title>
+    </mods:titleInfo>
+    <mods:name type="" authority="naf" valueURI="" usage="primary">
+        <mods:namePart></mods:namePart>
+    </mods:name>
+    <mods:typeOfResource manuscript="yes">text</mods:typeOfResource>
+    <mods:genre type="content" authority="rdacontent">text</mods:genre>
+    <mods:genre authority="marcgt">book</mods:genre>
+    <mods:genre authority="local">Books</mods:genre>
+    <mods:originInfo eventType="publication">
+        <mods:publisher></mods:publisher>
+        <mods:place>
+            <mods:placeTerm></mods:placeTerm>
+        </mods:place>
+        <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
+        <mods:issuance>single unit</mods:issuance>
+    </mods:originInfo>
+    <mods:language>
+        <mods:languageTerm type="text"></mods:languageTerm>
+        <mods:languageTerm type="code" authority="iso639-2b"></mods:languageTerm>
+    </mods:language>
+    <mods:physicalDescription>
+        <mods:form type="media" authority="rdamedia">computer</mods:form>
+        <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
+        <mods:internetMediaType>text/html</mods:internetMediaType>
+        <mods:internetMediaType>application/pdf</mods:internetMediaType>
+        <mods:internetMediaType>application/x-mobipocket-ebook</mods:internetMediaType>
+        <mods:internetMediaType>application/epub+zip</mods:internetMediaType>
+        <mods:extent></mods:extent>
+        <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+    </mods:physicalDescription>
+    <mods:abstract displayLabel="Summary"></mods:abstract>
+    <mods:abstract type="splash" displayLabel="About the Book" altRepGroup="A"><!-- Text-only --></mods:abstract>
+    <mods:abstract type="splash" displayLabel="About the Author" altRepGroup="B"><!-- Text-only --></mods:abstract>
+    <mods:abstract type="splash" displayLabel="About the Electronic Publication" altRepGroup="C"><!-- Text-only --></mods:abstract>
+    <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
+    <mods:subject></mods:subject>
+    <mods:relatedItem type="otherFormat" displayLabel="Print version:">
+        <mods:originInfo eventType="publication">
+            <mods:publisher></mods:publisher>
+            <mods:place>
+                <mods:placeTerm></mods:placeTerm>
+            </mods:place>
+            <mods:dateIssued encoding="w3cdtf"></mods:dateIssued>
+        </mods:originInfo>
+        <mods:classification authority="lcc"></mods:classification>
+        <mods:identifier type="isbn"></mods:identifier>
+        <mods:location>
+            <mods:url note="Catalog record"></mods:url>
+        </mods:location>
+        <mods:recordInfo>
+            <mods:recordIdentifier source="OCoLC"></mods:recordIdentifier>
+        </mods:recordInfo>
+    </mods:relatedItem>
+    <mods:identifier type="doi"></mods:identifier>
+    <mods:location>
+        <mods:url usage="primary" access="object in context"><!-- Splash page URL --></mods:url>
+        <mods:url access="raw object" displayLabel="Read the ebook Online"></mods:url>
+        <mods:url access="raw object" displayLabel="PDF Download"></mods:url>
+        <mods:url access="raw object" displayLabel="Kindle Download"></mods:url>
+        <mods:url access="raw object" displayLabel="Epub Download"></mods:url>
+        <mods:url access="preview"><!-- Cover image URL --></mods:url>
+    </mods:location>
+    <mods:accessCondition type="use and reproduction"></mods:accessCondition>
+    <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
+        <drb:flag type="program" value="ddlp"/>
+        <drb:filename type="master"></drb:filename>
+        <html xmlns="http://www.w3.org/1999/xhtml" altRepGroup="A"></html>
+        <html xmlns="http://www.w3.org/1999/xhtml" altRepGroup="B"></html>
+        <html xmlns="http://www.w3.org/1999/xhtml" altRepGroup="C"></html>
+    </mods:extension>
+    <mods:recordInfo>
+        <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
+        <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
+        <mods:recordContentSource authority="local"></mods:recordContentSource>
+        <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
+        <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
+        <mods:languageOfCataloging>
+            <mods:languageTerm type="text">English</mods:languageTerm>
+            <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>
+        </mods:languageOfCataloging>
+    </mods:recordInfo>
+</mods:mods>

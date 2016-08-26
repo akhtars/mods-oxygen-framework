@@ -3,22 +3,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
     <xt:extension id="mods">
-        <xt:location href="mods_0-9-8.zip"/>
-        <xt:version>0.9.8</xt:version>
+        <xt:location href="mods_0-9-9.zip"/>
+        <xt:version>0.9.9</xt:version>
         <xt:oxy_version>14.0+</xt:oxy_version>
         <xt:type>framework</xt:type>
         <xt:author>Dartmouth College Library</xt:author>
         <xt:name>MODS (Metadata Object Description Schema)</xt:name>
         <xt:description xmlns="http://www.w3.org/1999/xhtml">
             <p>The Dartmouth College Library's local implementation of MODS, the Metadata Object Description Schema.</p>
-            <p>Release notes for version 0.9.8:</p>
+            <p>Release notes for version 0.9.9:</p>
             <ul>
-                <li>"MODS-to-MARCXML" transformation enhanced for collection-level records.</li>
-                <li>New "MODS Split" transformation creates one file per record out of a file containing multiple records.</li>
+                <li>"MODS-to-MARCXML" transformation enhanced to better support OCLC operations, including creation of MARC 880 field based on @script.</li>
+                <li>Transformations now place the output files in the same directory as the input files, instead of the project's home directory.</li>
                 <li>Schematron and XML Schema files updated to reflect latest local implementation practices.</li>
-                <li>Update all templates.</li>
+                <li>eBook template created.</li>
+                <li>CSS now better displays attribute names and values.</li>
             </ul>
         </xt:description>
-        <xt:license>Copyright 2016 Trustees of Dartmouth College</xt:license>
+        <xt:license>Copyright 2016 Trustees of Dartmouth College. Made available under the Apache License, version 2.0.</xt:license>
     </xt:extension>
 </xt:extensions>

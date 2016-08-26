@@ -21,7 +21,7 @@
 
 	<xsl:variable name="hex">0123456789ABCDEF</xsl:variable>
 
-
+	<!-- LOCAL: SA modify 2016-08-23 to support creation of 880, $6 from @script, @altRepGroup for OCLC requirements -->
 	<xsl:template name="datafield">
 		<xsl:param name="tag"/>
 		<xsl:param name="ind1">
@@ -33,7 +33,12 @@
 		<xsl:param name="subfields"/>
 		<xsl:element name="marc:datafield">
 			<xsl:attribute name="tag">
-				<xsl:value-of select="$tag"/>
+				<xsl:choose>
+					<xsl:when test="@script">880</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$tag"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="ind1">
 				<xsl:value-of select="$ind1"/>
@@ -41,6 +46,30 @@
 			<xsl:attribute name="ind2">
 				<xsl:value-of select="$ind2"/>
 			</xsl:attribute>
+			<xsl:choose>
+				<xsl:when test="@script">
+					<marc:subfield code="6">
+						<xsl:value-of select="$tag"/>
+						<xsl:text>-</xsl:text>
+						<xsl:choose>
+							<xsl:when test="@altRepGroup">
+								<xsl:value-of select="@altRepGroup"/>
+							</xsl:when>
+							<xsl:otherwise>00</xsl:otherwise>
+						</xsl:choose>
+						<xsl:text>/</xsl:text>
+						<xsl:choose>
+							<xsl:when test="@script = 'Grek'">(S</xsl:when>
+						</xsl:choose>
+					</marc:subfield>
+				</xsl:when>
+				<xsl:when test="@altRepGroup">
+					<marc:subfield code="6">
+						<xsl:text>880-</xsl:text>
+						<xsl:value-of select="@altRepGroup"/>
+					</marc:subfield>
+				</xsl:when>
+			</xsl:choose>
 			<xsl:copy-of select="$subfields"/>
 		</xsl:element>
 	</xsl:template>

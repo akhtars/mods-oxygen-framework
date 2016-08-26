@@ -19,6 +19,7 @@
                                 <xs:enumeration value="additional physical form"/>
                                 <xs:enumeration value="bibliography"/>
                                 <xs:enumeration value="contact information"/>
+                                <xs:enumeration value="date entered as MARC"/>
                                 <xs:enumeration value="issuing body"/>
                                 <xs:enumeration value="language"/>
                                 <xs:enumeration value="modifying agency"/>
@@ -89,6 +90,7 @@
                         <xs:enumeration value="audio/mpeg"/>
                         <xs:enumeration value="text/html"/>
                         <xs:enumeration value="image/jp2"/>
+                        <xs:enumeration value="image/tiff"/>
                     </xs:restriction>
                 </xs:simpleContent>
             </xs:complexType>
