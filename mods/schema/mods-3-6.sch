@@ -296,8 +296,8 @@
             </sqf:fix>
         </rule>
         <rule context="mods:mods/mods:name/mods:role">
-            <assert test="mods:roleTerm[@type='text']">
-                <name/> should have mods:roleTerm with @type="text".
+            <assert test="mods:roleTerm[@type='text'][@authority='marcrelator']">
+                <name/> should have mods:roleTerm with @type="text" and @authority="marcrelator".
             </assert>
         </rule>
     </pattern>
@@ -305,7 +305,7 @@
     <pattern>
         <rule context="mods:mods/mods:name[@usage='primary']">
             <assert test="mods:role/mods:roleTerm[@type='text'][normalize-space(text())]">
-                The primary name should have a text mods:roleTerm assigned.
+                The primary name should have a text mods:roleTerm assigned from the MARC Code List for Relators.
             </assert>
         </rule>
     </pattern>
@@ -398,6 +398,16 @@
                 </sqf:add>
             </sqf:fix>
             
+        </rule>
+    </pattern>
+    
+    <!-- abstract -->
+    
+    <pattern>
+        <rule context="mods:mods/mods:abstract">
+            <assert test="matches(., '.+[\.\?!]$')">
+                <name/> should end with a punctuation mark.
+            </assert>
         </rule>
     </pattern>
     
@@ -496,13 +506,19 @@
             <assert test="@version='3.6'">
                 This record has not been upgraded to MODS version 3.6.
             </assert>
+            <!--<sqf:fix id="mods-version">
+                <sqf:description>
+                    <sqf:title>Upgrade record to MODS version 3.6</sqf:title>
+                </sqf:description>
+                <sqf:replace node-type="attribute" match="@version" select="@version">3.6</sqf:replace>
+            </sqf:fix>-->
         </rule>
     </pattern>
     
     <!-- Text -->
     
     <pattern>
-        <rule context="//*[not(child::*)][not(parent::mods:extension)]">
+        <rule context="//*[not(child::*)][not(parent::mods:extension)][not(self::mods:nonSort)]">
             <assert test="not(normalize-space(text()) = '')">
                 All elements without children should contain text. [<name path=".."/>/<name/>]
             </assert>
@@ -540,14 +556,19 @@
             </assert>
         </rule>
     </pattern>
+    
+    <pattern>
+        <rule context="mods:mods">
+            <assert test="count(descendant::*[@keyDate])=1">
+                @keyDate should be used exactly once per record, within a mods:originInfo element.
+            </assert> <!-- Level 2 -->
+        </rule>
+    </pattern>
 
     <pattern>
         <rule context="*[@keyDate]">
-            <assert test="count(ancestor::mods:mods//*[@keyDate])=1">
-                @keyDate should be used exactly once per record.
-            </assert> <!-- Level 2 -->
-            <assert test=".[@encoding='w3cdtf']">
-                @keyDate should be expressed using W3CDTF.
+            <assert test=".[@encoding='w3cdtf' or @encoding='marc']">
+                @keyDate should be expressed using W3CDTF or MARC. [<name path=".."/>/<name/>]
             </assert> <!-- Level 3 -->
             <assert test="ancestor::mods:originInfo">
                 @keyDate should appear within mods:originInfo.
@@ -558,7 +579,7 @@
     <!-- DOIs -->
     
     <pattern>
-        <rule context="mods:mods/mods:identifier[@type='doi']">
+        <rule context="mods:mods//mods:identifier[@type='doi']">
             <assert test="matches(., '^http(s)?://dx\.doi\.org/10\.\d{4,9}/[-._;()/:A-Z0-9]+$', 'i')">
                 DOIs should match the specified format (http://dx.doi.org/[prefix]/[suffix]).
             </assert>
@@ -581,6 +602,22 @@
             <assert test="mods:recordInfo/mods:descriptionStandard='rda'">
                 The record's mods:descriptionStandard should be marked as "rda".
             </assert>
+        </rule>
+    </pattern>
+    
+    <!-- Non-Latin Scripts -->
+    
+    <pattern>
+        <rule context="text()[matches(., '\p{IsGreekandCoptic}')]">
+            <assert test="../@script='Grek'" sqf:fix="script-Grek">
+                This element contains characters from the Greek and Coptic Unicode block but lacks the appropriate @script. [<name path="../.."/>/<name path=".."/>]
+            </assert>
+            <sqf:fix id="script-Grek">
+                <sqf:description>
+                    <sqf:title>Add @script for Greek and Coptic characters</sqf:title>
+                </sqf:description>
+                <sqf:add node-type="attribute" match=".." target="script">Grek</sqf:add>
+            </sqf:fix>
         </rule>
     </pattern>
     
