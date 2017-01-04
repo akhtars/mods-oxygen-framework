@@ -12,7 +12,8 @@
         <mods:title>Dartmouth Winter Carnival Posters</mods:title>
     </mods:titleInfo>
     <mods:name type="personal" usage="primary">
-        <mods:namePart></mods:namePart>
+        <mods:namePart type="family"></mods:namePart>
+        <mods:namePart type="given"></mods:namePart>
         <mods:role>
             <mods:roleTerm type="text" authority="marcrelator">artist</mods:roleTerm>
         </mods:role>
@@ -69,6 +70,12 @@
         <mods:location>
             <mods:url usage="primary" access="object in context">http://www.dartmouth.edu/~library/digital/collections/other/WinterCarnivalPosters.html</mods:url>
         </mods:location>
+    </mods:relatedItem>
+    <mods:relatedItem type="otherFormat">
+        <mods:originInfo eventType="production">
+            <mods:dateCreated encoding="fast"></mods:dateCreated>
+            <mods:dateCreated encoding="w3cdtf"></mods:dateCreated>
+        </mods:originInfo>
     </mods:relatedItem>
     <mods:identifier type="doi" displayLabel="Electronic image"></mods:identifier>
     <mods:location>

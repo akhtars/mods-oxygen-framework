@@ -20,6 +20,7 @@
                                 <xs:enumeration value="bibliography"/>
                                 <xs:enumeration value="contact information"/>
                                 <xs:enumeration value="date entered as MARC"/>
+                                <xs:enumeration value="funding"/> <!-- 2016-10-19 -->
                                 <xs:enumeration value="issuing body"/>
                                 <xs:enumeration value="language"/>
                                 <xs:enumeration value="modifying agency"/>
@@ -162,6 +163,46 @@
                 </xs:simpleContent>
             </xs:complexType>
         </xs:element>
+        
+        <!-- Additional date encoding types -->
+        
+        <xs:complexType name="dateDefinition">
+            <xs:simpleContent>
+                <xs:extension base="stringPlusLanguage">
+                    <!-- Altered definition -->
+                    <xs:attribute name="encoding">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="w3cdtf"/>
+                                <xs:enumeration value="iso8601"/>
+                                <xs:enumeration value="marc"/>
+                                <xs:enumeration value="temper"/>
+                                <xs:enumeration value="edtf"/>
+                                <xs:enumeration value="fast"/> <!-- 2016-10-19 -->
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="qualifier">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="approximate"/>
+                                <xs:enumeration value="inferred"/>
+                                <xs:enumeration value="questionable"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="point">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="start"/>
+                                <xs:enumeration value="end"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="keyDate" fixed="yes"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
 
     </xs:override>
 

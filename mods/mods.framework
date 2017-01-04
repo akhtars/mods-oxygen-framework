@@ -22,7 +22,9 @@
 						</docTypeSchema>
 					</field>
 					<field name="classpath">
-						<String-array/>
+						<String-array>
+							<String>${framework}/resources/</String>
+						</String-array>
 					</field>
 					<field name="parentClassLoaderID">
 						<null/>

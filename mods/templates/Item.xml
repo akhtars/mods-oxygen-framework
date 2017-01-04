@@ -31,6 +31,12 @@
         </mods:titleInfo>
         <mods:typeOfResource collection="yes"></mods:typeOfResource>
     </mods:relatedItem>
+    <mods:relatedItem type="otherFormat">
+        <mods:originInfo eventType="production">
+            <mods:dateCreated encoding="fast"></mods:dateCreated>
+            <mods:dateCreated encoding="w3cdtf"></mods:dateCreated>
+        </mods:originInfo>
+    </mods:relatedItem>
     <mods:accessCondition type="use and reproduction"></mods:accessCondition>
     <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
         <drb:flag type="program" value="ddlp"/>

@@ -268,6 +268,11 @@
     <!-- titleInfo -->
     
     <pattern>
+        <rule context="mods:mods">
+            <assert test="count(mods:titleInfo[not(@type)]) = 1">
+                There should be exactly 1 mods:titleInfo without @type.
+            </assert>
+        </rule>
         <rule context="mods:mods/mods:titleInfo">
             <assert test="mods:title" sqf:fix="title">
                 <name/> should have mods:title.
@@ -405,7 +410,7 @@
     
     <pattern>
         <rule context="mods:mods/mods:abstract">
-            <assert test="matches(., '.+[\.\?!]$')">
+            <assert test="matches(., '.+[\.\?!&quot;]$')">
                 <name/> should end with a punctuation mark.
             </assert>
         </rule>
@@ -533,8 +538,8 @@
     <pattern>
         <!-- CANDIDATE FOR W3C SCHEMA OVERRIDE -->
         <rule context="*[matches(name(.), 'date', 'i')][normalize-space(text())]">
-            <assert test="@encoding='w3cdtf' or @encoding='marc' or @encoding='iso8601'">
-                All non-empty dates should be marked as W3CDTF, MARC, or ISO8601. [<name path=".."/>/<name/>]
+            <assert test="@encoding='w3cdtf' or @encoding='marc' or @encoding='iso8601' or @encoding='fast'">
+                All non-empty dates should be marked as W3CDTF, MARC, ISO8601, or FAST. [<name path=".."/>/<name/>]
             </assert>
         </rule>
     </pattern>

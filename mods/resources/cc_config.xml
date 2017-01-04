@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Allows contributing to the values presented on content completion for element and attribute values.
+    You can append to the values obtained from the schema or replace them all together.
+    These values can be given as literal values or they can be obtained by executing an XSLT script.
+    
+    IMPORTANT: This file must be saved as cc_config.xml in a folder that is present in the Classpath
+    of the Document Type (or framework).
+-->
+<?xml-model href="http://www.oxygenxml.com/ns/ccfilter/config/ccConfigSchemaFilter.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.oxygenxml.com/ns/ccfilter/config http://www.oxygenxml.com/ns/ccfilter/config/ccConfigSchemaFilter.xsd"
+    xmlns="http://www.oxygenxml.com/ns/ccfilter/config"
+    xmlns:mods="http://www.loc.gov/mods/v3">
+    
+    <!-- mods:titleInfo -->
+    <elementProposals path="mods:titleInfo" insertElements="mods:title"/>
+    
+    <!-- mods:name -->
+    <elementProposals path="mods:name" insertAttributes="type" insertElements="mods:namePart mods:role" 
+        rejectElements="mods:etal"/>
+    <elementProposals path="mods:role" insertElements="mods:roleTerm"/>
+    <elementProposals path="mods:roleTerm" insertAttributes="type authority"/>
+    
+    <!-- mods:genre -->
+    <elementProposals path="mods:genre" insertAttributes="type"/>
+    
+    <!-- mods:originInfo -->
+    <elementProposals path="mods:originInfo" insertAttributes="eventType" 
+        rejectElements="mods:dateCaptured mods:dateValid mods:dateModified mods:dateOther"/>
+    <elementProposals path="mods:copyrightDate" insertAttributes="encoding"/>
+    <elementProposals path="mods:dateCreated" insertAttributes="encoding"/>
+    <elementProposals path="mods:dateIssued" insertAttributes="encoding"/>
+    
+    <!-- mods:language -->
+    <elementProposals path="mods:language" insertElements="mods:languageTerm mods:languageTerm"/>
+    <elementProposals path="mods:languageTerm" insertAttributes="type"/>
+    
+    <!-- mods:physicalDescription -->
+    <elementProposals path="mods:physicalDescription" rejectElements="mods:reformattingQuality"/>
+    
+    <!-- mods:relatedItem -->
+    <elementProposals path="mods:relatedItem" insertAttributes="type"/>
+    
+    <!-- mods:identifier -->
+    <elementProposals path="mods:identifier" insertAttributes="type"/>
+    
+    <!-- mods:location -->
+    <elementProposals path="mods:holdingSimple" insertElements="mods:copyInformation"/>
+    <elementProposals path="mods:copyInformation" insertElements="mods:shelfLocator"/>
+    
+    <!-- mods:recordInfo -->
+    <elementProposals path="mods:recordChangeDate" insertAttributes="encoding"/>
+    
+</config>

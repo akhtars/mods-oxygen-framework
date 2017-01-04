@@ -3,19 +3,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
     <xt:extension id="mods">
-        <xt:location href="mods_0-9-11.zip"/>
-        <xt:version>0.9.11</xt:version>
+        <xt:location href="mods_0-9-12.zip"/>
+        <xt:version>0.9.12</xt:version>
         <xt:oxy_version>14.0+</xt:oxy_version>
         <xt:type>framework</xt:type>
         <xt:author>Dartmouth College Library</xt:author>
         <xt:name>MODS (Metadata Object Description Schema)</xt:name>
         <xt:description xmlns="http://www.w3.org/1999/xhtml">
             <p>The Dartmouth College Library's local implementation of MODS, the Metadata Object Description Schema.</p>
-            <p>Release notes for version 0.9.11:</p>
+            <p>Release notes for version 0.9.12:</p>
             <ul>
-                <li>Add "MODS for DPN" transformation to produce a version of MODS records lacking unnecessary elements for DPN deposit.</li>
+                <li>"MODS-to-MARCXML" transformation enhanced to support 1st indicator "0" in personal name headings, multiple 041 language codes, creation of 536 and 388 notes.</li>
+                <li>Update Winter Carnival Poster and Item templates.</li>
+                <li>Update XSD and Schematron files.</li>
+                <li>Introduce Oxygen content completion functionality.</li>
+                <li>Assign MIT license.</li>
             </ul>
         </xt:description>
-        <xt:license>Copyright 2016 Trustees of Dartmouth College. Made available under the Apache License, version 2.0.</xt:license>
+        <xt:license>Copyright 2017 Trustees of Dartmouth College. Made available under the MIT License.</xt:license>
     </xt:extension>
 </xt:extensions>
