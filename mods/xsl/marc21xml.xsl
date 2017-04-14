@@ -634,7 +634,7 @@
 				<xsl:with-param name="tag">884</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
-						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.9</xsl:text>
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.13</xsl:text>
 					</marc:subfield>
 					<marc:subfield code="g">
 						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
@@ -1250,8 +1250,8 @@
 									<xsl:value-of select="."/>
 								</xsl:otherwise>
 							</xsl:choose>
-							<xsl:if test="../following-sibling::mods:publisher"> <!-- SA add 2015-11-23 -->
-								<xsl:text> : </xsl:text>
+							<xsl:if test="../../mods:publisher"> <!-- SA add 2015-11-23, update 2017-01-27 -->
+								<xsl:text> :</xsl:text>
 							</xsl:if>
 						</marc:subfield>
 					</xsl:for-each>
@@ -1267,8 +1267,8 @@
 									<xsl:value-of select="."/>
 								</xsl:otherwise>
 							</xsl:choose>
-							<xsl:if test="following-sibling::mods:dateIssued"> <!-- SA add 2015-11-23 -->
-								<xsl:text>, </xsl:text>
+							<xsl:if test="following-sibling::mods:dateIssued"> <!-- SA add 2015-11-23, update 2017-01-27 -->
+								<xsl:text>,</xsl:text>
 							</xsl:if>
 						</marc:subfield>
 					</xsl:for-each>
@@ -2856,6 +2856,9 @@
 			<xsl:for-each select="../mods:name[@usage='primary']">
 				<marc:subfield code="a">
 					<xsl:value-of select="string-join(mods:namePart, ', ')"/>
+					<xsl:if test="not(ends-with(mods:namePart[last()], '.'))"> <!-- SA add 2017-01-26 -->
+						<xsl:text>.</xsl:text>
+					</xsl:if>
 				</marc:subfield>
 			</xsl:for-each>
 		</xsl:if>
@@ -2865,6 +2868,10 @@
 					<xsl:when test="not(ancestor-or-self::mods:titleInfo/@type)">
 						<marc:subfield code="t">
 							<xsl:value-of select="."/>
+							<xsl:if test="not(ends-with(., '.')) and 
+								../../mods:originInfo/*[@encoding='w3cdtf']"> <!-- SA add 2017-01-26 -->
+								<xsl:text>.</xsl:text>
+							</xsl:if>
 						</marc:subfield>
 					</xsl:when>
 					<xsl:when test="ancestor-or-self::mods:titleInfo/@type='uniform'">
@@ -2909,12 +2916,20 @@
 				</xsl:for-each>
 			</xsl:when>
 		</xsl:choose>
-		<!-- SA add 2014-09-23, revise 2016-07-13, 2016-12-16 -->
+		<!-- SA add 2014-09-23, revise 2016-07-13, 2016-12-16, 2017-01-20 -->
 		<xsl:if test="@type='otherFormat'">
 			<!-- SA add 2016-05-26 -->
 			<xsl:if test="mods:originInfo/*[@encoding='w3cdtf']">
+				<xsl:variable name="dates" select="mods:originInfo/*[@encoding='w3cdtf']"/>
 				<marc:subfield code="d">
-					<xsl:value-of select="substring(mods:originInfo/*[@encoding='w3cdtf'], 1, 4)"/>
+					<xsl:choose>
+						<xsl:when test="$dates[2]">
+							<xsl:value-of select="concat($dates[1], '-', $dates[2])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="substring($dates, 1, 4)"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</marc:subfield>
 			</xsl:if>
 		</xsl:if>

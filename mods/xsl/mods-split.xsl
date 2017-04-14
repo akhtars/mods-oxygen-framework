@@ -34,7 +34,13 @@
             </xsl:choose>
         </xsl:variable>
         <xsl:result-document href="{$filename}-mods.xml" indent="yes" encoding="UTF-8">
-            <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
+            <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                xmlns:drb="http://www.dartmouth.edu/~library/catmet/"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:cmd="http://www.cdlib.org/inside/diglib/copyrightMD"
+                xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd
+                http://www.cdlib.org/inside/diglib/copyrightMD http://www.cdlib.org/groups/rmg/docs/copyrightMD.xsd">
                 <xsl:attribute name="version" select="@version"/>
                 <xsl:apply-templates/>
             </mods:mods>

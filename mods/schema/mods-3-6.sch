@@ -12,6 +12,7 @@
     <title>Dartmouth College Library MODS Implementation</title>
     <ns uri="http://www.loc.gov/mods/v3" prefix="mods"/>
     <ns uri="http://www.dartmouth.edu/~library/catmet/" prefix="drb"/>
+    <ns uri="http://www.cdlib.org/inside/diglib/copyrightMD" prefix="cmd"/>
     
     <!-- RECORD STRUCTURE -->
 
@@ -303,7 +304,7 @@
         <rule context="mods:mods/mods:name/mods:role">
             <assert test="mods:roleTerm[@type='text'][@authority='marcrelator']">
                 <name/> should have mods:roleTerm with @type="text" and @authority="marcrelator".
-            </assert>
+            </assert> <!-- Level 3 -->
         </rule>
     </pattern>
     
@@ -347,6 +348,22 @@
             <assert test="child::*[matches(name(.), 'date', 'i')][normalize-space(text())]">
                 <name/> should have a non-blank date element.
             </assert> <!-- Level 1 -->
+            <assert test="mods:place">
+                <name/> should have mods:place.
+            </assert> <!-- Level 5 -->
+            <assert test="mods:publisher">
+                <name/> should have mods:publisher.
+            </assert> <!-- Level 5 -->
+        </rule>
+        <rule context="mods:mods/mods:originInfo/mods:place">
+            <assert test="count(mods:placeTerm) = 2">
+                <name/> should have two mods:placeTerm elements.
+            </assert> <!-- Level 5 -->
+        </rule>
+        <rule context="mods:mods/mods:originInfo/mods:place/mods:placeTerm">
+            <assert test="@type">
+                <name/> should have @type.
+            </assert> <!-- Level 5 -->
         </rule>
     </pattern>
 
@@ -404,6 +421,11 @@
             </sqf:fix>
             
         </rule>
+        <rule context="mods:mods/mods:physicalDescription/mods:form">
+            <assert test="@authority">
+                <name/> should have @authority.
+            </assert> <!-- Level 3 -->
+        </rule>
     </pattern>
     
     <!-- abstract -->
@@ -428,6 +450,24 @@
         </rule>
     </pattern>
     
+    <!-- identifier -->
+    
+    <pattern>
+        <rule context="mods:mods/mods:identifier">
+            <assert test="@type">
+                <name/> should have @type.
+            </assert> <!-- Level 5 -->
+        </rule>
+    </pattern>
+    
+    <pattern>
+        <rule context="mods:mods/mods:identifier[@type='doi']">
+            <assert test="@displayLabel">
+                <name/> containing a DOI should have @displayLabel.
+            </assert>
+        </rule>
+    </pattern>
+    
     <!-- location -->
     
     <pattern>
@@ -441,7 +481,7 @@
     <!-- accessCondition -->
     
     <pattern>
-        <rule context="mods:mods/mods:accessCondition">
+        <rule context="mods:mods/mods:accessCondition[not(cmd:copyright)]">
             <assert test="@type" sqf:fix="accessCondition-type">
                 <name/> should have @type.
             </assert>
@@ -523,7 +563,7 @@
     <!-- Text -->
     
     <pattern>
-        <rule context="//*[not(child::*)][not(parent::mods:extension)][not(self::mods:nonSort)]">
+        <rule context="//*[not(child::*)][not(parent::mods:extension)][not(self::cmd:copyright)][not(self::mods:nonSort)]">
             <assert test="not(normalize-space(text()) = '')">
                 All elements without children should contain text. [<name path=".."/>/<name/>]
             </assert>
@@ -585,8 +625,8 @@
     
     <pattern>
         <rule context="mods:mods//mods:identifier[@type='doi']">
-            <assert test="matches(., '^http(s)?://dx\.doi\.org/10\.\d{4,9}/[-._;()/:A-Z0-9]+$', 'i')">
-                DOIs should match the specified format (http://dx.doi.org/[prefix]/[suffix]).
+            <assert test="matches(., '^(http://dx\.|https://)doi\.org/10\.\d{4,9}/[-._;()/:A-Z0-9]+$', 'i')">
+                DOIs should match the specified format (http://dx.doi.org/[prefix]/[suffix] or https://doi.org/[prefix]/[suffix]).
             </assert>
         </rule>
     </pattern>
@@ -611,6 +651,14 @@
     </pattern>
     
     <!-- Non-Latin Scripts -->
+    
+    <pattern>
+        <rule context="*[@script]">
+            <assert test="@altRepGroup">
+                An element with a non-Latin script should have @altRepGroup linking it to a parallel field. [<name path=".."/>/<name path="."/>]
+            </assert>
+        </rule>
+    </pattern>
     
     <pattern>
         <rule context="text()[matches(., '\p{IsGreekandCoptic}')]">

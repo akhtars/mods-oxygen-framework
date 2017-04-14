@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
+    xmlns:drb="http://www.dartmouth.edu/~library/catmet/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:cmd="http://www.cdlib.org/inside/diglib/copyrightMD"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd
+    http://www.cdlib.org/inside/diglib/copyrightMD http://www.cdlib.org/groups/rmg/docs/copyrightMD.xsd"
     version="3.6">
     <mods:titleInfo>
         <mods:title></mods:title>
     </mods:titleInfo>
-    <mods:name type="" usage="primary">
-        <mods:namePart></mods:namePart>
+    <mods:note type="statement of responsibility"></mods:note>
+    <mods:name type="" authority="naf" valueURI="" usage="primary">
+        <mods:namePart type="family"></mods:namePart>
+        <mods:namePart type="given"></mods:namePart>
+        <mods:role>
+            <mods:roleTerm type="text" authority="marcrelator"></mods:roleTerm>
+        </mods:role>
     </mods:name>
     <mods:typeOfResource></mods:typeOfResource>
     <mods:genre type="content" authority="rdacontent"></mods:genre>
-    <mods:originInfo eventType="">
+    <mods:originInfo eventType="publication">
+        <mods:publisher></mods:publisher>
+        <mods:place>
+            <mods:placeTerm type="text"></mods:placeTerm>
+            <mods:placeTerm type="code" authority="marccountry"></mods:placeTerm>
+        </mods:place>
         <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
     </mods:originInfo>
     <mods:language>
@@ -37,7 +51,19 @@
             <mods:dateCreated encoding="w3cdtf"></mods:dateCreated>
         </mods:originInfo>
     </mods:relatedItem>
+    <mods:identifier type="doi" displayLabel=""></mods:identifier>
+    <mods:location>
+        <mods:url usage="primary" access="object in context"></mods:url>
+    </mods:location>
     <mods:accessCondition type="use and reproduction"></mods:accessCondition>
+    <mods:accessCondition type="use and reproduction" displayLabel="Standardized rights statement" xlink:href=""></mods:accessCondition>
+    <mods:accessCondition>
+        <cmd:copyright copyright.status="" publication.status="">
+            <cmd:rights.holder>
+                <cmd:name></cmd:name>
+            </cmd:rights.holder>
+        </cmd:copyright>
+    </mods:accessCondition>
     <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
         <drb:flag type="program" value="ddlp"/>
     </mods:extension>

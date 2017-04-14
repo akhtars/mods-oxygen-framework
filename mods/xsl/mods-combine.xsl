@@ -24,8 +24,12 @@
     <xsl:template name="collection">
         <xsl:result-document indent="yes" encoding="UTF-8">
             <mods:modsCollection xmlns:mods="http://www.loc.gov/mods/v3"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                xmlns:drb="http://www.dartmouth.edu/~library/catmet/"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:cmd="http://www.cdlib.org/inside/diglib/copyrightMD"
+                xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd
+                http://www.cdlib.org/inside/diglib/copyrightMD http://www.cdlib.org/groups/rmg/docs/copyrightMD.xsd">
                 <xsl:for-each select="$source">
                     <xsl:sort select="mods:mods/mods:recordInfo/mods:recordIdentifier[@source='DRB']"/>
                     <xsl:apply-templates/>

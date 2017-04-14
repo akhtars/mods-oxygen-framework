@@ -11,7 +11,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/ccfilter/config http://www.oxygenxml.com/ns/ccfilter/config/ccConfigSchemaFilter.xsd"
     xmlns="http://www.oxygenxml.com/ns/ccfilter/config"
-    xmlns:mods="http://www.loc.gov/mods/v3">
+    xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:cmd="http://www.cdlib.org/inside/diglib/copyrightMD">
     
     <!-- mods:titleInfo -->
     <elementProposals path="mods:titleInfo" insertElements="mods:title"/>
@@ -23,33 +24,49 @@
     <elementProposals path="mods:roleTerm" insertAttributes="type authority"/>
     
     <!-- mods:genre -->
-    <elementProposals path="mods:genre" insertAttributes="type"/>
+    <elementProposals path="mods:genre" insertAttributes="authority"/>
     
     <!-- mods:originInfo -->
-    <elementProposals path="mods:originInfo" insertAttributes="eventType" 
+    <elementProposals path="mods:mods/mods:originInfo" insertElements="mods:place mods:publisher mods:dateIssued" 
+        insertAttributes="eventType" rejectElements="mods:dateCaptured mods:dateValid mods:dateModified mods:dateOther"/>
+    <elementProposals path="mods:originInfo" insertAttributes="eventType"
         rejectElements="mods:dateCaptured mods:dateValid mods:dateModified mods:dateOther"/>
+    <elementProposals path="mods:place" insertElements="mods:placeTerm mods:placeTerm"/>
+    <elementProposals path="mods:placeTerm" insertAttributes="type"/>
     <elementProposals path="mods:copyrightDate" insertAttributes="encoding"/>
     <elementProposals path="mods:dateCreated" insertAttributes="encoding"/>
-    <elementProposals path="mods:dateIssued" insertAttributes="encoding"/>
+    <elementProposals path="mods:dateIssued" insertAttributes="encoding keyDate"/>
     
     <!-- mods:language -->
     <elementProposals path="mods:language" insertElements="mods:languageTerm mods:languageTerm"/>
     <elementProposals path="mods:languageTerm" insertAttributes="type"/>
     
     <!-- mods:physicalDescription -->
-    <elementProposals path="mods:physicalDescription" rejectElements="mods:reformattingQuality"/>
+    <elementProposals path="mods:physicalDescription" insertElements="mods:form mods:form mods:internetMediaType mods:extent
+        mods:digitalOrigin" rejectElements="mods:reformattingQuality"/>
+    <elementProposals path="mods:form" insertAttributes="type authority"/>
+    
+    <!-- mods:abstract -->
+    <elementProposals path="mods:abstract" insertAttributes="displayLabel"/>
     
     <!-- mods:relatedItem -->
     <elementProposals path="mods:relatedItem" insertAttributes="type"/>
     
     <!-- mods:identifier -->
-    <elementProposals path="mods:identifier" insertAttributes="type"/>
+    <elementProposals path="mods:identifier" insertAttributes="type displayLabel"/>
     
     <!-- mods:location -->
+    <elementProposals path="mods:url" insertAttributes="access"/>
     <elementProposals path="mods:holdingSimple" insertElements="mods:copyInformation"/>
     <elementProposals path="mods:copyInformation" insertElements="mods:shelfLocator"/>
     
+    <!-- mods:accessCondition -->
+    <elementProposals path="cmd:copyright" insertAttributes="copyright.status publication.status"/>
+    <elementProposals path="cmd:rights.holder" insertElements="cmd:name"/>
+    
     <!-- mods:recordInfo -->
+    <elementProposals path="mods:recordContentSource" insertAttributes="authority"/>
     <elementProposals path="mods:recordChangeDate" insertAttributes="encoding"/>
+    <elementProposals path="mods:recordIdentifier" insertAttributes="source"/>
     
 </config>

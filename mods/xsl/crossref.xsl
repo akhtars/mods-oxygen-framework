@@ -6,8 +6,8 @@
     xmlns:lfn="localfunctions"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:drb="http://www.dartmouth.edu/~library/catmet/"
-    xmlns="http://www.crossref.org/schema/4.3.3"
-    xsi:schemaLocation="http://www.crossref.org/schema/4.3.3 http://doi.crossref.org/schemas/crossref4.3.3.xsd"
+    xmlns="http://www.crossref.org/schema/4.3.7"
+    xsi:schemaLocation="http://www.crossref.org/schema/4.3.7 http://doi.crossref.org/schemas/crossref4.3.7.xsd"
     exclude-result-prefixes="xs xd lfn xsi drb"
     version="2.0">
     
@@ -16,10 +16,10 @@
             <xd:p><xd:b>Created on:</xd:b> Sep 16, 2014</xd:p>
             <xd:p><xd:b>Author:</xd:b> Shaun Akhtar</xd:p>
             
-            <xd:p>Creates a CrossRef DOI submission packet containing data from
+            <xd:p>Creates a Crossref DOI submission packet containing data from
                 each MODS record (1 per file) passed as input.</xd:p>
             
-            <xd:p>Each CrossRef packet can only contain one content type (e.g. dissertations,
+            <xd:p>Each Crossref packet can only contain one content type (e.g. dissertations,
                 databases, books), so ensure that the input found within $source is limited to 
                 a single type of material.</xd:p>
             
@@ -41,9 +41,9 @@
     
     <xsl:template name="container">
         <xsl:result-document indent="yes" encoding="UTF-8">
-            <doi_batch version="4.3.3" xmlns="http://www.crossref.org/schema/4.3.3"
+            <doi_batch version="4.3.7" xmlns="http://www.crossref.org/schema/4.3.7"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.crossref.org/schema/4.3.3 http://doi.crossref.org/schemas/crossref4.3.3.xsd">
+                xsi:schemaLocation="http://www.crossref.org/schema/4.3.7 http://doi.crossref.org/schemas/crossref4.3.7.xsd">
                 
                 <xsl:call-template name="head"/>
                 <xsl:call-template name="body"/>
@@ -61,7 +61,7 @@
             
             <!-- Library info -->
             <depositor>
-                <name>Dartmouth College Library</name> <!-- In schema v4.3.4, this element is called "depositor_name" -->
+                <depositor_name>Dartmouth College Library</depositor_name>
                 <email_address>Library.Catmet.Requests@Dartmouth.EDU</email_address>
             </depositor>
             <registrant>Dartmouth College Library</registrant>
@@ -77,6 +77,13 @@
                 <xsl:when test="$source[1]/mods:mods/mods:genre[@authority='marcgt'] = 'thesis'">
                     <xsl:for-each select="$source/mods:mods[mods:extension/drb:flag[@type='doi']/@registered = '']">
                         <xsl:call-template name="dissertation"/>
+                    </xsl:for-each>
+                </xsl:when>
+                
+                <!-- Book set, as tested for Marcus Jewelry Drawings -->
+                <xsl:when test="$source[1]/mods:mods/mods:genre[@authority='marcgt'] = 'art original'">
+                    <xsl:for-each select="$source/mods:mods[mods:extension/drb:flag[@type='doi']/@registered = '']">
+                        <xsl:call-template name="book-set"/>
                     </xsl:for-each>
                 </xsl:when>
                 
@@ -137,11 +144,75 @@
             <degree>Ph.D.</degree>
             
             <doi_data>
-                <doi><xsl:value-of select="substring-after(mods:identifier[@type='doi'], 'http://dx.doi.org/')"/></doi>
+                <doi><xsl:value-of select="substring-after(mods:identifier[@type='doi'], 'doi.org/')"/></doi>
                 <resource><xsl:value-of select="mods:location/mods:url[@usage]"/></resource>
             </doi_data>
             
         </dissertation>
+    </xsl:template>
+    
+    <xsl:template name="book-set">
+        <book book_type="other">
+            <book_set_metadata language="en">
+                
+                <!-- Collection-level data -->
+                <set_metadata>
+                    <titles>
+                        <title>
+                            <xsl:value-of select="normalize-space(mods:relatedItem[@type='host']/mods:titleInfo[child::*])"/>
+                        </title>
+                    </titles>
+                    <noisbn reason="archive_volume"/>
+                    <xsl:if test="position() = 1">
+                        <doi_data>
+                            <doi>
+                                <xsl:value-of select="substring-after(mods:relatedItem[@type='host']/
+                                    mods:identifier[@type='doi'], 'doi.org/')"/>
+                            </doi>
+                            <resource>
+                                <xsl:value-of select="mods:relatedItem[@type='host']/mods:location/mods:url[@usage]"/>
+                            </resource>
+                        </doi_data>
+                    </xsl:if>
+                </set_metadata>
+                
+                <titles>
+                    <title>
+                        <xsl:value-of select="mods:titleInfo[not(@type)]/mods:title"/>
+                    </title>
+                </titles>
+                <volume>
+                    <xsl:value-of select="substring-after(mods:titleInfo[@type='uniform']/mods:partNumber, 'Volume ')"/>
+                </volume>
+                <publication_date media_type="print">
+                    <year>
+                        <xsl:value-of select="mods:relatedItem[@type='otherFormat']/mods:originInfo[@eventType='production']/
+                            mods:dateCreated[@encoding='w3cdtf'][last()]"/>
+                    </year>
+                </publication_date>
+                <publication_date media_type="online">
+                    <year>
+                        <xsl:value-of select="mods:originInfo[@eventType='publication']/*[@keyDate]"/>
+                    </year>
+                </publication_date>
+                <noisbn reason="archive_volume"/>
+                <publisher>
+                    <publisher_name>
+                        <xsl:value-of select="mods:originInfo[@eventType='publication']/mods:publisher"/>
+                    </publisher_name>
+                </publisher>
+                
+                <doi_data>
+                    <doi>
+                        <xsl:value-of select="substring-after(mods:identifier[@type='doi'], 'doi.org/')"/>
+                    </doi>
+                    <resource>
+                        <xsl:value-of select="mods:location/mods:url[@usage]"/>
+                    </resource>
+                </doi_data>
+                
+            </book_set_metadata>
+        </book>
     </xsl:template>
     
     <xsl:template name="database">
@@ -157,10 +228,11 @@
                 <doi_data>
                     <doi>
                         <xsl:value-of select="current-group()[1]/substring-after(mods:relatedItem[@type='host']/
-                            mods:identifier[@type='doi'], 'http://dx.doi.org/')"/>
+                            mods:identifier[@type='doi'], 'doi.org/')"/>
                     </doi>
-                    <resource><xsl:value-of select="current-group()[1]/mods:relatedItem[@type='host']/
-                        mods:location/mods:url[@usage]"/>
+                    <resource>
+                        <xsl:value-of select="current-group()[1]/mods:relatedItem[@type='host']/
+                            mods:location/mods:url[@usage]"/>
                     </resource>
                 </doi_data>   
             </database_metadata>
@@ -216,7 +288,7 @@
             
             <doi_data>
                 <doi>
-                    <xsl:value-of select="substring-after(mods:identifier[@type='doi'], 'http://dx.doi.org/')"/>
+                    <xsl:value-of select="substring-after(mods:identifier[@type='doi'], 'doi.org/')"/>
                 </doi>
                 <resource>
                     <xsl:value-of select="mods:location/mods:url[@usage]"/>

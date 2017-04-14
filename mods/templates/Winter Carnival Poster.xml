@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
+    xmlns:drb="http://www.dartmouth.edu/~library/catmet/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:cmd="http://www.cdlib.org/inside/diglib/copyrightMD"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd
+    http://www.cdlib.org/inside/diglib/copyrightMD http://www.cdlib.org/groups/rmg/docs/copyrightMD.xsd"
     version="3.6">
     <mods:titleInfo>
         <mods:nonSort></mods:nonSort> 
@@ -26,6 +30,11 @@
     <mods:genre type="content" authority="rdacontent">still image</mods:genre>
     <mods:genre authority="marcgt">picture</mods:genre>
     <mods:originInfo eventType="publication">
+        <mods:publisher></mods:publisher>
+        <mods:place>
+            <mods:placeTerm type="text"></mods:placeTerm>
+            <mods:placeTerm type="code" authority="marccountry"></mods:placeTerm>
+        </mods:place>
         <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
     </mods:originInfo>
     <mods:language>
@@ -82,8 +91,15 @@
         <mods:url usage="primary" access="object in context"></mods:url>
         <mods:url access="preview"></mods:url>
     </mods:location>
-    <mods:accessCondition type="use and reproduction">Made available by the Trustees of Dartmouth College under a Creative Commons Attribution non-Commercial license - http://creativecommons.org/licenses/by-nc/3.0/</mods:accessCondition>
-    <mods:accessCondition type="use and reproduction">Materials may be copyrighted by U. S. Copyright Law Title 17 U. S. C. .</mods:accessCondition>
+    <mods:accessCondition type="use and reproduction"></mods:accessCondition>
+    <mods:accessCondition type="use and reproduction" displayLabel="Standardized rights statement" xlink:href=""></mods:accessCondition>
+    <mods:accessCondition>
+        <cmd:copyright copyright.status="" publication.status="">
+            <cmd:rights.holder>
+                <cmd:name></cmd:name>
+            </cmd:rights.holder>
+        </cmd:copyright>
+    </mods:accessCondition>
     <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
         <drb:flag type="program" value="ddlp"/>
         <drb:flag type="doi" agency="CrossRef" registered=""></drb:flag>

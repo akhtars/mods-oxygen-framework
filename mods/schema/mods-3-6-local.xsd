@@ -118,6 +118,7 @@
                         <!-- Altered definition -->
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
+                                <xs:enumeration value="Digital text"/>
                                 <xs:enumeration value="Electronic book"/>
                                 <xs:enumeration value="Electronic database"/>
                                 <xs:enumeration value="Electronic image"/>
