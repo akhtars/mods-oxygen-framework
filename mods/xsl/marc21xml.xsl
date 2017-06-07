@@ -634,7 +634,7 @@
 				<xsl:with-param name="tag">884</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
-						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.13</xsl:text>
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.14</xsl:text>
 					</marc:subfield>
 					<marc:subfield code="g">
 						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
@@ -1118,6 +1118,37 @@
 				<marc:subfield code='a'>
 					<xsl:value-of select="."/>
 				</marc:subfield>
+				<xsl:if test="$dfv = '336'"> <!-- SA add 2017-05-03-->
+					<marc:subfield code='b'>
+						<xsl:choose>
+							<xsl:when test=".='cartographic dataset'">crd</xsl:when>
+							<xsl:when test=".='cartographic image'">cri</xsl:when>
+							<xsl:when test=".='cartographic moving image'">crm</xsl:when>
+							<xsl:when test=".='cartographic tactile image'">crt</xsl:when>
+							<xsl:when test=".='cartographic tactile three-dimensional form'">crn</xsl:when>
+							<xsl:when test=".='cartographic three-dimensional form'">crf</xsl:when>
+							<xsl:when test=".='computer dataset'">cod</xsl:when>
+							<xsl:when test=".='computer program'">cop</xsl:when>
+							<xsl:when test=".='notated movement'">ntv</xsl:when>
+							<xsl:when test=".='notated music'">ntm</xsl:when>
+							<xsl:when test=".='performed music'">prm</xsl:when>
+							<xsl:when test=".='sounds'">snd</xsl:when>
+							<xsl:when test=".='spoken word'">spw</xsl:when>
+							<xsl:when test=".='still image'">sti</xsl:when>
+							<xsl:when test=".='tactile image'">tci</xsl:when>
+							<xsl:when test=".='tactile notated music'">tcm</xsl:when>
+							<xsl:when test=".='tactile notated movement'">tcn</xsl:when>
+							<xsl:when test=".='tactile text'">tct</xsl:when>
+							<xsl:when test=".='tactile three-dimensional form'">tcf</xsl:when>
+							<xsl:when test=".='text'">txt</xsl:when>
+							<xsl:when test=".='three-dimensional form'">tdf</xsl:when>
+							<xsl:when test=".='three-dimensional moving image'">tdm</xsl:when>
+							<xsl:when test=".='two-dimensional moving image'">tdi</xsl:when>
+							<xsl:when test=".='other'">xxx</xsl:when>
+							<xsl:when test=".='unspecified'">zzz</xsl:when>
+						</xsl:choose>
+					</marc:subfield>
+				</xsl:if>
 				<xsl:for-each select="@authority">
 					<marc:subfield code='2'>
 						<xsl:value-of select="."/>
@@ -1274,6 +1305,9 @@
 					</xsl:for-each>
 					<xsl:for-each select="mods:dateIssued[@point='start'] | mods:dateIssued[not(@point)]">
 						<marc:subfield code='c'>
+							<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+								<xsl:text>[</xsl:text>
+							</xsl:if>
 							<xsl:value-of select="substring(.,1,4)"/>
 							<!-- v3.4 generate question mark for dateIssued with qualifier="questionable" -->
 							<xsl:if test="@qualifier='questionable'">?</xsl:if>
@@ -1281,7 +1315,11 @@
 							<xsl:if test="mods:dateIssued[@point='end']">
 								- <xsl:value-of select="../mods:dateIssued[@point='end']"/>
 							</xsl:if>
-							<xsl:if test="not(@qualifier='questionable')"> <!-- SA add 2015-02-05, update 2015-11-23 -->
+							<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+								<xsl:text>]</xsl:text>
+							</xsl:if>
+							<!-- SA add 2015-02-05, update 2015-11-23, 2017-05-05 -->
+							<xsl:if test="not(@qualifier='questionable') and not(@drb:supplied)">
 								<xsl:text>.</xsl:text>
 							</xsl:if>
 						</marc:subfield>
@@ -1487,6 +1525,14 @@
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:if>
+				<xsl:choose> <!-- SA add 2017-05-03 -->
+					<xsl:when test=".='computer'">
+						<marc:subfield code='b'>c</marc:subfield>
+					</xsl:when>
+					<xsl:when test=".='online resource'">
+						<marc:subfield code='b'>cr</marc:subfield>
+					</xsl:when>
+				</xsl:choose>
 				<xsl:if test="@type='technique'">
 					<marc:subfield code='d'>
 						<xsl:value-of select="."/>
@@ -1834,7 +1880,8 @@
 									<xsl:value-of select="."/>
 								</marc:subfield>
 							</xsl:for-each>
-							<xsl:apply-templates select="*[position()>1]"/>
+							<!--<xsl:apply-templates select="*[position()>1]"/>--> <!-- SA change 2017-05-05-->
+							<xsl:apply-templates select="ancestor-or-self::mods:subject/*[position()>1]"/>
 						</xsl:with-param>
 					</xsl:call-template>	
 				</xsl:when>
@@ -1927,7 +1974,7 @@
 	
 	<xsl:template match="mods:subject[local-name(*[1])='temporal']">
 		<xsl:call-template name="datafield">
-			<xsl:with-param name="tag">650</xsl:with-param>
+			<xsl:with-param name="tag">648</xsl:with-param> <!-- SA change from 650 2017-04-20 -->
 			<xsl:with-param name="ind2"><xsl:call-template name="authorityInd"/></xsl:with-param> <!-- SA add 2015-01-23 -->
 			<xsl:with-param name="subfields">
 				<marc:subfield code="a">
@@ -2024,6 +2071,14 @@
 				</marc:subfield>				
 			</xsl:with-param>
 		</xsl:call-template>	
+	</xsl:template>
+	
+	<!-- SA add 2017-05-05 for $t in 600, 610, 611-->
+	<xsl:template match="mods:subject[(@*)]/mods:titleInfo">
+		<marc:subfield code="t">
+			<xsl:value-of select="mods:title"/>
+			<xsl:if test="not(following-sibling::*)">.</xsl:if>
+		</marc:subfield>
 	</xsl:template>
 	
 	<xsl:template match="mods:subject[(@*)]/mods:genre"> <!-- SA fix 2015-01-13 -->

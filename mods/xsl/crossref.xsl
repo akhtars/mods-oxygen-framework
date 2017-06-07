@@ -70,19 +70,20 @@
     </xsl:template>
     
     <xsl:template name="body">
+        <xsl:variable name="genre" select="$source[1]/mods:mods/mods:genre[@authority='marcgt']"/>
         <body>
             <xsl:choose>
                 
                 <!-- Dissertations -->
-                <xsl:when test="$source[1]/mods:mods/mods:genre[@authority='marcgt'] = 'thesis'">
-                    <xsl:for-each select="$source/mods:mods[mods:extension/drb:flag[@type='doi']/@registered = '']">
+                <xsl:when test="$genre = 'thesis'">
+                    <xsl:for-each select="$source/mods:mods[not(mods:extension/drb:flag[@type='doi'][string(@registered)])]">
                         <xsl:call-template name="dissertation"/>
                     </xsl:for-each>
                 </xsl:when>
                 
-                <!-- Book set, as tested for Marcus Jewelry Drawings -->
-                <xsl:when test="$source[1]/mods:mods/mods:genre[@authority='marcgt'] = 'art original'">
-                    <xsl:for-each select="$source/mods:mods[mods:extension/drb:flag[@type='doi']/@registered = '']">
+                <!-- Book set -->
+                <xsl:when test="$genre = ('art original', 'standard or specification')">
+                    <xsl:for-each select="$source/mods:mods[not(mods:extension/drb:flag[@type='doi'][string(@registered)])]">
                         <xsl:call-template name="book-set"/>
                     </xsl:for-each>
                 </xsl:when>
@@ -178,12 +179,22 @@
                 
                 <titles>
                     <title>
-                        <xsl:value-of select="mods:titleInfo[not(@type)]/mods:title"/>
+                        <xsl:variable name="title" select="mods:titleInfo[not(@type)]"/>
+                        <xsl:value-of select="$title/mods:nonSort"/>
+                        <xsl:value-of select="$title/mods:title"/>
+                        <xsl:if test="$title/mods:subTitle">
+                            <xsl:value-of select="concat(': ', $title/mods:subTitle)"/>
+                        </xsl:if>
+                        <xsl:for-each select="$title/mods:partNumber">
+                            <xsl:value-of select="concat(', ', .)"/>
+                        </xsl:for-each>
                     </title>
                 </titles>
-                <volume>
-                    <xsl:value-of select="substring-after(mods:titleInfo[@type='uniform']/mods:partNumber, 'Volume ')"/>
-                </volume>
+                <xsl:if test="mods:titleInfo[@type='uniform']/mods:partNumber">
+                    <volume>
+                        <xsl:value-of select="substring-after(mods:titleInfo[@type='uniform']/mods:partNumber, 'Volume ')"/>
+                    </volume>
+                </xsl:if>
                 <publication_date media_type="print">
                     <year>
                         <xsl:value-of select="mods:relatedItem[@type='otherFormat']/mods:originInfo[@eventType='production']/

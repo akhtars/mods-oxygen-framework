@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns="http://www.loc.gov/mods/v3"
-    targetNamespace="http://www.loc.gov/mods/v3" elementFormDefault="qualified"
+    xmlns:drb="http://www.dartmouth.edu/~library/catmet/" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+    xmlns="http://www.loc.gov/mods/v3" targetNamespace="http://www.loc.gov/mods/v3" elementFormDefault="qualified"
     attributeFormDefault="unqualified" vc:minVersion="1.1">
 
     <xs:override schemaLocation="mods-3-6.xsd">
@@ -201,6 +201,8 @@
                         </xs:simpleType>
                     </xs:attribute>
                     <xs:attribute name="keyDate" fixed="yes"/>
+                    <!-- 2017-05-05 -->
+                    <xs:anyAttribute processContents="lax" namespace="http://www.dartmouth.edu/~library/catmet/"/>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
