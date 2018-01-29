@@ -9,7 +9,7 @@
     xmlns="http://www.crossref.org/schema/4.3.7"
     xsi:schemaLocation="http://www.crossref.org/schema/4.3.7 http://doi.crossref.org/schemas/crossref4.3.7.xsd"
     exclude-result-prefixes="xs xd lfn xsi drb"
-    version="2.0">
+    version="3.0">
     
     <xd:doc scope="stylesheet">
         <xd:desc>
@@ -260,42 +260,35 @@
             
             <titles>
                 <xsl:for-each select="mods:titleInfo[1]">
-                    <xsl:choose>
-                        <xsl:when test="mods:subTitle">
-                            <title>
-                                <xsl:value-of select="normalize-space(concat(mods:nonSort, mods:title))"/>
-                            </title>
-                            <subtitle>
-                                <xsl:value-of select="mods:subTitle"/>
-                            </subtitle>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <title>
-                                <xsl:value-of select="normalize-space(child::*)"/>
-                            </title>
-                        </xsl:otherwise>
-                    </xsl:choose>
+                    <title>
+                        <xsl:value-of select="normalize-space(concat(mods:nonSort, mods:title))"/>
+                    </title>
+                    <xsl:where-populated>
+                        <subtitle>
+                            <xsl:value-of select="mods:subTitle"/>
+                        </subtitle>
+                    </xsl:where-populated>
                 </xsl:for-each>
             </titles>
             
-            <!--<titles>
-                <xsl:choose>
-                    <xsl:when test="not(mods:titleInfo[not(@*)]/mods:subTitle)">
-                        <title>
-                            <xsl:value-of select="normalize-space(mods:titleInfo[not(@*)][child::*])"/>
-                        </title>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <title>
-                            <xsl:value-of select="normalize-space(concat(mods:titleInfo[not(@*)]/mods:nonSort,
-                                mods:titleInfo[not(@*)]/mods:title))"/>
-                        </title>
-                        <subtitle>
-                            <xsl:value-of select="mods:titleInfo[not(@*)]/mods:subTitle"/>
-                        </subtitle>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </titles>-->
+            <xsl:where-populated>
+                <database_date>
+                    <publication_date media_type="print">
+                        <year>
+                            <xsl:value-of select="mods:relatedItem[@type='otherFormat' or @type='original']/
+                                mods:originInfo[@eventType]/*[@encoding='w3cdtf'][last()]"/>
+                        </year>
+                    </publication_date>
+                </database_date>
+            </xsl:where-populated>
+            
+            <database_date>
+                <publication_date media_type="online">
+                    <year>
+                        <xsl:value-of select="mods:originInfo[@eventType='publication']/*[@keyDate]"/>
+                    </year>
+                </publication_date>
+            </database_date>
             
             <doi_data>
                 <doi>
