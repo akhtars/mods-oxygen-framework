@@ -23,6 +23,9 @@
             <assert test="not(in-scope-prefixes(.) = '')">
                 No unprefixed namespaces should be present. [<name path=".."/>/<name/>]
             </assert>
+            <assert test="ends-with(base-uri(), concat(mods:recordInfo/mods:recordIdentifier[@source='DRB'], '-mods.xml'))">
+                The record filename should match the record identifier with the suffix "-mods.xml".
+            </assert>
         </rule>
     </pattern>
 
@@ -44,6 +47,24 @@
    </xsl:text><mods:titleInfo><xsl:text>
       </xsl:text><xsl:text>
    </xsl:text></mods:titleInfo>
+                </sqf:add>
+            </sqf:fix>
+            
+            <assert test="mods:name[@type='corporate']/mods:namePart = 'Dartmouth Digital Library Program'" sqf:fix="name-ddlp">
+                The record should have "Dartmouth Digital Library Program" as an access point.
+            </assert>
+            <sqf:fix id="name-ddlp">
+                <sqf:description>
+                    <sqf:title>Add "Dartmouth Digital Library Program" access point</sqf:title>
+                </sqf:description>
+                <sqf:add match="mods:name[last()]" position="after">
+                    <xsl:text>
+   </xsl:text><mods:name type="corporate" authority="naf" valueURI="http://id.loc.gov/authorities/names/no2017050148"><xsl:text>
+       </xsl:text><mods:namePart>Dartmouth Digital Library Program</mods:namePart><xsl:text>
+           </xsl:text><mods:role><xsl:text>
+               </xsl:text><mods:roleTerm type="text" authority="marcrelator">repository</mods:roleTerm><xsl:text>
+                   </xsl:text></mods:role><xsl:text>
+                       </xsl:text></mods:name>
                 </sqf:add>
             </sqf:fix>
             
@@ -196,8 +217,8 @@
             <assert test="mods:originInfo/mods:publisher">
                 Collection-level records should have mods:publisher.
             </assert>
-            <assert test="mods:originInfo/mods:issuance[matches(., '(single unit|multipart monograph|serial|integrating resource)')]">
-                Collection-level records should have mods:issuance with a value of "single unit", "multipart monograph", "serial", or "integrating resource".
+            <assert test="mods:originInfo/mods:issuance[matches(., '(monographic|single unit|multipart monograph|serial|integrating resource)')]">
+                Collection-level records should have mods:issuance with a value of "monographic", "single unit", "multipart monograph", "serial", or "integrating resource".
             </assert>
             <assert test="mods:abstract">
                 Collection-level records should have mods:abstract.
@@ -264,6 +285,16 @@
         </rule>
     </pattern>
     
+    <pattern>
+        <rule context="mods:mods[mods:typeOfResource[not(@collection)]]">
+            
+            <assert test="mods:extension/drb:filename[@type='master']">
+                Each master filename should be recorded under mods:extension/drb:filename[@type="master"].
+            </assert>
+            
+        </rule>
+    </pattern>
+    
     <!-- INDIVIDUAL ELEMENTS -->
     
     <!-- titleInfo -->
@@ -290,7 +321,7 @@
     <!-- name -->
 
     <pattern>
-        <rule context="mods:mods/mods:name">
+        <rule context="mods:mods/mods:name|mods:mods/mods:subject/mods:name">
             <assert test="@type" sqf:fix="name-type">
                 <name/> should have @type.
             </assert> <!-- Level 4 -->
@@ -359,6 +390,11 @@
             <assert test="count(mods:placeTerm) = 2">
                 <name/> should have two mods:placeTerm elements.
             </assert> <!-- Level 5 -->
+        </rule>
+        <rule context="mods:mods/mods:originInfo/mods:place/mods:placeTerm[@type='code']">
+            <assert test="@authority = 'marccountry'">
+                <name/> with @type="code" should have @authority="marccountry".
+            </assert>
         </rule>
         <rule context="mods:mods/mods:originInfo/mods:place/mods:placeTerm">
             <assert test="@type">
@@ -440,6 +476,41 @@
     
     <!-- note -->
     
+    <!-- subject -->
+    
+    <pattern>
+        <rule context="mods:mods/mods:subject[not(mods:hierarchicalGeographic)]">
+            <assert test="@authority">
+                <name/> should have @authority.
+            </assert>
+            <assert test="not(@authority='naf')" sqf:fix="subject-naf">
+                "naf" should not be assigned to <name/>/@authority. Use "lcsh" instead.
+            </assert>
+            <sqf:fix id="subject-naf">
+                <sqf:description>
+                    <sqf:title>Convert <name/>/@authority from "naf" to "lcsh"</sqf:title>
+                </sqf:description>
+                <sqf:replace match="@authority" select="'lcsh'"/>
+            </sqf:fix>
+            
+            <assert test="not(mods:genre and count(child::*) = 1)">
+                A sole mods:genre element within <name/> should instead be a top-level mods:genre element.
+            </assert>
+        </rule>
+        
+        <rule context="mods:mods/mods:subject/mods:name[@valueURI]">
+            <assert test="@authority">
+                <name/> with @valueURI should also have @authority.
+            </assert>
+        </rule>
+        
+        <rule context="mods:mods/mods:subject//*[not(self::mods:geographicCode)]/text()">
+            <assert test="not(matches(., '[^⁰]--'))"> <!-- double-dash also used as separator for coordinates -->
+                All subject headings should be parsed into multiple subelements.
+            </assert>
+        </rule>
+    </pattern>
+    
     <!-- classification -->
     
     <pattern>
@@ -493,7 +564,10 @@
             </sqf:fix>
             <assert test="@type = ('use and reproduction', 'restriction on access')">
                 The value of @type for <name/> should be "use and reproduction" or "restriction on access".
-            </assert> 
+            </assert>
+            <report test="@type='restriction on access' and contains(., 'Dissertation embargoed until')">
+                This record indicates an embargo. Please verify and process accordingly. [<name path=".."/>/<name/>]
+            </report>
         </rule>
     </pattern>
     
@@ -510,7 +584,7 @@
                 <name/> should have @type='master' or @type='component image'.
             </assert>
             <assert test="matches(., '^\S+\.\w{2,4}$')">
-                <name/> should include a file extension.
+                <name/> should include a filename with file extension.
             </assert>
         </rule>
     </pattern>
@@ -570,6 +644,15 @@
             <assert test=". = normalize-space(.)">
                 Elements with text should not contain extraneous whitespace (including line breaks). [<name path=".."/>/<name/>]
             </assert>
+        </rule>
+    </pattern>
+    
+    <pattern>
+        <rule context="*[not(self::mods:abstract)][not(self::mods:note)][not(self::mods:accessCondition)][not(self::mods:recordOrigin)]
+            [not(self::mods:placeTerm)][not(self::mods:tableOfContents)]">
+            <report role="warning" test="ends-with(., '.')">
+                This element ends with a period. Please verify that no ISBD punctuation is included.
+            </report>
         </rule>
     </pattern>
 
@@ -650,7 +733,27 @@
         </rule>
     </pattern>
     
-    <!-- Non-Latin Scripts -->
+    <!-- URIs -->
+    
+    <pattern>
+        <rule context="*[@authorityURI]">
+            <assert test="@valueURI">
+                @authorityURI should not be used without @valueURI. The latter is required when applicable.
+            </assert>
+        </rule>
+    </pattern>
+    
+    <!-- Linking Entries -->
+    
+    <pattern>
+        <rule context="mods:relatedItem[@type='otherFormat']">
+            <report role="warning" test="not(mods:titleInfo)">
+                <name/> with @type="otherVersion" does not have mods:titleInfo. Please verify that no title information is available.
+            </report>
+        </rule>
+    </pattern>
+    
+    <!-- Scripts -->
     
     <pattern>
         <rule context="*[@script]">
@@ -671,6 +774,14 @@
                 </sqf:description>
                 <sqf:add node-type="attribute" match=".." target="script">Grek</sqf:add>
             </sqf:fix>
+        </rule>
+    </pattern>
+    
+    <pattern>
+        <rule context="*[not(child::*)][not(@type='splash') and not(@script)]">
+            <report role="warning" test="matches(., '[^\p{IsBasicLatin}]')">
+                This element contains non-ASCII characters and is not marked as using a non-Latin script. Please verify that all characters are encoded as intended.
+            </report>
         </rule>
     </pattern>
     

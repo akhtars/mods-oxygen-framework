@@ -122,6 +122,7 @@
                                 <xs:enumeration value="Electronic book"/>
                                 <xs:enumeration value="Electronic database"/>
                                 <xs:enumeration value="Electronic image"/>
+                                <xs:enumeration value="Electronic map"/>
                                 <xs:enumeration value="Streaming audio"/>
                                 <xs:enumeration value="Streaming video"/>
                             </xs:restriction>
