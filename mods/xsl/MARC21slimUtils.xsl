@@ -63,7 +63,7 @@
 						</xsl:choose>
 					</marc:subfield>
 				</xsl:when>
-				<xsl:when test="@altRepGroup">
+				<xsl:when test="@altRepGroup[matches(., '^\d{2}$')]">
 					<marc:subfield code="6">
 						<xsl:text>880-</xsl:text>
 						<xsl:value-of select="@altRepGroup"/>
