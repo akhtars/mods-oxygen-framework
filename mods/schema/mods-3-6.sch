@@ -13,6 +13,7 @@
     <ns uri="http://www.loc.gov/mods/v3" prefix="mods"/>
     <ns uri="http://www.dartmouth.edu/~library/catmet/" prefix="drb"/>
     <ns uri="http://www.cdlib.org/inside/diglib/copyrightMD" prefix="cmd"/>
+    <ns uri="http://www.w3.org/1999/xhtml" prefix="html"/>
     
     <!-- RECORD STRUCTURE -->
 
@@ -344,6 +345,9 @@
             <assert test="mods:role/mods:roleTerm[@type='text'][normalize-space(text())]">
                 The primary name should have a text mods:roleTerm assigned from the MARC Code List for Relators.
             </assert>
+            <assert test="not(preceding-sibling::mods:name[@usage='primary'])">
+                There should not be multiple names in a record with @usage='primary'.
+            </assert>
         </rule>
     </pattern>
     
@@ -379,12 +383,6 @@
             <assert test="child::*[matches(name(.), 'date', 'i')][normalize-space(text())]">
                 <name/> should have a non-blank date element.
             </assert> <!-- Level 1 -->
-            <assert test="mods:place">
-                <name/> should have mods:place.
-            </assert> <!-- Level 5 -->
-            <assert test="mods:publisher">
-                <name/> should have mods:publisher.
-            </assert> <!-- Level 5 -->
         </rule>
         <rule context="mods:mods/mods:originInfo/mods:place">
             <assert test="count(mods:placeTerm) = 2">
@@ -399,6 +397,17 @@
         <rule context="mods:mods/mods:originInfo/mods:place/mods:placeTerm">
             <assert test="@type">
                 <name/> should have @type.
+            </assert> <!-- Level 5 -->
+        </rule>
+    </pattern>
+    
+    <pattern>
+        <rule context="mods:mods[not(mods:genre = 'thesis')]/mods:originInfo">
+            <assert test="mods:publisher">
+                <name/> should have mods:publisher.
+            </assert> <!-- Level 5 -->
+            <assert test="mods:place">
+                <name/> should have mods:place.
             </assert> <!-- Level 5 -->
         </rule>
     </pattern>
@@ -479,7 +488,7 @@
     <!-- subject -->
     
     <pattern>
-        <rule context="mods:mods/mods:subject[not(mods:hierarchicalGeographic)]">
+        <rule context="mods:mods/mods:subject[not(mods:hierarchicalGeographic|mods:cartographics)]">
             <assert test="@authority">
                 <name/> should have @authority.
             </assert>
@@ -504,10 +513,22 @@
             </assert>
         </rule>
         
-        <rule context="mods:mods/mods:subject//*[not(self::mods:geographicCode)]/text()">
-            <assert test="not(matches(., '[^⁰]--'))"> <!-- double-dash also used as separator for coordinates -->
+        <rule context="*[ancestor::mods:mods/mods:subject][not(child::*)][not(self::mods:coordinates|self::mods:geographicCode)][text()]">
+            <assert test="not(matches(., '--'))" sqf:fix="parse-subdivisions">
                 All subject headings should be parsed into multiple subelements.
             </assert>
+            <sqf:fix id="parse-subdivisions">
+                <sqf:description>
+                    <sqf:title>Split <name/> at first occurrence of double dashes.</sqf:title>
+                </sqf:description>
+                <let name="string" value="."/>
+                <sqf:replace match="." node-type="element" target="{name()}">
+                    <value-of select="substring-before($string, '--')"/>
+                </sqf:replace>
+                <sqf:add node-type="element" position="after" target="{name()}">
+                    <value-of select="substring-after($string, '--')"/>
+                </sqf:add>
+            </sqf:fix>
         </rule>
     </pattern>
     
@@ -649,9 +670,9 @@
     
     <pattern>
         <rule context="*[not(self::mods:abstract)][not(self::mods:note)][not(self::mods:accessCondition)][not(self::mods:recordOrigin)]
-            [not(self::mods:placeTerm)][not(self::mods:tableOfContents)]">
+            [not(self::mods:placeTerm)][not(self::mods:tableOfContents)][not(ancestor-or-self::html:html)]">
             <report role="warning" test="ends-with(., '.')">
-                This element ends with a period. Please verify that no ISBD punctuation is included.
+                This element ends with a period. Please verify that no ISBD punctuation is included. [<name path="../.."/>/<name path=".."/>]
             </report>
         </rule>
     </pattern>
@@ -704,6 +725,14 @@
         </rule>
     </pattern>
     
+    <pattern>
+        <rule context="mods:recordChangeDate[@encoding='w3cdtf']|mods:recordCreateDate">
+            <assert test="xs:date(.) le current-date()">
+                <name/> should not be later than today's date.
+            </assert>
+        </rule>
+    </pattern>
+    
     <!-- DOIs -->
     
     <pattern>
@@ -727,8 +756,8 @@
             <assert test="mods:physicalDescription/mods:form[@type='carrier'][@authority='rdacarrier']">
                 The record should have an RDA carrier term in mods:form.
             </assert>
-            <assert test="mods:recordInfo/mods:descriptionStandard='rda'">
-                The record's mods:descriptionStandard should be marked as "rda".
+            <assert test="mods:recordInfo/mods:descriptionStandard='rda' or mods:recordInfo/mods:descriptionStandard='aacr'">
+                The record's mods:descriptionStandard should be marked as "rda" or "aacr".
             </assert>
         </rule>
     </pattern>
@@ -747,8 +776,8 @@
     
     <pattern>
         <rule context="mods:relatedItem[@type='otherFormat']">
-            <report role="warning" test="not(mods:titleInfo)">
-                <name/> with @type="otherVersion" does not have mods:titleInfo. Please verify that no title information is available.
+            <report role="warning" test="not(mods:titleInfo or mods:recordInfo)">
+                <name/> with @type="otherFormat" does not have mods:titleInfo or mods:recordInfo. The derived MARCXML record will not include a 776 field.
             </report>
         </rule>
     </pattern>
@@ -778,9 +807,9 @@
     </pattern>
     
     <pattern>
-        <rule context="*[not(child::*)][not(@type='splash') and not(@script)]">
+        <rule context="*[not(child::*)][not(@type='splash') and not(@script)][not(self::mods:coordinates)]">
             <report role="warning" test="matches(., '[^\p{IsBasicLatin}]')">
-                This element contains non-ASCII characters and is not marked as using a non-Latin script. Please verify that all characters are encoded as intended.
+                This element contains non-ASCII characters and is not marked as using a non-Latin script. Please verify that all characters are encoded as intended. [<name path="../.."/>/<name path=".."/>]
             </report>
         </rule>
     </pattern>
@@ -793,11 +822,11 @@
             mods:recordInfoNote[@type='date entered as MARC'] or 
             mods:recordChangeDate[@encoding='iso8601']
             ]">
-            <assert test="mods:recordIdentifier[@source='OCoLC'] and
+            <report role="warning" test="not(mods:recordIdentifier[@source='OCoLC'] and
                 mods:recordInfoNote[@type='date entered as MARC'] and 
-                mods:recordChangeDate[@encoding='iso8601']">
+                mods:recordChangeDate[@encoding='iso8601'])">
                 If the record has been contributed to WorldCat, it should have three additional fields: an OCLC number and the MARC dates for entered on file and last transaction.
-            </assert>
+            </report>
         </rule>
         <rule context="mods:mods/mods:recordInfo/mods:recordIdentifier[@source='OCoLC']">
             <assert test="matches(., '^(ocm|ocn|on)\d{8,}$')">
