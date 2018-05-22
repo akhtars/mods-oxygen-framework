@@ -15,7 +15,7 @@
 
 	<xsl:include href="http://www.loc.gov/standards/marcxml/xslt/MARC21slimUtils.xsl"/>
 	
-	<xsl:include href="../local-functions.xsl"/> <!-- SA add 2017-11-28; TODO: remove external dependency -->
+	<xsl:include href="local-functions.xsl"/> <!-- SA add 2017-11-28; TODO: remove external dependency -->
 	
 	<xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 	
@@ -251,8 +251,8 @@
 				<xsl:when test="mods:genre[@authority='marcgt']='remote sensing image'">
 					<marc:controlfield tag="007">ar||||||</marc:controlfield>
 				</xsl:when>
-				<xsl:when test="mods:genre[@authority='marcgt']='map'"> <!-- SA update 2017-07-26 -->
-					<marc:controlfield tag="007">aj czzzn</marc:controlfield>
+				<xsl:when test="mods:genre[@authority='marcgt']='map'"> <!-- SA update 2017-07-26, 2018-02-20 -->
+					<marc:controlfield tag="007">aj |zzz|</marc:controlfield>
 				</xsl:when>
 				<xsl:when test="mods:genre[@authority='marcgt']='globe'">
 					<marc:controlfield tag="007">d|||||</marc:controlfield>
@@ -374,6 +374,23 @@
 							<xsl:with-param name="length" select="4"/>
 						</xsl:call-template>
 					</xsl:when>
+					<!-- SA add 2018-03-14 -->
+					<xsl:when test="$typeOf008='MP'">
+						<xsl:variable name="chars">
+							<xsl:for-each select="tokenize(string-join(mods:note[not(@type)][not(contains(., 'inset'))], '.'),
+								'(;|.)')">
+								<xsl:if test="contains(lower-case(.), 'contour')">a</xsl:if>
+								<xsl:if test="contains(lower-case(.), 'tint')">c</xsl:if>
+								<xsl:if test="contains(lower-case(.), 'hachure')">d</xsl:if>
+								<xsl:if test="contains(lower-case(.), 'spot heights')">g</xsl:if>
+								<xsl:if test="contains(lower-case(.), 'pictorial')">i</xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:call-template name="makeSize">
+							<xsl:with-param name="string" select="distinct-values($chars)"/>
+							<xsl:with-param name="length" select="4"/>
+						</xsl:call-template>
+					</xsl:when>
 					<xsl:otherwise>
 						<!-- SA change 2016-05-16 to support frequency, regularity for continuing resources -->
 						<!-- 18-19 -->
@@ -428,22 +445,12 @@
 									<xsl:otherwise>|</xsl:otherwise>
 								</xsl:choose>
 							</xsl:when>
-							<xsl:when test="$typeOf008='MP'"> <!-- SA add 2017-08-14 -->
-								<xsl:text>  </xsl:text>
-							</xsl:when>
 							<xsl:otherwise>
 								<xsl:text>||</xsl:text>
 							</xsl:otherwise>
 						</xsl:choose>
 						<!-- 20 -->
-						<xsl:choose>
-							<xsl:when test="$typeOf008='MP'"> <!-- SA add 2017-08-14 -->
-								<xsl:text> </xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>|</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
+						<xsl:text>|</xsl:text>
 						<!-- 21 -->
 						<xsl:choose>
 							<xsl:when test="$typeOf008='SE'">
@@ -456,9 +463,6 @@
 									<xsl:when test="mods:genre[@authority='marcgt']='web site'">w</xsl:when>
 									<xsl:otherwise>|</xsl:otherwise>
 								</xsl:choose>
-							</xsl:when>
-							<xsl:when test="$typeOf008='MP'"> <!-- SA add 2017-08-14 -->
-								<xsl:text> </xsl:text>
 							</xsl:when>
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
@@ -557,11 +561,16 @@
 						</xsl:choose>
 						<xsl:choose> <!-- SA change 2015-04-02 -->
 							<xsl:when test="contains(mods:note[@type='bibliography'], 'index')">1</xsl:when>
+							<xsl:when test="mods:note[not(@type)]='Includes index'">1</xsl:when> <!-- SA add 2018-05-04 -->
 							<xsl:otherwise>|</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
-					<xsl:when test="$typeOf008='MP'"> <!-- SA add 2017-08-14 -->
-						<xsl:text> |</xsl:text>
+					<xsl:when test="$typeOf008='MP'"> <!-- SA add 2017-08-14, update 2018-03-14 -->
+						<xsl:text> </xsl:text>
+						<xsl:choose>
+							<xsl:when test="mods:note[not(@type)][contains(lower-case(.), 'index')]">1</xsl:when>
+							<xsl:otherwise>0</xsl:otherwise>
+						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>||</xsl:text>
@@ -675,6 +684,9 @@
 					</marc:subfield>
 				</xsl:with-param>
 			</xsl:call-template>
+			
+			<!-- SA add 2018-03-15 -->
+			<xsl:call-template name="localBibNumber"/>
 		</marc:record>
 	</xsl:template>
 
@@ -892,6 +904,7 @@
 						<xsl:value-of select="lower-case(.)"/> <!-- SA change 2015-02-05 -->
 						<xsl:choose> <!-- SA add 2015-11-23 -->
 							<xsl:when test="../following-sibling::mods:role[mods:roleTerm[@type='text']]">,</xsl:when>
+							<xsl:when test="ends-with(., '.')"/> <!-- SA add 2018-02-01 -->
 							<xsl:otherwise>.</xsl:otherwise>
 						</xsl:choose>
 					</marc:subfield>
@@ -946,6 +959,7 @@
 						<xsl:value-of select="lower-case(.)"/> <!-- SA change 2015-02-05 -->
 						<xsl:choose> <!-- SA add 2016-03-21 -->
 							<xsl:when test="../following-sibling::mods:role[mods:roleTerm[@type='text']]">,</xsl:when>
+							<xsl:when test="ends-with(., '.')"/> <!-- SA add 2018-02-01 -->
 							<xsl:otherwise>.</xsl:otherwise>
 						</xsl:choose>
 					</marc:subfield>
@@ -1051,6 +1065,7 @@
 						<xsl:value-of select="lower-case(.)"/> <!-- SA change 2015-02-05 -->
 						<xsl:choose> <!-- SA add 2015-11-23 -->
 							<xsl:when test="../following-sibling::mods:role[mods:roleTerm[@type='text']]">,</xsl:when>
+							<xsl:when test="ends-with(., '.')"/> <!-- SA add 2018-02-01 -->
 							<xsl:otherwise>.</xsl:otherwise>
 						</xsl:choose>
 					</marc:subfield>
@@ -1104,6 +1119,7 @@
 						<xsl:value-of select="lower-case(.)"/> <!-- SA change 2015-02-05 -->
 						<xsl:choose> <!-- SA add 2016-03-21 -->
 							<xsl:when test="../following-sibling::mods:role[mods:roleTerm[@type='text']]">,</xsl:when>
+							<xsl:when test="ends-with(., '.')"/> <!-- SA add 2018-02-01 -->
 							<xsl:otherwise>.</xsl:otherwise>
 						</xsl:choose>
 					</marc:subfield>
@@ -1991,8 +2007,8 @@
 									<xsl:value-of select="../@authority"/>
 								</marc:subfield>
 							</xsl:if>
-							<!-- SA add 2017-11-28 -->
-							<xsl:if test="@authority='fast' and @valueURI">
+							<!-- SA add 2017-11-28, update 2018-04-30 -->
+							<xsl:if test="ancestor-or-self::*/@authority='fast' and ancestor-or-self::*/@valueURI">
 								<xsl:call-template name="authorityRecordNumberFAST"/>
 							</xsl:if>
 						</xsl:with-param>
@@ -2028,19 +2044,47 @@
 							</xsl:for-each>
 							<!--<xsl:apply-templates select="*[position()>1]"/>-->
 							<xsl:apply-templates select="ancestor-or-self::mods:subject/*[position()>1]"/>
-							<!-- SA add 2015-10-14 -->
-							<xsl:if test="ancestor-or-self::mods:subject/@authority and not(ancestor-or-self::mods:subject/@authority='lcsh') and not(ancestor-or-self::mods:subject/@authority='lcshac') and not(ancestor-or-self::mods:subject/@authority='mesh') and not(ancestor-or-self::mods:subject/@authority='csh') and not(ancestor-or-self::mods:subject/@authority='nal') and not(ancestor-or-self::mods:subject/@authority='rvm')">
+							<!-- SA add 2015-10-14, update 2018-04-30 -->
+							<xsl:if test="../@authority and not(../@authority='lcsh') and not(../@authority='lcshac') and not(../@authority='mesh') and not(../@authority='csh') and not(../@authority='nal') and not(../@authority='rvm')">
 								<marc:subfield code="2">
-									<xsl:value-of select="ancestor-or-self::mods:subject/@authority"/>
+									<xsl:value-of select="../@authority"/>
 								</marc:subfield>
 							</xsl:if>
-							<!-- SA add 2017-11-28 -->
-							<xsl:if test="@authority='fast' and @valueURI">
+							<!-- SA add 2017-11-28, update 2018-04-30 -->
+							<xsl:if test="ancestor-or-self::*/@authority='fast' and ancestor-or-self::*/@valueURI">
 								<xsl:call-template name="authorityRecordNumberFAST"/>
 							</xsl:if>
 						</xsl:with-param>
 					</xsl:call-template>	
 				</xsl:when>
+				<!-- SA add 2018-02-01 for FAST "event" facet terms (TODO: requires refinement from 611 terms) -->
+				<!--<xsl:when test="@type='conference' and ../@authority='fast'">
+					<xsl:call-template name="datafield">
+						<xsl:with-param name="tag">647</xsl:with-param>
+						<xsl:with-param name="ind2"><xsl:call-template name="authorityInd"/></xsl:with-param>
+						<xsl:with-param name="subfields">
+							<marc:subfield code="a">
+								<xsl:value-of select="mods:namePart[not(@type='date')]"/>
+							</marc:subfield>
+							<xsl:for-each select="mods:namePart[@type='date']">
+								<marc:subfield code="d">
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:for-each>
+							<!-\- v3 role -\->
+							<xsl:for-each select="mods:role/mods:roleTerm[@type='code']">
+								<marc:subfield code="4">
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:for-each>
+							<xsl:apply-templates select="*[position()>1]"/>
+							<marc:subfield code="2">
+								<xsl:value-of select="ancestor-or-self::mods:subject/@authority"/>
+							</marc:subfield>
+							<xsl:call-template name="authorityRecordNumberFAST"/>
+						</xsl:with-param>
+					</xsl:call-template>	
+				</xsl:when>-->
 				<xsl:when test="@type='conference'">
 					<xsl:call-template name="datafield">
 						<xsl:with-param name="tag">611</xsl:with-param>
@@ -2048,8 +2092,13 @@
 						<xsl:with-param name="ind2"><xsl:call-template name="authorityInd"/></xsl:with-param>
 						<xsl:with-param name="subfields">
 							<marc:subfield code="a">
-								<xsl:value-of select="mods:namePart"/>
+								<xsl:value-of select="mods:namePart[not(@type='date')]"/>
 							</marc:subfield>
+							<xsl:for-each select="mods:namePart[@type='date']">
+								<marc:subfield code="d">
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:for-each>
 							<!-- v3 role -->
 							<xsl:for-each select="mods:role/mods:roleTerm[@type='code']">
 								<marc:subfield code="4">
@@ -2057,14 +2106,14 @@
 								</marc:subfield>
 							</xsl:for-each>
 							<xsl:apply-templates select="*[position()>1]"/>
-							<!-- SA add 2015-10-14 -->
-							<xsl:if test="@authority and not(@authority='lcsh') and not(@authority='lcshac') and not(@authority='mesh') and not(@authority='csh') and not(@authority='nal') and not(@authority='rvm')">
+							<!-- SA add 2015-10-14, update 2018-02-01, 2018-04-30 -->
+							<xsl:if test="../@authority and not(../@authority='lcsh') and not(../@authority='lcshac') and not(../@authority='mesh') and not(../@authority='csh') and not(../@authority='nal') and not(../@authority='rvm')">
 								<marc:subfield code="2">
-									<xsl:value-of select="@authority"/>
+									<xsl:value-of select="../@authority"/>
 								</marc:subfield>
 							</xsl:if>
-							<!-- SA add 2017-11-28 -->
-							<xsl:if test="@authority='fast' and @valueURI">
+							<!-- SA add 2017-11-28, update 2018-04-30 -->
+							<xsl:if test="ancestor-or-self::*/@authority='fast' and ancestor-or-self::*/@valueURI">
 								<xsl:call-template name="authorityRecordNumberFAST"/>
 							</xsl:if>
 						</xsl:with-param>
@@ -2336,7 +2385,8 @@
 					<xsl:text>, </xsl:text>
 					<xsl:value-of select="following-sibling::mods:partName"/>
 				</xsl:if>
-				<xsl:if test="not(ends-with(., '.')) and not(../@type='uniform')">
+				<!-- SA check only for 830 2018-05-04 --> 
+				<xsl:if test="../@authority and not(ends-with(., '.')) and not(../@type='uniform')">
 					<xsl:text>.</xsl:text>
 				</xsl:if>
 			</marc:subfield>
@@ -2834,9 +2884,10 @@
 	</xsl:template>	-->
 
 	<xsl:template name="mediaType">
-		<xsl:if test="../mods:physicalDescription/mods:internetMediaType">
+		<!-- SA change to select first MIME type 2014-09-22, change to only create $q if exactly 1 type 2018-05-08 -->
+		<xsl:if test="count(../mods:physicalDescription/mods:internetMediaType) eq 1">
 			<marc:subfield code="q">
-				<xsl:value-of select="../mods:physicalDescription/mods:internetMediaType[1]"/> <!-- SA change to select first MIME type 2014-09-22 -->
+				<xsl:value-of select="../mods:physicalDescription/mods:internetMediaType"/>
 			</marc:subfield>
 		</xsl:if>
 	</xsl:template>	
@@ -3246,8 +3297,8 @@
 		</xsl:choose>
 		<!-- SA add 2014-09-23, revise 2016-07-13, 2016-12-16, 2017-01-20 -->
 		<xsl:if test="@type='otherFormat'">
-			<!-- SA add 2016-05-26 -->
-			<xsl:if test="mods:originInfo/*[@encoding='w3cdtf']">
+			<!-- SA add 2016-05-26, update 2018-02-01, 2018-05-04 -->
+			<xsl:if test="mods:originInfo/*[not(../@eventType='publication')][@encoding='w3cdtf'] and not(mods:titleInfo/mods:partName or mods:titleInfo/mods:partNumber)">
 				<xsl:variable name="dates" select="mods:originInfo/*[@encoding='w3cdtf']"/>
 				<marc:subfield code="d">
 					<xsl:choose>
@@ -3260,6 +3311,67 @@
 					</xsl:choose>
 				</marc:subfield>
 			</xsl:if>
+			<!-- SA add 2018-04-30 -->
+			<xsl:for-each select="mods:originInfo[@eventType='publication']">
+				<!-- adapted from code for 264 -->
+				<marc:subfield code="d">
+					<xsl:for-each select="mods:place/mods:placeTerm[@type='text']">
+						<xsl:choose> <!-- SA add brackets when @supplied 2015-11-23 -->
+							<xsl:when test="../@supplied='yes'">
+								<xsl:text>[</xsl:text>
+								<xsl:value-of select="."/>
+								<xsl:text>]</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="."/>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:if test="../../mods:publisher"> <!-- SA add 2015-11-23, update 2017-01-27 -->
+							<xsl:text> : </xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+					<xsl:for-each select="mods:publisher">
+						<xsl:choose>
+							<xsl:when test="@supplied='yes'">
+								<xsl:text>[</xsl:text>
+								<xsl:value-of select="."/>
+								<xsl:text>]</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="."/>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:if test="following-sibling::mods:dateIssued[@encoding='w3cdtf']">
+							<xsl:text>, </xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+					<xsl:for-each select="mods:dateIssued[@point='start'][@encoding='w3cdtf'] | mods:dateIssued[not(@point)][@encoding='w3cdtf']">
+						<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+							<xsl:text>[</xsl:text>
+						</xsl:if>
+						<xsl:value-of select="substring(.,1,4)"/>
+						<!-- v3.4 generate question mark for dateIssued with qualifier="questionable" -->
+						<xsl:if test="@qualifier='questionable'">?</xsl:if>
+						<!-- v3.4 Generate a hyphen before end date -->
+						<xsl:if test="mods:dateIssued[@point='end'][@encoding='w3cdtf']">
+							- <xsl:value-of select="../mods:dateIssued[@point='end'][@encoding='w3cdtf']"/>
+						</xsl:if>
+						<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+							<xsl:text>]</xsl:text>
+						</xsl:if>
+						<!-- SA add 2015-02-05, update 2015-11-23, 2017-05-05, 2017-07-27 -->
+						<xsl:choose>
+							<xsl:when test="../mods:edition">
+								<xsl:text>,</xsl:text>
+							</xsl:when>
+							<xsl:when test="not(@qualifier='questionable') and not(@drb:supplied) and
+								not(../mods:edition)">
+								<xsl:text>.</xsl:text>
+							</xsl:when>
+						</xsl:choose>
+					</xsl:for-each>
+				</marc:subfield>
+			</xsl:for-each>
 		</xsl:if>
 		<xsl:for-each select="mods:note">
 			<marc:subfield code="n">
@@ -3396,11 +3508,26 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-	<!-- SA add 2017-11-28 -->
+	<!-- SA add 2018-03-15 -->
+	<xsl:template name="localBibNumber">
+		<xsl:for-each select="mods:extension/drb:flag[@type='marc']">
+			<xsl:call-template name="datafield">
+				<xsl:with-param name="tag">991</xsl:with-param>
+				<xsl:with-param name="subfields">
+					<marc:subfield code="a">
+						<xsl:value-of select="concat('.', .)"/>
+					</marc:subfield>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<!-- SA add 2017-11-28, update 2018-02-01 -->
 	<xsl:template name="authorityRecordNumberFAST">
+		<xsl:variable name="URInode" select="ancestor-or-self::*[@valueURI]"/>
 		<marc:subfield code="0">
 			<xsl:text>(OCoLC)fst</xsl:text>
-			<xsl:value-of select="lfn:pad-zeroes(tokenize(@valueURI, '/')[last()], 8)"/>
+			<xsl:value-of select="lfn:pad-zeroes(tokenize($URInode/@valueURI, '/')[last()], 8)"/>
 		</marc:subfield>
 	</xsl:template>
 	
