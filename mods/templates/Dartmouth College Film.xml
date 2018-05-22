@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:drb="http://www.dartmouth.edu/~library/catmet/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:cmd="http://www.cdlib.org/inside/diglib/copyrightMD"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd
+    http://www.cdlib.org/inside/diglib/copyrightMD http://www.cdlib.org/groups/rmg/docs/copyrightMD.xsd"
+    version="3.6">
+    <mods:titleInfo>
+        <mods:title></mods:title>
+    </mods:titleInfo>
+    <mods:note type="statement of responsibility"></mods:note>
+    <mods:name type="" authority="naf" valueURI="" usage="primary">
+        <mods:namePart type="family"></mods:namePart>
+        <mods:namePart type="given"></mods:namePart>
+        <mods:role>
+            <mods:roleTerm type="text" authority="marcrelator"></mods:roleTerm>
+        </mods:role>
+    </mods:name>
+    <mods:name type="corporate" authority="naf" valueURI="http://id.loc.gov/authorities/names/no2010167209">
+        <mods:namePart>Dartmouth College Films</mods:namePart>
+        <mods:role>
+            <mods:roleTerm type="text" authority="marcrelator">film producer</mods:roleTerm>
+        </mods:role>
+    </mods:name>
+    <mods:name type="corporate" authority="naf" valueURI="http://id.loc.gov/authorities/names/no2017050148">
+        <mods:namePart>Dartmouth Digital Library Program</mods:namePart>
+        <mods:role>
+            <mods:roleTerm authority="marcrelator" type="text">repository</mods:roleTerm>
+        </mods:role>
+    </mods:name>
+    <mods:typeOfResource>moving image</mods:typeOfResource>
+    <mods:genre authority='marcgt'>motion picture</mods:genre>
+    <mods:genre type="content" authority="rdacontent">two-dimensional moving image</mods:genre>
+    <mods:originInfo eventType="publication">
+        <mods:publisher>Trustees of Dartmouth College</mods:publisher>
+        <mods:place>
+            <mods:placeTerm type="text">Hanover, N.H.</mods:placeTerm>
+            <mods:placeTerm type="code" authority="marccountry">nhu</mods:placeTerm>
+        </mods:place>
+        <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
+    </mods:originInfo>
+    <mods:language>
+        <mods:languageTerm type="text"></mods:languageTerm>
+        <mods:languageTerm type="code" authority="iso639-2b"></mods:languageTerm>
+    </mods:language>
+    <mods:physicalDescription>
+        <mods:form type="media" authority="rdamedia">computer</mods:form>
+        <mods:form type="media" authority="rdamedia">video</mods:form>
+        <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
+        <mods:internetMediaType>video/mp4</mods:internetMediaType>
+        <mods:extent></mods:extent>
+        <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+    </mods:physicalDescription>
+    <mods:abstract displayLabel="Summary"></mods:abstract>
+    <mods:tableOfContents></mods:tableOfContents>
+    <mods:note type="creation/production credits"></mods:note>
+    <mods:relatedItem type="host">
+        <mods:titleInfo>
+            <mods:title>Dartmouth College Films</mods:title>
+        </mods:titleInfo>
+        <mods:typeOfResource collection="yes">moving image</mods:typeOfResource>
+    </mods:relatedItem>
+    <mods:relatedItem type="otherFormat">
+        <mods:titleInfo>
+            <mods:title></mods:title>
+        </mods:titleInfo>
+        <mods:originInfo eventType="production">
+            <mods:dateCreated encoding="fast"></mods:dateCreated>
+            <mods:dateCreated encoding="w3cdtf"></mods:dateCreated>
+        </mods:originInfo>
+        <mods:location>
+            <mods:url note="Catalog record"></mods:url>
+            <mods:holdingSimple>
+                <mods:copyInformation>
+                    <mods:shelfLocator></mods:shelfLocator>
+                </mods:copyInformation>
+            </mods:holdingSimple>
+        </mods:location>
+    </mods:relatedItem>
+    <mods:identifier type="doi" displayLabel="Streaming video"></mods:identifier>
+    <mods:identifier type="kaltura"></mods:identifier>
+    <mods:location>
+        <mods:url usage="primary" access="object in context"></mods:url>
+    </mods:location>
+    <mods:accessCondition type="use and reproduction"></mods:accessCondition>
+    <mods:accessCondition type="use and reproduction" displayLabel="Standardized rights statement" xlink:href=""></mods:accessCondition>
+    <mods:accessCondition>
+        <cmd:copyright copyright.status="copyrighted" publication.status="">
+            <cmd:rights.holder>
+                <cmd:name></cmd:name>
+            </cmd:rights.holder>
+        </cmd:copyright>
+    </mods:accessCondition>
+    <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
+        <drb:flag type="program" value="ddlp"/>
+        <drb:filename type="master"></drb:filename>
+    </mods:extension>
+    <mods:recordInfo>
+        <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
+        <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
+        <mods:recordContentSource authority="local"></mods:recordContentSource>
+        <mods:recordCreationDate encoding="w3cdtf">${date(yyyy-MM-dd)}</mods:recordCreationDate>
+        <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
+        <mods:languageOfCataloging>
+            <mods:languageTerm type="text">English</mods:languageTerm>
+            <mods:languageTerm type="code" authority="iso639-2b">eng</mods:languageTerm>
+        </mods:languageOfCataloging>
+    </mods:recordInfo>
+</mods:mods>
