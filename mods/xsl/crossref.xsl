@@ -76,19 +76,26 @@
                 
                 <!-- Dissertations -->
                 <xsl:when test="$genre = 'thesis'">
-                    <xsl:for-each select="$source/mods:mods[not(mods:extension/drb:flag[@type='doi'][string(@registered)])]">
+                    <xsl:for-each select="$source/mods:mods">
                         <xsl:call-template name="dissertation"/>
                     </xsl:for-each>
                 </xsl:when>
                 
                 <!-- Book set -->
                 <xsl:when test="$genre = ('art original', 'standard or specification')">
-                    <xsl:for-each select="$source/mods:mods[not(mods:extension/drb:flag[@type='doi'][string(@registered)])]">
+                    <xsl:for-each select="$source/mods:mods">
                         <xsl:call-template name="book-set"/>
                     </xsl:for-each>
                 </xsl:when>
                 
-                <!-- Database/Dataset (full metadata required on update, so no need to check @registered) -->
+                <!-- Book or single-item collection -->
+                <xsl:when test="$genre = ('book', 'web site')">
+                    <xsl:for-each select="$source/mods:mods">
+                        <xsl:call-template name="book"/>
+                    </xsl:for-each>
+                </xsl:when>
+                
+                <!-- Database/Dataset -->
                 <xsl:otherwise>
                     <xsl:for-each-group select="$source/mods:mods"
                         group-by="mods:relatedItem[@type='host']/mods:titleInfo/mods:title">
@@ -223,6 +230,85 @@
                 </doi_data>
                 
             </book_set_metadata>
+        </book>
+    </xsl:template>
+    
+    <xsl:template name="book">
+        <book book_type="monograph">
+            <book_metadata language="en">
+                
+                <xsl:for-each select="mods:name[@type='personal'][@usage='primary']">
+                    <contributors>
+                        <!-- Date part of author's name not included -->
+                        <person_name sequence="first" contributor_role="author">
+                            <given_name>
+                                <xsl:value-of select="mods:namePart[@type='given'][1]"/>
+                                <xsl:text> </xsl:text>
+                                <xsl:if test="mods:namePart[@type='given'][2]">
+                                    <xsl:choose>
+                                        <xsl:when test="starts-with(mods:namePart[@type='given'][2], '(')">
+                                            <xsl:value-of select="mods:namePart[@type='given'][2]"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="concat('(', mods:namePart[@type='given'][2], ')')"/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:if>
+                            </given_name>
+                            <surname><xsl:value-of select="mods:namePart[@type='family']"/></surname>
+                            <xsl:for-each select="mods:namePart[@type='termsOfAddress']">
+                                <suffix><xsl:value-of select="."/></suffix>
+                            </xsl:for-each>
+                        </person_name>
+                    </contributors>
+                </xsl:for-each>
+                
+                <titles>
+                    <title>
+                        <xsl:variable name="title" select="mods:titleInfo[not(@type)]"/>
+                        <xsl:value-of select="$title/mods:nonSort"/>
+                        <xsl:value-of select="$title/mods:title"/>
+                        <xsl:if test="$title/mods:subTitle">
+                            <xsl:value-of select="concat(': ', $title/mods:subTitle)"/>
+                        </xsl:if>
+                        <xsl:for-each select="$title/mods:partNumber">
+                            <xsl:value-of select="concat(', ', .)"/>
+                        </xsl:for-each>
+                    </title>
+                </titles>
+                <xsl:if test="mods:titleInfo[@type='uniform']/mods:partNumber">
+                    <volume>
+                        <xsl:value-of select="substring-after(mods:titleInfo[@type='uniform']/mods:partNumber, 'Volume ')"/>
+                    </volume>
+                </xsl:if>
+                <publication_date media_type="print">
+                    <year>
+                        <xsl:value-of select="mods:relatedItem[@type='otherFormat']/mods:originInfo[@eventType='production']/
+                            mods:dateCreated[@encoding='w3cdtf'][last()]"/>
+                    </year>
+                </publication_date>
+                <publication_date media_type="online">
+                    <year>
+                        <xsl:value-of select="mods:originInfo[@eventType='publication']/*[@keyDate]"/>
+                    </year>
+                </publication_date>
+                <noisbn reason="archive_volume"/>
+                <publisher>
+                    <publisher_name>
+                        <xsl:value-of select="mods:originInfo[@eventType='publication']/mods:publisher"/>
+                    </publisher_name>
+                </publisher>
+                
+                <doi_data>
+                    <doi>
+                        <xsl:value-of select="substring-after(mods:identifier[@type='doi'], 'doi.org/')"/>
+                    </doi>
+                    <resource>
+                        <xsl:value-of select="mods:location/mods:url[@usage]"/>
+                    </resource>
+                </doi_data>
+                
+            </book_metadata>
         </book>
     </xsl:template>
     
