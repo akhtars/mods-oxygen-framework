@@ -26,6 +26,12 @@
         <mods:namePart>Dartmouth College</mods:namePart>
         <mods:namePart>Winter Carnival</mods:namePart>
     </mods:name>
+    <mods:name authority="naf" type="corporate" valueURI="http://id.loc.gov/authorities/names/no2017050148">
+        <mods:namePart>Dartmouth Digital Library Program</mods:namePart>
+        <mods:role>
+            <mods:roleTerm authority="marcrelator" type="text">repository</mods:roleTerm>
+        </mods:role>
+    </mods:name>
     <mods:typeOfResource>still image</mods:typeOfResource>
     <mods:genre type="content" authority="rdacontent">still image</mods:genre>
     <mods:genre authority="marcgt">picture</mods:genre>
@@ -109,7 +115,7 @@
         <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
         <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
         <mods:recordContentSource authority="local"></mods:recordContentSource>
-        <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
+        <mods:recordCreationDate encoding="w3cdtf">${date(yyyy-MM-dd)}</mods:recordCreationDate>
         <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
         <mods:languageOfCataloging>
             <mods:languageTerm type="text">English</mods:languageTerm>

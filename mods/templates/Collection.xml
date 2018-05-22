@@ -17,8 +17,15 @@
             <mods:roleTerm type="text" authority="marcrelator"></mods:roleTerm>
         </mods:role>
     </mods:name>
+    <mods:name authority="naf" type="corporate" valueURI="http://id.loc.gov/authorities/names/no2017050148">
+        <mods:namePart>Dartmouth Digital Library Program</mods:namePart>
+        <mods:role>
+            <mods:roleTerm authority="marcrelator" type="text">repository</mods:roleTerm>
+        </mods:role>
+    </mods:name>
     <mods:typeOfResource collection="yes"></mods:typeOfResource>
     <mods:genre type="content" authority="rdacontent"></mods:genre>
+    <mods:genre authority="marcgt">web site</mods:genre>
     <mods:genre authority="marcgt"></mods:genre>
     <mods:genre authority="local"></mods:genre>
     <mods:originInfo eventType="publication">
@@ -44,12 +51,15 @@
     </mods:physicalDescription>
     <mods:abstract displayLabel="Summary"></mods:abstract>
     <mods:note>Made available through the Dartmouth Digital Library.</mods:note>
-    <mods:subject></mods:subject>
+    <mods:subject authority=""></mods:subject>
     <mods:identifier type="doi" displayLabel=""></mods:identifier>
     <mods:location>
         <mods:url usage="primary" access="object in context"></mods:url>
     </mods:location>
     <mods:relatedItem type="otherFormat">
+        <mods:titleInfo>
+            <mods:title></mods:title>
+        </mods:titleInfo>
         <mods:originInfo eventType="production">
             <mods:dateCreated encoding="fast"></mods:dateCreated>
             <mods:dateCreated encoding="w3cdtf"></mods:dateCreated>
@@ -71,7 +81,7 @@
         <mods:descriptionStandard authority="marcdescription">rda</mods:descriptionStandard>
         <mods:recordContentSource authority="oclcorg">DRB</mods:recordContentSource>
         <mods:recordContentSource authority="local"></mods:recordContentSource>
-        <mods:recordCreationDate encoding="w3cdtf"></mods:recordCreationDate>
+        <mods:recordCreationDate encoding="w3cdtf">${date(yyyy-MM-dd)}</mods:recordCreationDate>
         <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
         <mods:languageOfCataloging>
             <mods:languageTerm type="text">English</mods:languageTerm>
