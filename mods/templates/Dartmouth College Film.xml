@@ -11,7 +11,7 @@
         <mods:title></mods:title>
     </mods:titleInfo>
     <mods:note type="statement of responsibility"></mods:note>
-    <mods:name type="" authority="naf" valueURI="" usage="primary">
+    <mods:name type="" authority="naf" valueURI="">
         <mods:namePart type="family"></mods:namePart>
         <mods:namePart type="given"></mods:namePart>
         <mods:role>
@@ -31,7 +31,7 @@
         </mods:role>
     </mods:name>
     <mods:typeOfResource>moving image</mods:typeOfResource>
-    <mods:genre authority='marcgt'>motion picture</mods:genre>
+    <mods:genre authority="marcgt">motion picture</mods:genre>
     <mods:genre type="content" authority="rdacontent">two-dimensional moving image</mods:genre>
     <mods:originInfo eventType="publication">
         <mods:publisher>Trustees of Dartmouth College</mods:publisher>
@@ -50,12 +50,16 @@
         <mods:form type="media" authority="rdamedia">video</mods:form>
         <mods:form type="carrier" authority="rdacarrier">online resource</mods:form>
         <mods:internetMediaType>video/mp4</mods:internetMediaType>
-        <mods:extent></mods:extent>
+        <mods:extent>1 online resource (streaming video file)</mods:extent>
+        <mods:note type="other physical details"></mods:note>
         <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
     </mods:physicalDescription>
     <mods:abstract displayLabel="Summary"></mods:abstract>
     <mods:tableOfContents></mods:tableOfContents>
     <mods:note type="creation/production credits"></mods:note>
+    <mods:note type="performers"></mods:note>
+    <mods:note type="language"></mods:note>
+    <mods:note type="funding">Digitization made possible by the generous support of Dartmouth College Class of 1946.</mods:note>
     <mods:relatedItem type="host">
         <mods:titleInfo>
             <mods:title>Dartmouth College Films</mods:title>
@@ -71,15 +75,17 @@
             <mods:dateCreated encoding="w3cdtf"></mods:dateCreated>
         </mods:originInfo>
         <mods:location>
-            <mods:url note="Catalog record"></mods:url>
             <mods:holdingSimple>
                 <mods:copyInformation>
-                    <mods:shelfLocator></mods:shelfLocator>
+                    <mods:shelfLocator type="accession"></mods:shelfLocator>
                 </mods:copyInformation>
             </mods:holdingSimple>
         </mods:location>
+        <mods:recordInfo>
+            <mods:recordIdentifier source="DRB"></mods:recordIdentifier>
+        </mods:recordInfo>
     </mods:relatedItem>
-    <mods:identifier type="doi" displayLabel="Streaming video"></mods:identifier>
+    <mods:identifier type="" displayLabel="Streaming video"></mods:identifier>
     <mods:identifier type="kaltura"></mods:identifier>
     <mods:location>
         <mods:url usage="primary" access="object in context"></mods:url>
@@ -93,7 +99,7 @@
             </cmd:rights.holder>
         </cmd:copyright>
     </mods:accessCondition>
-    <mods:extension xmlns:drb="http://www.dartmouth.edu/~library/catmet/">
+    <mods:extension>
         <drb:flag type="program" value="ddlp"/>
         <drb:filename type="master"></drb:filename>
     </mods:extension>
