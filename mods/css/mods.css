@@ -2,127 +2,47 @@
 @namespace mods "http://www.loc.gov/mods/v3";
 
 /* by Shaun Akhtar for the Dartmouth College Library, 
-    copyright 2015-2016 Trustees of Dartmouth College */
+    copyright 2015-2018 Trustees of Dartmouth College */
 
 * {
-    background-color: #FFFFF9;
-    font-family: "Calisto MT", Georgia, serif;
-    font-size: large;
-    visibility: visible;
-    -oxy-display-tags: none;
+    display: block;
 }
 
 mods|mods {
-    visibility: -oxy-collapse-text;
-    white-space: normal;
-    content: oxy_label(text, oxy_local-name(), styles, "font-weight:bold;color:#000096;");
-    -oxy-append-content: oxy_label(text, oxy_concat(" version ", oxy_xpath("@version"), "\A"), styles, "color:#993300;");
+    margin: 10px;
 }
 
-mods|mods *:before {
-    content: oxy_label(text, oxy_local-name(), styles, "color:#000096;");
-    -oxy-append-content: oxy_label(text, oxy_concat(oxy_attributes(), " "), styles, "color:#993300;");
-}
+/* Top-level elements */
 
-mods|mods > *:before,
-mods|relatedItem > *:before {
-    content: oxy_label(text, oxy_local-name(), styles, "font-weight:bold;color:#000096;");
-    -oxy-append-content: oxy_label(text, oxy_concat(oxy_attributes(), " "), styles, "color:#993300;");
-}
-
-mods|extension *:before {
-    content: oxy_label(text, oxy_name(), styles, "color:#000096;");
-    -oxy-append-content: oxy_label(text, oxy_concat(oxy_attributes(), " "), styles, "color:#993300;");
-}
-
-/* Hierarchical spacing */
-
-mods|mods > * > *:before {
-    -oxy-prepend-content: "   ";
-}
-
-mods|mods > * > * > *:before {
-    -oxy-prepend-content: "      ";
-}
-
-/* Top-level container elements */
-
-mods|titleInfo,
-mods|name,
-mods|originInfo,
-mods|language,
-mods|physicalDescription,
-mods|subject,
-mods|relatedItem,
-mods|location,
-mods|extension,
-mods|recordInfo {
-    -oxy-append-content: "\A";
-}
-
-/* Other container elements */
-
-mods|role,
-mods|place,
-mods|hierarchicalGeographic,
-mods|cartographics,
-mods|languageOfCataloging {
-    -oxy-append-content: "\A";
-}
-
-/* Text elements */
-
-mods|titleInfo > *:after,
-mods|mods > mods|name > *:after,
-mods|typeOfResource:after,
-mods|mods > mods|genre:after,
-mods|originInfo > *:after,
-mods|mods > mods|language > *:after,
-mods|physicalDescription > *:after,
-mods|abstract:after,
-mods|tableOfContents:after,
-mods|mods > mods|note:after,
-mods|subject > *:after,
-mods|classification:after,
-mods|identifier:after,
-mods|location > *:after,
-mods|accessCondition:after,
-mods|extension > *:after,
-mods|recordInfo > *:after,
-mods|place > *:after,
-mods|subject > mods|name > *:after,
-mods|hierarchicalGeographic > *:after,
-mods|cartographics > *:after,
-mods|languageOfCataloging > *:after {
-    content: "\A";
-}
-
-mods|titleInfo > *,
-mods|mods > mods|name > *,
-mods|typeOfResource,
+mods|mods > mods|titleInfo,
+mods|mods > mods|name,
+mods|mods > mods|typeOfResource,
 mods|mods > mods|genre,
-mods|originInfo > *,
-mods|mods > mods|language > *,
-mods|physicalDescription > *,
-mods|abstract,
-mods|tableOfContents,
+mods|mods > mods|originInfo,
+mods|mods > mods|language,
+mods|mods > mods|physicalDescription,
+mods|mods > mods|abstract,
+mods|mods > mods|tableOfContents,
+mods|mods > mods|targetAudience,
 mods|mods > mods|note,
-mods|subject > *,
-mods|classification,
-mods|relatedItem *,
-mods|identifier,
-mods|location > *,
-mods|accessCondition,
-mods|extension > *,
-mods|recordInfo > *,
-mods|role > *,
-mods|place > *,
-mods|subject > mods|name > *,
-mods|hierarchicalGeographic > *,
-mods|cartographics > *,
-mods|languageOfCataloging > * {
-    display: inline-block;
-    margin: 0px;
+mods|mods > mods|subject,
+mods|mods > mods|classification,
+mods|mods > mods|relatedItem,
+mods|mods > mods|identifier,
+mods|mods > mods|location,
+mods|mods > mods|accessCondition,
+mods|mods > mods|part,
+mods|mods > mods|extension,
+mods|mods > mods|recordInfo {
+    border: 1px solid silver;
+    padding-left: 10px;
+    margin: 10px 0px;
+}
+
+/* Related-item elements */
+
+mods|mods > mods|relatedItem {
+    border: 1px dashed silver;
 }
 
 /* modsCollection formatting */
