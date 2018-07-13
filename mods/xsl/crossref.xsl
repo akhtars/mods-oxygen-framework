@@ -283,8 +283,9 @@
                 </xsl:if>
                 <publication_date media_type="print">
                     <year>
-                        <xsl:value-of select="mods:relatedItem[@type='otherFormat']/mods:originInfo[@eventType='production']/
-                            mods:dateCreated[@encoding='w3cdtf'][last()]"/>
+                        <xsl:value-of select="mods:relatedItem[@type='otherFormat' or @type='original']
+                            /mods:originInfo[@eventType='production' or @eventType='publication']/
+                            (mods:dateCreated[@encoding='w3cdtf'][last()]|mods:dateIssued[@encoding='w3cdtf'][last()])"/>
                     </year>
                 </publication_date>
                 <publication_date media_type="online">
