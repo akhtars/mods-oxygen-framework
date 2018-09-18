@@ -41,10 +41,17 @@
         </xsl:result-document>
     </xsl:template>
     
+    <xsl:template match="mods:name[@type='corporate'][not(mods:role)]">
+        <mods:name type="corporate" ID="NhD">
+            <xsl:copy-of select="child::*"/>
+        </mods:name>
+    </xsl:template>
+    
     <xsl:template match="mods:physicalDescription">
         <mods:physicalDescription>
-            <xsl:copy-of select="../mods:relatedItem[@type='otherFormat']/mods:physicalDescription/*"/>
-            <xsl:apply-templates></xsl:apply-templates>
+            <xsl:copy-of select="../mods:relatedItem[@type='otherFormat']/mods:physicalDescription/mods:form"/>
+            <xsl:apply-templates/>
+            <xsl:copy-of select="../mods:relatedItem[@type='otherFormat']/mods:physicalDescription/*[not(self::mods:form)]"/>
         </mods:physicalDescription>
     </xsl:template>
     
@@ -52,14 +59,36 @@
         <mods:extent>
             <xsl:analyze-string select="." regex="1 online resource \((.+)\)">
                 <xsl:matching-substring>
-                    <xsl:value-of select="regex-group(1)"/>
+                    <xsl:value-of select="replace(regex-group(1), 'pages', 'leaves')"/>
                 </xsl:matching-substring>
             </xsl:analyze-string>
         </mods:extent>
     </xsl:template>
     
+    <xsl:template match="mods:note[@type='other physical details']">
+        <xsl:copy-of select="."/>
+        <mods:note type="dimensions">28 cm</mods:note>
+    </xsl:template>
+    
+    <xsl:template match="mods:note[@type='bibliography']">
+        <mods:note type="bibliography">
+            <xsl:value-of select="replace(replace(., 'pages', 'leaves'), 'page', 'leaf')"/>
+        </mods:note>
+    </xsl:template>
+    
     <xsl:template match="mods:relatedItem[@type='otherFormat']">
+        <xsl:where-populated>
+            <mods:classification authority="lcc">
+                <xsl:value-of select="mods:location/mods:holdingSimple/mods:copyInformation/mods:shelfLocator[@type='lc']"/>
+            </mods:classification>
+        </xsl:where-populated>
         <mods:relatedItem type="otherFormat">
+            <xsl:copy-of select="../mods:titleInfo"/>
+            <mods:originInfo eventType="production">
+                <mods:dateIssued encoding="w3cdtf">
+                    <xsl:value-of select="../mods:originInfo/*[@keyDate]"/>
+                </mods:dateIssued>
+            </mods:originInfo>
             <mods:physicalDescription>
                 <xsl:copy-of select="../mods:physicalDescription/mods:form"/>
             </mods:physicalDescription>
@@ -90,7 +119,6 @@
         </mods:recordIdentifier>
     </xsl:template>
     
-    <!-- TODO: Change to mods:recordOrigin -->
     <xsl:template match="mods:recordOrigin">
         <mods:recordOrigin>Derived from MODS record for digital version.</mods:recordOrigin>
     </xsl:template>
