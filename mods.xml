@@ -3,23 +3,24 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
     <xt:extension id="mods">
-        <xt:location href="mods_0-9-15.zip"/>
-        <xt:version>0.9.15</xt:version>
+        <xt:location href="mods_0-9-16.zip"/>
+        <xt:version>0.9.16</xt:version>
         <xt:oxy_version>14.0+</xt:oxy_version>
         <xt:type>framework</xt:type>
         <xt:author>Dartmouth College Library</xt:author>
         <xt:name>MODS (Metadata Object Description Schema)</xt:name>
         <xt:description xmlns="http://www.w3.org/1999/xhtml">
             <p>The Dartmouth College Library's local implementation of MODS, the Metadata Object Description Schema.</p>
-            <p>Release notes for version 0.9.15:</p>
+            <p>Release notes for version 0.9.16:</p>
             <ul>
-                <li>Update "MODS-to-MARCXML" transformation (enhancements to map fixed fields, tests for subject authorities, support for 991).</li>
-                <li>Update record templates. Add template for Dartmouth College Films.</li>
-                <li>Update "MODS-to-Crossref" transformation to support individual books.</li>
-                <li>Add "MODS Derive Print" transformation to produce MODS record for print manifestation of resource.</li>
+                <li>Update "MODS-to-MARCXML" transformation (field enhancements and support for item records).</li>
+                <li>Add transformations for ARK support.</li>
+                <li>Update Dissertation and Films record templates.</li>
+                <li>Update "MODS Derive Print" and "MODS-to-Crossref" transformations.</li>
                 <li>Update Schematron tests and reports.</li>
-                <li>Add schema support for creation/production credits note, video/mp4 internet media type, @objectPart on mods:accessCondition.</li>
-                <li>Update XML catalog.</li>
+                <li>Add default options file.</li>
+                <li>Add schema support for performers note, image/jpeg internet media type, @objectPart on mods:language, @type on mods:shelfLocator.</li>
+                <li>Simplify and enhance CSS for display in Author mode.</li>
             </ul>
         </xt:description>
         <xt:license>Copyright 2018 Trustees of Dartmouth College. Made available under the MIT License.</xt:license>
