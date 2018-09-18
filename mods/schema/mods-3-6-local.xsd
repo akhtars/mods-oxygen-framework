@@ -25,6 +25,7 @@
                                 <xs:enumeration value="issuing body"/>
                                 <xs:enumeration value="language"/>
                                 <xs:enumeration value="modifying agency"/>
+                                <xs:enumeration value="performers"/> <!-- 2018-06-19 -->
                                 <xs:enumeration value="regularity"/>
                                 <xs:enumeration value="statement of responsibility"/>
                                 <xs:enumeration value="system details"/>
@@ -92,6 +93,7 @@
                         <xs:enumeration value="audio/mpeg"/>
                         <xs:enumeration value="text/html"/>
                         <xs:enumeration value="image/jp2"/>
+                        <xs:enumeration value="image/jpeg"/> <!-- 2018-05-30 -->
                         <xs:enumeration value="image/tiff"/>
                         <xs:enumeration value="video/mp4"/> <!-- 2018-05-03 -->
                     </xs:restriction>
@@ -225,6 +227,61 @@
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
+        
+        <!-- Limited language objectPart values -->
+        
+        <xs:complexType name="languageDefinition">
+            <xs:sequence>
+                <xs:element ref="languageTerm" maxOccurs="unbounded"/>
+                <xs:element ref="scriptTerm" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <!-- Altered definition -->
+            <xs:attribute name="objectPart">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="text/sound track"/>
+                        <xs:enumeration value="summary or abstract"/>
+                        <xs:enumeration value="summary"/>
+                        <xs:enumeration value="abstract"/>
+                        <xs:enumeration value="sung or spoken text"/>
+                        <xs:enumeration value="librettos"/>
+                        <xs:enumeration value="libretto"/>
+                        <xs:enumeration value="table of contents"/>
+                        <xs:enumeration value="accompanying material other than librettos"/>
+                        <xs:enumeration value="accompanying material"/>
+                        <xs:enumeration value="original and/or intermediate translations of text"/>
+                        <xs:enumeration value="translation"/>
+                        <xs:enumeration value="subtitles or captions"/>
+                        <xs:enumeration value="subtitle or caption"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attributeGroup ref="languageAttributeGroup"/>
+            <xs:attribute name="displayLabel" type="xs:string"/>
+            <xs:attribute name="altRepGroup" type="xs:string"/>
+            <xs:attribute name="usage" fixed="primary"/>
+        </xs:complexType>
+        
+        <!-- Add shelfLocator type -->
+        
+        <xs:element name="shelfLocator">
+            <!-- Altered definition -->
+            <xs:complexType>
+                <xs:simpleContent>
+                    <xs:extension base="stringPlusLanguage">
+                        <xs:attribute name="type">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="lc"/>
+                                    <xs:enumeration value="dewey"/>
+                                    <xs:enumeration value="accession"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+        </xs:element>
 
     </xs:override>
 
