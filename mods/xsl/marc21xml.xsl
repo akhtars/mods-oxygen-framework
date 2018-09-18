@@ -259,21 +259,25 @@
 				</xsl:when>
 			</xsl:choose>
 			<!-- SA enhance 2016-03-21 to match OCLC standards -->
-			<!-- SA always create 007 with "cr" 2017-07-26 -->
-			<marc:controlfield tag="007">
-				<!-- 00 -->
-				<xsl:text>c</xsl:text>
-				<!-- 01 -->
-				<xsl:text>r</xsl:text>
-				<!-- 02 -->
-				<xsl:text> </xsl:text>
-				<!-- 03 -->
-				<xsl:text>|</xsl:text>
-				<!-- 04 -->
-				<xsl:text>n</xsl:text>
-				<!-- 05-13 -->
-				<xsl:text>|||||||||</xsl:text>
-			</marc:controlfield>
+			<!-- SA update 2018-07-20 to check for RDA terms before creating 007 -->
+			<xsl:if test="mods:physicalDescription/mods:form[@authority='rdamedia']='computer' and
+				mods:physicalDescription/mods:form[@authority='rdacarrier']='online resource'">
+				<!-- SA always create 007 with "cr" 2017-07-26 -->
+				<marc:controlfield tag="007">
+					<!-- 00 -->
+					<xsl:text>c</xsl:text>
+					<!-- 01 -->
+					<xsl:text>r</xsl:text>
+					<!-- 02 -->
+					<xsl:text> </xsl:text>
+					<!-- 03 -->
+					<xsl:text>|</xsl:text>
+					<!-- 04 -->
+					<xsl:text>n</xsl:text>
+					<!-- 05-13 -->
+					<xsl:text>|||||||||</xsl:text>
+				</marc:controlfield>
+			</xsl:if>
 			<marc:controlfield tag="008">
 				<xsl:variable name="typeOf008"><xsl:apply-templates mode="ctrl008" select="mods:typeOfResource"/></xsl:variable>
 				<!-- 00-05 -->	
@@ -374,22 +378,50 @@
 							<xsl:with-param name="length" select="4"/>
 						</xsl:call-template>
 					</xsl:when>
-					<!-- SA add 2018-03-14 -->
+					<!-- SA add 2018-03-14 to support relief information -->
 					<xsl:when test="$typeOf008='MP'">
 						<xsl:variable name="chars">
 							<xsl:for-each select="tokenize(string-join(mods:note[not(@type)][not(contains(., 'inset'))], '.'),
-								'(;|.)')">
-								<xsl:if test="contains(lower-case(.), 'contour')">a</xsl:if>
-								<xsl:if test="contains(lower-case(.), 'tint')">c</xsl:if>
-								<xsl:if test="contains(lower-case(.), 'hachure')">d</xsl:if>
-								<xsl:if test="contains(lower-case(.), 'spot heights')">g</xsl:if>
-								<xsl:if test="contains(lower-case(.), 'pictorial')">i</xsl:if>
+								'(;|\.)')">
+								<xsl:if test="matches(., 'contour', 'i')">a</xsl:if>
+								<xsl:if test="matches(., 'tint', 'i')">c</xsl:if>
+								<xsl:if test="matches(., 'hachure', 'i')">d</xsl:if>
+								<xsl:if test="matches(., 'spot heights', 'i')">g</xsl:if>
+								<xsl:if test="matches(., 'pictorial', 'i')">i</xsl:if>
 							</xsl:for-each>
 						</xsl:variable>
 						<xsl:call-template name="makeSize">
-							<xsl:with-param name="string" select="distinct-values($chars)"/>
+							<!-- SA fix de-duplication 2018-05-30 -->
+							<xsl:with-param name="string" select="string-join(distinct-values(
+								for $i in string-to-codepoints($chars) return codepoints-to-string($i)), '')"/>
 							<xsl:with-param name="length" select="4"/>
 						</xsl:call-template>
+					</xsl:when>
+					<!-- SA add 2018-06-19 to support running time -->
+					<xsl:when test="$typeOf008='VM'">
+						<!-- 18-20 -->
+						<xsl:choose>
+							<xsl:when test="mods:genre[@authority='marcgt']=('motion picture', 'videorecording')">
+								<xsl:analyze-string select="mods:physicalDescription/mods:extent" regex="(\d+) (min.|minutes)">
+									<xsl:matching-substring>
+										<xsl:choose>
+											<xsl:when test="string-length(regex-group(1)) gt 3">
+												<xsl:text>000</xsl:text>
+											</xsl:when>
+											<xsl:when test="string-length(regex-group(1)) ne 0">
+												<xsl:value-of select="lfn:pad-zeroes(regex-group(1), 3)"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:text>---</xsl:text>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:matching-substring>
+								</xsl:analyze-string>
+							</xsl:when>
+							<xsl:otherwise>nnn</xsl:otherwise>
+						</xsl:choose>
+						<!-- 21 -->
+						<xsl:text> </xsl:text>
 					</xsl:when>
 					<xsl:otherwise>
 						<!-- SA change 2016-05-16 to support frequency, regularity for continuing resources -->
@@ -506,7 +538,9 @@
 						<xsl:choose>
 							<xsl:when test="mods:genre[@authority='marcgt']='atlas'">e</xsl:when>
 							<xsl:when test="mods:genre[@authority='marcgt']='globe'">d</xsl:when>
-							<xsl:otherwise>a</xsl:otherwise> <!-- SA change 2017-07-26 -->
+							<xsl:when test="contains(mods:physicalDescription/mods:extent, 'maps')">b</xsl:when> <!-- SA add 2018-06-12 -->
+							<xsl:when test="contains(mods:physicalDescription/mods:extent, '1 map')">a</xsl:when> <!-- SA add 2018-06-12 -->
+							<xsl:otherwise>z</xsl:otherwise> <!-- SA change 2017-07-26, 2018-06-12 -->
 						</xsl:choose>
 						<xsl:text>  </xsl:text> <!-- SA change 2017-08-14 -->
 					</xsl:when>
@@ -526,8 +560,14 @@
 						<xsl:text>||||</xsl:text>
 					</xsl:otherwise>
 				</xsl:choose>
-				<!-- 28 -->					
-				<xsl:text> </xsl:text> <!-- SA change 2015-02-05 -->
+				<!-- 28 -->
+				<!-- SA change 2015-02-05, 2018-08-24 -->
+				<xsl:choose>
+					<xsl:when test="$typeOf008='MP'">|</xsl:when>
+					<xsl:otherwise>
+						<xsl:text> </xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
 				<!-- 29 -->
 				<xsl:choose>
 					<xsl:when test="$typeOf008='BK' or $typeOf008='SE'">
@@ -629,7 +669,12 @@
 							<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
-					<xsl:when test="$typeOf008='VM'">n</xsl:when> <!-- SA add 2015-02-05 -->
+					<xsl:when test="$typeOf008='VM'"> <!-- SA add 2015-02-05 -->
+						<xsl:choose>
+							<xsl:when test="mods:genre[@authority='marcgt']='motion picture'">l</xsl:when> <!-- SA add 2018-06-19 -->
+							<xsl:otherwise>n</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
 				</xsl:choose>
 				<!-- 35-37 -->	
@@ -674,7 +719,7 @@
 				<xsl:with-param name="tag">884</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
-						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.15</xsl:text>
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.16</xsl:text>
 					</marc:subfield>
 					<marc:subfield code="g">
 						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
@@ -1137,6 +1182,12 @@
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:for-each>-->
+				<!-- SA add 2018-09-11 to support encoding of "NhD" -->
+				<xsl:for-each select="@ID">
+					<marc:subfield code="5">
+						<xsl:value-of select="."/>
+					</marc:subfield>
+				</xsl:for-each>
 			</xsl:with-param>
 		</xsl:call-template>	
 	</xsl:template>
@@ -1376,7 +1427,7 @@
 					</xsl:for-each>
 					<xsl:for-each select="mods:dateIssued[not(@point='end')][not(@encoding='fast')]"> <!-- SA update 2017-11-16 -->
 						<marc:subfield code='c'>
-							<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+							<xsl:if test="@drb:supplied='yes' or @qualifier='questionable'"> <!-- SA add brackets when @drb:supplied 2017-05-05, @qualifier="questionable" 2018-05-30 -->
 								<xsl:text>[</xsl:text>
 							</xsl:if>
 							<xsl:value-of select="substring(.,1,4)"/>
@@ -1386,7 +1437,7 @@
 							<xsl:if test="mods:dateIssued[@point='end']">
 								- <xsl:value-of select="../mods:dateIssued[@point='end']"/>
 							</xsl:if>
-							<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+							<xsl:if test="@drb:supplied='yes' or @qualifier='questionable'"> <!-- SA add brackets when @drb:supplied 2017-05-05, @qualifier="questionable" 2018-05-30 -->
 								<xsl:text>]</xsl:text>
 							</xsl:if>
 							<!-- SA add 2015-02-05, update 2015-11-23, 2017-05-05 -->
@@ -1424,10 +1475,62 @@
 				<xsl:with-param name="tag">041</xsl:with-param>
 				<xsl:with-param name="ind1">0</xsl:with-param>
 				<xsl:with-param name="subfields">
-					<xsl:for-each select="../mods:language/mods:languageTerm[@authority='iso639-2b']">
+					<!-- SA update 2018-06-15 to not put secondary codes from @objectPart into $a -->
+					<xsl:for-each select="../mods:language
+						[@objectPart='text/sound track' or not(@objectPart)]/mods:languageTerm[@authority='iso639-2b']">
 						<marc:subfield code='a'>
 							<xsl:value-of select="."/>
 						</marc:subfield>
+					</xsl:for-each>
+					<!-- SA add 2018-06-15 support for additional codes from @objectPart in same 041 field -->
+					<xsl:for-each select="following-sibling::mods:language[@objectPart]/mods:languageTerm[@authority='iso639-2b']">
+						<xsl:choose>
+							<xsl:when test="../@objectPart='text/sound track'">
+								<marc:subfield code='a'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:when test="../@objectPart='summary or abstract' or ../@objectPart='summary' or ../@objectPart='abstract'">
+								<marc:subfield code='b'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:when test="../@objectPart='sung or spoken text'">
+								<marc:subfield code='d'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:when test="../@objectPart='librettos' or ../@objectPart='libretto'">
+								<marc:subfield code='e'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:when test="../@objectPart='table of contents'">
+								<marc:subfield code='f'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:when test="../@objectPart='accompanying material other than librettos' or ../@objectPart='accompanying material'">
+								<marc:subfield code='g'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:when test="../@objectPart='original and/or intermediate translations of text' or ../@objectPart='translation'">
+								<marc:subfield code='h'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:when test="../@objectPart='subtitles or captions' or ../@objectPart='subtitle or caption'">
+								<marc:subfield code='j'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<xsl:otherwise>
+								<marc:subfield code='a'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:for-each>
 				</xsl:with-param>
 			</xsl:call-template>
@@ -1439,7 +1542,8 @@
 	</xsl:template>
 	
 	<!-- v3.4 language with objectPart-->
-	<xsl:template match="mods:languageTerm[@objectPart]">
+	<!-- SA update 2018-06-15 to not create 2nd 041 if one already exists -->
+	<xsl:template match="mods:languageTerm[@objectPart][not(../preceding-sibling::mods:language[not(@objectPart)])]">
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">041</xsl:with-param>
 			<xsl:with-param name="ind1">0</xsl:with-param>
@@ -1530,7 +1634,7 @@
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">300</xsl:with-param>
 			<xsl:with-param name="subfields">
-				<!-- SA add subfields b and c with ISBD punctuation 2015-05-04 -->
+				<!-- SA add subfields b and c with ISBD punctuation 2015-05-04, subfield e 2018-07-18 -->
 				<marc:subfield code='a'>
 					<xsl:value-of select="."/>
 					<xsl:choose>
@@ -1539,6 +1643,9 @@
 						</xsl:when>
 						<xsl:when test="following-sibling::mods:note[@type='dimensions']">
 							<xsl:text> ;</xsl:text>
+						</xsl:when>
+						<xsl:when test="following-sibling::mods:note[@type='accompanying material']">
+							<xsl:text> +</xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:if test="not(ends-with(., '.'))">
@@ -1554,6 +1661,9 @@
 							<xsl:when test="following-sibling::mods:note[@type='dimensions']">
 								<xsl:text> ;</xsl:text>
 							</xsl:when>
+							<xsl:when test="following-sibling::mods:note[@type='accompanying material']">
+								<xsl:text> +</xsl:text>
+							</xsl:when>
 							<xsl:otherwise>
 								<xsl:if test="not(ends-with(., '.'))">
 									<xsl:text>.</xsl:text>
@@ -1565,7 +1675,21 @@
 				<xsl:if test="following-sibling::mods:note[@type='dimensions']">
 					<marc:subfield code='c'>
 						<xsl:value-of select="following-sibling::mods:note[@type='dimensions']"/>
-						<xsl:if test="not(ends-with(following-sibling::mods:note[@type='dimensions'], '.'))">
+						<xsl:choose>
+							<xsl:when test="following-sibling::mods:note[@type='accompanying material']">
+								<xsl:text> +</xsl:text>
+							</xsl:when>
+							<xsl:when test="not(ends-with(following-sibling::mods:note[@type='dimensions'], '.'))">
+								<xsl:text>.</xsl:text>
+							</xsl:when>
+						</xsl:choose>
+					</marc:subfield>
+				</xsl:if>
+				<xsl:if test="following-sibling::mods:note[@type='accompanying material']">
+					<marc:subfield code='e'>
+						<xsl:variable name="accompMat" select="following-sibling::mods:note[@type='accompanying material']"/>
+						<xsl:value-of select="$accompMat"/>
+						<xsl:if test="not(ends-with($accompMat, '.') or ends-with($accompMat, ')'))"> <!-- SA update 2018-09-11 -->
 							<xsl:text>.</xsl:text>
 						</xsl:if>
 					</marc:subfield>
@@ -1710,7 +1834,7 @@
 
 <!-- Note -->	
 	<!-- 1/04 fix -->
-	<xsl:template match="mods:note[not(@type='statement of responsibility' or @type='contact information' or @type='other physical details' or @type='dimensions')]"> <!-- SA addition 2013-08-23 filter out "additional" notes, update 2015-01-20, update 2015-05-04 -->
+	<xsl:template match="mods:note[not(@type='statement of responsibility' or @type='contact information' or @type='other physical details' or @type='dimensions' or @type='accompanying material')]"> <!-- SA addition 2013-08-23 filter out "additional" notes, update 2015-01-20, update 2015-05-04, update 2018-09-11 -->
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">
 				<xsl:choose>
@@ -1721,7 +1845,16 @@
 					<xsl:when test="@type='bibliography'">504</xsl:when> <!-- SA add 2015-04-02 -->
 					<xsl:when test="@type='language'">546</xsl:when> <!-- SA add 2015-11-23 -->
 					<xsl:when test="@type='funding'">536</xsl:when> <!-- SA add 2016-10-19 -->
+					<xsl:when test="@type='creation/production credits'">508</xsl:when> <!-- SA add 2018-06-19 -->
 					<xsl:otherwise>500</xsl:otherwise>
+				</xsl:choose>
+			</xsl:with-param>
+			<xsl:with-param name="ind1"> <!-- SA add 2018-06-19 -->
+				<xsl:choose>
+					<xsl:when test="@type='performers'">1</xsl:when>
+					<xsl:otherwise>
+						<xsl:text> </xsl:text>
+					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:with-param>
 			<xsl:with-param name="subfields">
@@ -1874,7 +2007,8 @@
 					<xsl:value-of select="*[1]"/>
 					<xsl:if test="not(*[2]) and not(ends-with(*[1], '.'))">.</xsl:if> <!-- SA add 2016-03-21 -->
 				</marc:subfield>
-				<xsl:apply-templates select="*[position()>1]"/>
+				<!-- SA fix to not produce 043 within 650 2018-05-30 -->
+				<xsl:apply-templates select="*[position()>1][not(self::mods:geographicCode)]"/>
 				<!-- SA add 2015-10-14 -->
 				<xsl:if test="@authority and not(@authority='lcsh') and not(@authority='lcshac') and not(@authority='mesh') and not(@authority='csh') and not(@authority='nal') and not(@authority='rvm')">
 					<marc:subfield code="2">
@@ -1886,13 +2020,16 @@
 					<xsl:call-template name="authorityRecordNumberFAST"/>
 				</xsl:if>
 			</xsl:with-param>
-		</xsl:call-template>	
+		</xsl:call-template>
+		<xsl:apply-templates select="*[position()>1][self::mods:geographicCode]"/> <!-- SA add 2018-05-30 -->
 	</xsl:template>
-	<xsl:template match="mods:subject[1][not(@*)]"> <!-- SA addition 2013-08-30 for uncontrolled terms -->
+	<!-- SA addition 2013-08-30 for uncontrolled terms, update 2018-05-30 to ignore mods:cartographics, update 2018-07-20 to create multiple 653 fields, use 2nd indicator -->
+	<xsl:template match="mods:subject[not(@*)][not(mods:cartographics)]">
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">653</xsl:with-param>
+			<xsl:with-param name="ind2">0</xsl:with-param>
 			<xsl:with-param name="subfields">
-				<xsl:for-each select="../mods:subject/mods:topic">
+				<xsl:for-each select="mods:topic">
 					<marc:subfield code="a">
 						<xsl:value-of select="."/>
 					</marc:subfield>
@@ -2173,17 +2310,17 @@
 	</xsl:template>
 
 	<!-- v3 geographicCode -->
-	<!-- SA update reduce creation of duplicate fields from identical mods:geographicCode values 2017-07-14-->
-	<xsl:template match="mods:subject/mods:geographicCode[@authority][not(.=../preceding::mods:geographicCode)]">
+	<!-- SA update reduce creation of duplicate fields from identical mods:geographicCode values 2017-07-14, enhance 2018-06-29 -->
+	<xsl:template match="mods:subject/mods:geographicCode[@authority][not(preceding::mods:geographicCode[@authority])]">
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">043</xsl:with-param>
 			<xsl:with-param name="subfields">
-				<xsl:for-each select="self::mods:geographicCode[@authority='marcgac']">
+				<xsl:for-each select="distinct-values(../../mods:subject/mods:geographicCode[@authority='marcgac'])">
 					<marc:subfield code='a'>
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:for-each>
-				<xsl:for-each select="self::mods:geographicCode[@authority='iso3166']">
+				<xsl:for-each select="distinct-values(../../mods:subject/mods:geographicCode[@authority='iso3166'])">
 					<marc:subfield code='c'>
 						<xsl:value-of select="."/>
 					</marc:subfield>
@@ -2240,38 +2377,131 @@
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:for-each>
-				<!-- SA enhance to provide ISBD punctuation for input formatted "L.at, L.on" 2017-07-14 -->
 				<xsl:for-each select="mods:coordinates">
 					<marc:subfield code="c">
-						<xsl:variable name="coords" select="tokenize(., ', ')"/>
-						<!-- use index of decimal point to truncate to 2 decimal places -->
-						<xsl:variable name="latdecindex" select="string-length(substring-before($coords[1], '.')) + 1"/>
-						<xsl:variable name="londecindex" select="string-length(substring-before($coords[2], '.')) + 1"/>
-						<xsl:text>(</xsl:text>
 						<xsl:choose>
-							<xsl:when test="starts-with($coords[2], '-')">
-								<xsl:text>W </xsl:text>
-								<xsl:value-of select="substring($coords[2], 2, $londecindex + 1)"/>
+							<!-- SA add support for coordinates already in ISBD format 2018-05-30 -->
+							<xsl:when test="matches(., '^\([EW] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?(--[EW] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?)?/[NS] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?(--[NS] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?)?\)$')">
+								<xsl:value-of select="."/>
 							</xsl:when>
+							<!-- SA enhance to provide ISBD punctuation for input formatted "L.at, L.on" 2017-07-14 -->
 							<xsl:otherwise>
-								<xsl:text>E </xsl:text>
-								<xsl:value-of select="substring($coords[2], 1, $londecindex + 2)"/>
+								<xsl:variable name="coords" select="tokenize(., ', ')"/>
+								<!-- use index of decimal point to truncate to 2 decimal places -->
+								<xsl:variable name="latdecindex" select="string-length(substring-before($coords[1], '.')) + 1"/>
+								<xsl:variable name="londecindex" select="string-length(substring-before($coords[2], '.')) + 1"/>
+								<xsl:text>(</xsl:text>
+								<xsl:choose>
+									<xsl:when test="starts-with($coords[2], '-')">
+										<xsl:text>W </xsl:text>
+										<xsl:value-of select="substring($coords[2], 2, $londecindex + 1)"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>E </xsl:text>
+										<xsl:value-of select="substring($coords[2], 1, $londecindex + 2)"/>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:text>°/</xsl:text>
+								<xsl:choose>
+									<xsl:when test="starts-with($coords[1], '-')">
+										<xsl:text>S </xsl:text>
+										<xsl:value-of select="substring($coords[1], 2, $latdecindex + 1)"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>N </xsl:text>
+										<xsl:value-of select="substring($coords[1], 1, $latdecindex + 2)"/>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:text>°)</xsl:text>
 							</xsl:otherwise>
 						</xsl:choose>
-						<xsl:text>°/</xsl:text>
-						<xsl:choose>
-							<xsl:when test="starts-with($coords[1], '-')">
-								<xsl:text>S </xsl:text>
-								<xsl:value-of select="substring($coords[1], 2, $latdecindex + 1)"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>N </xsl:text>
-								<xsl:value-of select="substring($coords[1], 1, $latdecindex + 2)"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:text>°)</xsl:text>
 					</marc:subfield>
 				</xsl:for-each>
+			</xsl:with-param>
+		</xsl:call-template>
+		<!-- SA add 2018-05-30 -->
+		<xsl:call-template name="datafield">
+			<xsl:with-param name="tag">034</xsl:with-param>
+			<xsl:with-param name="ind1">
+				<xsl:choose>
+					<xsl:when test="matches(mods:scale, '1:(\d+,?)+.+1:(\d+,?)+')">3</xsl:when>
+					<xsl:when test="matches(mods:scale, '1:(\d+,?)+')">1</xsl:when>
+					<xsl:otherwise>0</xsl:otherwise>
+				</xsl:choose>
+			</xsl:with-param>
+			<xsl:with-param name="subfields">
+				<marc:subfield code="a">
+					<xsl:text>a</xsl:text>
+				</marc:subfield>
+				<xsl:analyze-string select="mods:scale" regex="1:((\d+,?)+)">
+					<xsl:matching-substring>
+						<marc:subfield code="b">
+							<xsl:value-of select="xs:integer(replace(regex-group(1), '[^\d]', ''))"/>
+						</marc:subfield>
+					</xsl:matching-substring>
+				</xsl:analyze-string>
+				<xsl:choose>
+					<xsl:when test="matches(mods:coordinates, '^\([EW] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?/[NS] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?\)$')"> <!-- point coordinates -->
+						<xsl:variable name="coords" select="tokenize(mods:coordinates, '/')"/>
+						<xsl:variable name="coordsW" select="tokenize(substring-after($coords[1], '('), '( |°|''|&quot;)')"/>
+						<xsl:variable name="coordsN" select="tokenize(substring-before($coords[2], ')'), '( |°|''|&quot;)')"/>
+						<marc:subfield code="d">	
+							<xsl:value-of select="$coordsW[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[4], 2)"/>
+						</marc:subfield>
+						<marc:subfield code="e">	
+							<xsl:value-of select="$coordsW[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[4], 2)"/>
+						</marc:subfield>
+						<marc:subfield code="f">	
+							<xsl:value-of select="$coordsN[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[4], 2)"/>
+						</marc:subfield>
+						<marc:subfield code="g">	
+							<xsl:value-of select="$coordsN[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[4], 2)"/>
+						</marc:subfield>
+					</xsl:when>
+					<xsl:when test="matches(mods:coordinates, '^\([EW] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?(--[EW] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?)?/[NS] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?(--[NS] \d{1,3}°(\d{1,2}''(\d{1,2}&quot;)?)?)?\)$')">
+						<xsl:variable name="coords" select="tokenize(mods:coordinates, '--|/')"/>
+						<xsl:variable name="coordsW" select="tokenize(substring-after($coords[1], '('), '( |°|''|&quot;)')"/>
+						<xsl:variable name="coordsE" select="tokenize($coords[2], '( |°|''|&quot;)')"/>
+						<xsl:variable name="coordsN" select="tokenize($coords[3], '( |°|''|&quot;)')"/>
+						<xsl:variable name="coordsS" select="tokenize(substring-before($coords[4], ')'), '( |°|''|&quot;)')"/>
+						<marc:subfield code="d">	
+							<xsl:value-of select="$coordsW[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsW[4], 2)"/>
+						</marc:subfield>
+						<marc:subfield code="e">	
+							<xsl:value-of select="$coordsE[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsE[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsE[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsE[4], 2)"/>
+						</marc:subfield>
+						<marc:subfield code="f">	
+							<xsl:value-of select="$coordsN[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsN[4], 2)"/>
+						</marc:subfield>
+						<marc:subfield code="g">	
+							<xsl:value-of select="$coordsS[1]"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsS[2], 3)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsS[3], 2)"/>
+							<xsl:value-of select="lfn:pad-zeroes($coordsS[4], 2)"/>
+						</marc:subfield>
+					</xsl:when>
+				</xsl:choose>
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
@@ -2326,7 +2556,13 @@
 	<xsl:template name="titleInfo">
 		<xsl:for-each select="mods:title">
 			<marc:subfield code="a">
+				<xsl:if test="../@supplied"> <!-- SA add 2018-05-30 -->
+					<xsl:text>[</xsl:text>
+				</xsl:if>
 				<xsl:value-of select="../mods:nonSort"/><xsl:value-of select="."/>
+				<xsl:if test="../@supplied"> <!-- SA add 2018-05-30 -->
+					<xsl:text>]</xsl:text>
+				</xsl:if>
 				<xsl:choose> <!-- SA add 2015-02-05 -->
 					<xsl:when test="following-sibling::mods:subTitle">
 						<xsl:text> :</xsl:text>
@@ -2397,6 +2633,7 @@
 		<xsl:for-each select="following-sibling::mods:note[@type='statement of responsibility']">		
 			<marc:subfield code='c'>
 				<xsl:value-of select="."/>
+				<xsl:text>.</xsl:text> <!-- SA add 2018-09-11 -->
 			</marc:subfield>
 		</xsl:for-each>
 	</xsl:template>
@@ -2499,17 +2736,21 @@
 	
 	<xsl:template name="lcClassification">
 		<xsl:call-template name="datafield">
-			<xsl:with-param name="tag">050</xsl:with-param>
-			<xsl:with-param name="ind2">
+			<xsl:with-param name="tag">090</xsl:with-param> <!-- SA change from 050 2018-05-30 -->
+			
+			<!--<xsl:with-param name="ind2">
 				<xsl:choose>
 					<xsl:when test="../mods:recordInfo/mods:recordContentSource='DLC' or ../mods:recordInfo/mods:recordContentSource='Library of Congress'">0</xsl:when>
 					<xsl:otherwise>2</xsl:otherwise>
 				</xsl:choose>
-			</xsl:with-param>
+			</xsl:with-param>-->
 			<xsl:with-param name="subfields">
 				<xsl:for-each select="mods:classification[@authority='lcc']">
 					<marc:subfield code="a">
-						<xsl:value-of select="."/>
+						<xsl:value-of select="substring-before(., ' ')"/>
+					</marc:subfield>
+					<marc:subfield code="b">
+						<xsl:value-of select="substring-after(., ' ')"/>
 					</marc:subfield>
 				</xsl:for-each>
 			</xsl:with-param>
@@ -2696,7 +2937,7 @@
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
-	<xsl:template match="mods:identifier[@type='uri'] | mods:identifier[@type='doi']"> <!-- SA add DOI 2014-09-22 -->
+	<xsl:template match="mods:identifier[@type=('uri', 'doi', 'ark')]"> <!-- SA add DOI 2014-09-22, add ARK 2018-06-12 -->
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">856</xsl:with-param>
 			<xsl:with-param name="ind1">4</xsl:with-param> <!-- SA add 2014-09-22 -->
@@ -2715,7 +2956,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	<!--v3 location/url -->
-	<xsl:template match="mods:location[mods:url][not(../mods:identifier[@type='doi'])]"> <!-- SA change to disable if DOI exists 2014-09-22 -->
+	<xsl:template match="mods:location[mods:url][not(../mods:identifier[@type=('doi', 'ark')])]"> <!-- SA change to disable if DOI exists 2014-09-22, if ARK exists 2018-06-18 -->
 		<xsl:for-each select="mods:url[@usage='primary']"> <!-- SA change to limit to primary URL 2015-01-14 -->
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">856</xsl:with-param>
@@ -2821,6 +3062,77 @@
 				</xsl:with-param>
 			</xsl:call-template>		
 		</xsl:for-each>
+		<xsl:apply-templates/> <!-- SA add 2018-07-20 -->
+	</xsl:template>
+	
+	<!-- SA add 2018-07-20 to support item records for print materials -->
+	<xsl:template match="mods:location[mods:holdingSimple][1]">
+		<xsl:call-template name="datafield">
+			<xsl:with-param name="tag">946</xsl:with-param>
+			<xsl:with-param name="subfields">
+				<marc:subfield code="u">
+					<xsl:text>+l</xsl:text>
+				</marc:subfield>
+			</xsl:with-param>
+		</xsl:call-template>
+		<xsl:call-template name="datafield">
+			<xsl:with-param name="tag">949</xsl:with-param>
+			<xsl:with-param name="subfields">
+				<marc:subfield code="a">
+					<xsl:text>*ov=.</xsl:text>
+					<xsl:value-of select="../mods:recordInfo/mods:recordIdentifier[@source='DRB'][matches(., '^b\d+x?')]"/>
+					<xsl:text>;</xsl:text>
+					<xsl:text>b2=n;</xsl:text>
+					<xsl:text>b3=-;</xsl:text>
+				</marc:subfield>
+			</xsl:with-param>
+		</xsl:call-template>
+		<xsl:apply-templates select="mods:holdingSimple/mods:copyInformation"/>
+	</xsl:template>
+	<xsl:template match="mods:location[mods:holdingSimple][position()>1]">
+		<xsl:apply-templates select="mods:holdingSimple/mods:copyInformation"/>
+	</xsl:template>
+	<xsl:template match="mods:copyInformation">
+		<xsl:call-template name="datafield">
+			<xsl:with-param name="tag">949</xsl:with-param>
+			<xsl:with-param name="ind2">1</xsl:with-param>
+			<xsl:with-param name="subfields">
+				<marc:subfield code="w">
+					<xsl:value-of select="mods:note[@type='item type']"/>
+				</marc:subfield>
+				<marc:subfield code="l">
+					<xsl:value-of select="mods:subLocation"/>
+				</marc:subfield>
+				<marc:subfield code="u">
+					<xsl:text>950</xsl:text>
+					<xsl:choose>
+						<xsl:when test="mods:shelfLocator[@type='lc']">01</xsl:when>
+						<xsl:when test="mods:shelfLocator[@type='dewey']">02</xsl:when>
+						<xsl:when test="mods:shelfLocator[@type='accession']">04</xsl:when>
+					</xsl:choose>
+				</marc:subfield>
+				<xsl:if test="not(mods:shelfLocator[@type='lc'])">
+					<marc:subfield code="b">
+						<xsl:value-of select="mods:shelfLocator"/>
+					</marc:subfield>
+				</xsl:if>
+				<marc:subfield code="z">
+					<xsl:value-of select="mods:itemIdentifier[@type='barcode']"/>
+				</marc:subfield>
+				<xsl:if test="mods:enumerationAndChronology">
+					<marc:subfield code="e">
+						<xsl:value-of select="mods:enumerationAndChronology"/>
+					</marc:subfield>
+					<marc:subfield code="g">
+						<xsl:analyze-string select="mods:enumerationAndChronology" regex="(\d+)">
+							<xsl:matching-substring>
+								<xsl:value-of select="regex-group(1)"/>
+							</xsl:matching-substring>
+						</xsl:analyze-string>
+					</marc:subfield>
+				</xsl:if>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 <!-- v3.4 add physical location url -->
@@ -3061,6 +3373,7 @@
 				<xsl:call-template name="relatedItem76X-78X"/>
 			</xsl:with-param>
 		</xsl:call-template>
+		<xsl:call-template name="printClassification"/> <!-- SA add 2018-05-30 -->
 	</xsl:template>
 
 	<xsl:template match="mods:relatedItem[@type='host']">
@@ -3153,7 +3466,7 @@
 		</xsl:if>
 		<!-- SA add 2017-07-26 -->
 		<xsl:if test="@type='original'">
-			<xsl:for-each select="mods:originInfo[@eventType='publication']">
+			<xsl:for-each select="mods:originInfo"> <!-- SA update 2018-05-30 -->
 				<!-- adapted from code for 264 -->
 				<marc:subfield code="c">
 					<xsl:for-each select="mods:place/mods:placeTerm[@type='text']">
@@ -3187,7 +3500,8 @@
 						</xsl:if>
 					</xsl:for-each>
 					<xsl:for-each select="mods:dateIssued[@point='start'][@encoding='w3cdtf'] | mods:dateIssued[not(@point)][@encoding='w3cdtf']">
-						<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+						<!-- SA add brackets when @drb:supplied 2017-05-05, @qualifier=("questionable", "inferred") 2018-06-12 -->
+						<xsl:if test="@drb:supplied='yes' or @qualifier=('questionable', 'inferred')">
 							<xsl:text>[</xsl:text>
 						</xsl:if>
 						<xsl:value-of select="substring(.,1,4)"/>
@@ -3197,7 +3511,8 @@
 						<xsl:if test="mods:dateIssued[@point='end'][@encoding='w3cdtf']">
 							- <xsl:value-of select="../mods:dateIssued[@point='end'][@encoding='w3cdtf']"/>
 						</xsl:if>
-						<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+						<!-- SA add brackets when @drb:supplied 2017-05-05, @qualifier=("questionable", "inferred") 2018-06-12 -->
+						<xsl:if test="@drb:supplied='yes' or @qualifier=('questionable', 'inferred')">
 							<xsl:text>]</xsl:text>
 						</xsl:if>
 						<!-- SA add 2015-02-05, update 2015-11-23, 2017-05-05, 2017-07-27 -->
@@ -3346,7 +3661,8 @@
 						</xsl:if>
 					</xsl:for-each>
 					<xsl:for-each select="mods:dateIssued[@point='start'][@encoding='w3cdtf'] | mods:dateIssued[not(@point)][@encoding='w3cdtf']">
-						<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+						<!-- SA add brackets when @drb:supplied 2017-05-05, @qualifier=("questionable", "inferred") 2018-06-12 -->
+						<xsl:if test="@drb:supplied='yes' or @qualifier=('questionable', 'inferred')">
 							<xsl:text>[</xsl:text>
 						</xsl:if>
 						<xsl:value-of select="substring(.,1,4)"/>
@@ -3356,7 +3672,8 @@
 						<xsl:if test="mods:dateIssued[@point='end'][@encoding='w3cdtf']">
 							- <xsl:value-of select="../mods:dateIssued[@point='end'][@encoding='w3cdtf']"/>
 						</xsl:if>
-						<xsl:if test="@drb:supplied='yes'"> <!-- SA add brackets when @drb:supplied 2017-05-05 -->
+						<!-- SA add brackets when @drb:supplied 2017-05-05, @qualifier=("questionable", "inferred") 2018-06-12 -->
+						<xsl:if test="@drb:supplied='yes' or @qualifier=('questionable', 'inferred')">
 							<xsl:text>]</xsl:text>
 						</xsl:if>
 						<!-- SA add 2015-02-05, update 2015-11-23, 2017-05-05, 2017-07-27 -->
@@ -3402,17 +3719,11 @@
 				<xsl:value-of select="."/>
 			</marc:subfield>
 		</xsl:for-each>-->
-		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier[@source]"> <!-- SA add 2014-09-22 -->
+		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier[@source='OCoLC']"> <!-- SA add 2014-09-22, update 2018-07-20 -->
 			<marc:subfield code="w">
 				<xsl:text>(</xsl:text><xsl:value-of select="@source"/><xsl:text>)</xsl:text>
-				<xsl:choose> <!-- SA add 2017-11-09, remove leading zeroes from OCLC record numbers -->
-					<xsl:when test="@source='OCoLC'">
-						<xsl:value-of select="xs:integer(.)"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="."/>
-					</xsl:otherwise>
-				</xsl:choose>
+				<!-- SA add 2017-11-09, remove leading zeroes from OCLC record numbers -->
+				<xsl:value-of select="xs:integer(replace(., 'on|ocn|ocm', ''))"/> <!-- SA update 2018-05-31 -->
 			</marc:subfield>
 		</xsl:for-each>
 		<!-- SA disable duplicate $n 2017-08-18 -->
@@ -3463,11 +3774,9 @@
 	
 	<!-- SA add as new template 2017-07-26 -->
 	<xsl:template name="dateOfWork">
-		<!-- SA 2016-10-18 add 388 support for dates of work, update 2017-07-27, 2017-08-18, 2017-11-15 -->
-		<xsl:for-each select="mods:originInfo[@eventType]/((*[@encoding='w3cdtf'][not(@point='end' 
-			and preceding-sibling::*[@encoding='w3cdtf'][@point='start'])][not(@qualifier)][1])|
-			(*[@encoding='fast'][not(@point='end' and preceding-sibling::*[@encoding='fast'][@point='start'])]
-			[not(@qualifier)][1]))">
+		<!-- SA 2016-10-18 add 388 support for dates of work, update 2017-07-27, 2017-08-18, 2017-11-15, 2018-05-31, 2018-06-12, 2018-07-12 -->
+		<xsl:for-each select="mods:originInfo/(*[@encoding=('w3cdtf', 'fast')][not(@point='end' 
+			and preceding-sibling::*[@encoding=('w3cdtf', 'fast')][@point='start'])])">
 			<xsl:call-template name="datafield">
 				<xsl:with-param name="tag">388</xsl:with-param>
 				<xsl:with-param name="ind1">1</xsl:with-param>
@@ -3510,9 +3819,9 @@
 	
 	<!-- SA add 2018-03-15 -->
 	<xsl:template name="localBibNumber">
-		<xsl:for-each select="mods:extension/drb:flag[@type='marc']">
+		<xsl:for-each select="mods:extension/drb:flag[@type='marc']/@sierraRecordNumber">
 			<xsl:call-template name="datafield">
-				<xsl:with-param name="tag">991</xsl:with-param>
+				<xsl:with-param name="tag">907</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
 						<xsl:value-of select="concat('.', .)"/>
@@ -3522,13 +3831,31 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-	<!-- SA add 2017-11-28, update 2018-02-01 -->
+	<!-- SA add 2017-11-28, update 2018-02-01, 2018-05-30 -->
 	<xsl:template name="authorityRecordNumberFAST">
 		<xsl:variable name="URInode" select="ancestor-or-self::*[@valueURI]"/>
 		<marc:subfield code="0">
-			<xsl:text>(OCoLC)fst</xsl:text>
+			<xsl:if test="not(contains($URInode/@valueURI, '(OCoLC)fst'))">
+				<xsl:text>(OCoLC)fst</xsl:text>
+			</xsl:if>
 			<xsl:value-of select="lfn:pad-zeroes(tokenize($URInode/@valueURI, '/')[last()], 8)"/>
 		</marc:subfield>
+	</xsl:template>
+	
+	<!-- SA add 2018-05-30 -->
+	<xsl:template name="printClassification">
+		<xsl:if test="mods:classification[@authority='lcc']">
+			<xsl:call-template name="datafield">
+				<xsl:with-param name="tag">852</xsl:with-param>
+				<xsl:with-param name="ind1">0</xsl:with-param>
+				<xsl:with-param name="ind2">1</xsl:with-param>
+				<xsl:with-param name="subfields">
+					<marc:subfield code="h">
+						<xsl:value-of select="mods:classification[@authority='lcc']"/>
+					</marc:subfield>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- v3 not used?
