@@ -24,17 +24,9 @@
             <assert test="not(in-scope-prefixes(.) = '')">
                 No unprefixed namespaces should be present. [<name path=".."/>/<name/>]
             </assert>
-            <assert test="ends-with(base-uri(), concat(mods:recordInfo/mods:recordIdentifier[@source='DRB'], '-mods.xml'))">
+            <assert test="ends-with(base-uri(), concat(mods:recordInfo/mods:recordIdentifier[@source='DRB'][1], '-mods.xml'))">
                 The record filename should match the record identifier with the suffix "-mods.xml".
             </assert>
-        </rule>
-    </pattern>
-
-    <pattern>
-        
-        <!-- Digital Library Program materials -->
-        
-        <rule context="mods:mods[mods:extension/drb:flag[@type='program'][@value='ddlp']]">
             
             <assert test="mods:titleInfo" sqf:fix="titleInfo">
                 The record should have mods:titleInfo.
@@ -302,8 +294,8 @@
     
     <pattern>
         <rule context="mods:mods">
-            <assert test="count(mods:titleInfo[not(@type)]) = 1">
-                There should be exactly 1 mods:titleInfo without @type.
+            <assert test="(count(mods:titleInfo[not(@type)]) = 1) or (count(mods:titleInfo[not(@type)][@altRepGroup]) = 2)">
+                There should be exactly 1 mods:titleInfo without @type, unless a linked element is present.
             </assert>
         </rule>
         <rule context="mods:mods/mods:titleInfo">
@@ -342,7 +334,7 @@
     
     <pattern>
         <rule context="mods:mods/mods:name[@usage='primary']">
-            <assert test="mods:role/mods:roleTerm[@type='text'][normalize-space(text())]">
+            <assert role="warning" test="mods:role/mods:roleTerm[@type='text'][normalize-space(text())]">
                 The primary name should have a text mods:roleTerm assigned from the MARC Code List for Relators.
             </assert>
             <assert test="not(preceding-sibling::mods:name[@usage='primary'])">
@@ -477,7 +469,7 @@
     
     <pattern>
         <rule context="mods:mods/mods:abstract">
-            <assert test="matches(., '.+[\.\?!&quot;]$')">
+            <assert test="matches(., '.+[\.\?\)!&quot;”]$')">
                 <name/> should end with a punctuation mark.
             </assert>
         </rule>
@@ -489,8 +481,8 @@
     
     <pattern>
         <rule context="mods:mods/mods:subject[not(mods:hierarchicalGeographic|mods:cartographics)]">
-            <assert test="@authority">
-                <name/> should have @authority.
+            <assert role="warning" test="@authority">
+                <name/> should have @authority unless it is uncontrolled.
             </assert>
             <assert test="not(@authority='naf')" sqf:fix="subject-naf">
                 "naf" should not be assigned to <name/>/@authority. Use "lcsh" instead.
@@ -513,7 +505,7 @@
             </assert>
         </rule>
         
-        <rule context="*[ancestor::mods:mods/mods:subject][not(child::*)][not(self::mods:coordinates|self::mods:geographicCode)][text()]">
+        <rule context="mods:topic|mods:geographic|mods:temporal|mods:genre">
             <assert test="not(matches(., '--'))" sqf:fix="parse-subdivisions">
                 All subject headings should be parsed into multiple subelements.
             </assert>
@@ -529,6 +521,12 @@
                     <value-of select="substring-after($string, '--')"/>
                 </sqf:add>
             </sqf:fix>
+        </rule>
+        
+        <rule context="mods:mods/mods:subject/mods:cartographics/mods:coordinates">
+            <assert test="matches(., '^\([EW] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?(--[EW] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?)?/[NS] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?(--[NS] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?)?\)\.?$')">
+                <name/> should be formatted according to ISBD principles.
+            </assert>
         </rule>
     </pattern>
     
@@ -586,7 +584,7 @@
             <assert test="@type = ('use and reproduction', 'restriction on access')">
                 The value of @type for <name/> should be "use and reproduction" or "restriction on access".
             </assert>
-            <report test="@type='restriction on access' and contains(., 'Dissertation embargoed until')">
+            <report test="@type='restriction on access' and contains(., 'Dissertation embargoed until')" role="info">
                 This record indicates an embargo. Please verify and process accordingly. [<name path=".."/>/<name/>]
             </report>
         </rule>
@@ -659,7 +657,7 @@
     
     <pattern>
         <rule context="//*[not(child::*)][not(parent::mods:extension)][not(self::cmd:copyright)][not(self::mods:nonSort)]">
-            <assert test="not(normalize-space(text()) = '')">
+            <assert role="warning" test="not(normalize-space(text()) = '')">
                 All elements without children should contain text. [<name path=".."/>/<name/>]
             </assert>
             <assert test=". = normalize-space(.)">
@@ -671,8 +669,8 @@
     <pattern>
         <rule context="*[not(self::mods:abstract)][not(self::mods:note)][not(self::mods:accessCondition)][not(self::mods:recordOrigin)]
             [not(self::mods:placeTerm)][not(self::mods:tableOfContents)][not(ancestor-or-self::html:html)]">
-            <report role="warning" test="ends-with(., '.')">
-                This element ends with a period. Please verify that no ISBD punctuation is included. [<name path="../.."/>/<name path=".."/>]
+            <report role="warning" test="matches(., '[\.,:\?\]]$')">
+                This element ends with a punctuation mark. Please verify that no ISBD end punctuation is included. [<name path=".."/>/<name/>]
             </report>
         </rule>
     </pattern>
@@ -780,6 +778,11 @@
                 <name/> with @type="otherFormat" does not have mods:titleInfo or mods:recordInfo. The derived MARCXML record will not include a 776 field.
             </report>
         </rule>
+        <rule context="mods:relatedItem[@type='original']">
+            <assert test="@displayLabel">
+                <name/> with @type="original" should have @displayLabel.
+            </assert>
+        </rule>
     </pattern>
     
     <!-- Scripts -->
@@ -794,7 +797,7 @@
     
     <pattern>
         <rule context="text()[matches(., '\p{IsGreekandCoptic}')]">
-            <assert test="../@script='Grek'" sqf:fix="script-Grek">
+            <assert test="ancestor::*/@script='Grek'" sqf:fix="script-Grek">
                 This element contains characters from the Greek and Coptic Unicode block but lacks the appropriate @script. [<name path="../.."/>/<name path=".."/>]
             </assert>
             <sqf:fix id="script-Grek">
@@ -807,7 +810,7 @@
     </pattern>
     
     <pattern>
-        <rule context="*[not(child::*)][not(@type='splash') and not(@script)][not(self::mods:coordinates)]">
+        <rule context="*[not(child::*)][not(@type='splash') and not(ancestor-or-self::*/@script)][not(self::mods:coordinates)]">
             <report role="warning" test="matches(., '[^\p{IsBasicLatin}]')">
                 This element contains non-ASCII characters and is not marked as using a non-Latin script. Please verify that all characters are encoded as intended. [<name path="../.."/>/<name path=".."/>]
             </report>
@@ -828,12 +831,12 @@
                 If the record has been contributed to WorldCat, it should have three additional fields: an OCLC number and the MARC dates for entered on file and last transaction.
             </report>
         </rule>
-        <rule context="mods:mods/mods:recordInfo/mods:recordIdentifier[@source='OCoLC']">
+        <rule context="mods:mods/mods:recordInfo/mods:recordIdentifier[@source='OCoLC'][text()]">
             <assert test="matches(., '^(ocm|ocn|on)\d{8,}$')">
                 The OCLC number in <name path=".."/> should consist of an alphabetic prefix followed by 8 or more digits.
             </assert>
         </rule>
-        <rule context="mods:mods/mods:relatedItem/mods:recordInfo/mods:recordIdentifier[@source='OCoLC']">
+        <rule context="mods:mods/mods:relatedItem/mods:recordInfo/mods:recordIdentifier[@source='OCoLC'][text()]">
             <assert test="matches(., '^\d{8,}$')">
                 The OCLC number in <name path="../.."/> should consist of 8 or more digits without an alphabetic prefix.
             </assert>
