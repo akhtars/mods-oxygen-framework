@@ -42,7 +42,7 @@
     <!-- Create merged record in child directory if record identifier is found in ARK data file -->
     <xsl:template match="mods:mods">
         <xsl:if test="contains($arks-file, concat($record-id, '-ezid.txt'))">
-            <xsl:result-document href="merged-arks\${filename}" method="xml" indent="yes">
+            <xsl:result-document href="merged-arks\{$filename}" method="xml" indent="yes">
                 <xsl:copy>
                     <xsl:copy-of select="@*"/>
                     <xsl:apply-templates/>
