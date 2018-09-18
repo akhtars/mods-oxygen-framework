@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serialized version="19.1" xml:space="preserve">
+	<map>
+		<entry>
+			<String>code-templates</String>
+			<codeTemplateItem-array>
+				<codeTemplateItem>
+					<field name="contentType">
+						<String>text/any</String>
+					</field>
+					<field name="unparsedInsertString">
+						<String>${date(yyyy-MM-dd)}</String>
+					</field>
+					<field name="descriptionString">
+						<String>Today's date (YYYY-MM-DD)</String>
+					</field>
+					<field name="renderString">
+						<String>td</String>
+					</field>
+					<field name="enabled">
+						<Boolean>true</Boolean>
+					</field>
+					<field name="accelerator">
+						<null/>
+					</field>
+				</codeTemplateItem>
+				<codeTemplateItem>
+					<field name="contentType">
+						<String>text/any</String>
+					</field>
+					<field name="unparsedInsertString">
+						<String>Trustees of Dartmouth College</String>
+					</field>
+					<field name="descriptionString">
+						<String>Trustees of Dartmouth College</String>
+					</field>
+					<field name="renderString">
+						<String>tdc</String>
+					</field>
+					<field name="enabled">
+						<Boolean>true</Boolean>
+					</field>
+					<field name="accelerator">
+						<null/>
+					</field>
+				</codeTemplateItem>
+			</codeTemplateItem-array>
+		</entry>
+		<entry>
+			<String>editor.format.preserve.text.as.it.is</String>
+			<Boolean>true</Boolean>
+		</entry>
+		<entry>
+			<String>editor.indent.size.v9.2</String>
+			<Integer>4</Integer>
+		</entry>
+		<entry>
+			<String>editor.line.width</String>
+			<Integer>200</Integer>
+		</entry>
+		<entry>
+			<String>editor.line.wrap</String>
+			<Boolean>true</Boolean>
+		</entry>
+		<entry>
+			<String>extensions.update.sites</String>
+			<String-array>
+				<String>https://www.oxygenxml.com/InstData/Addons/default/updateSite.xml</String>
+				<String>https://www.oxygenxml.com/InstData/Addons/community/updateSite.xml</String>
+				<String>https://www.dartmouth.edu/~library/catmet/oxygen/mods.xml</String>
+				<String>https://www.dartmouth.edu/~library/catmet/oxygen/marcxml.xml</String>
+				<String>https://www.dartmouth.edu/~library/catmet/oxygen/proquest_etd_xml.xml</String>
+			</String-array>
+		</entry>
+		<entry>
+			<String>schematron.expand.default.attributes.xml.schema</String>
+			<Boolean>false</Boolean>
+		</entry>
+		<entry>
+			<String>show.memory.status</String>
+			<Boolean>true</Boolean>
+		</entry>
+		<entry>
+			<String>xpath.default.namespace</String>
+			<xPathDefaultNamespace>
+				<field name="usingNoNamespace">
+					<Boolean>false</Boolean>
+				</field>
+				<field name="usingDefaultNamespaceOfRoot">
+					<Boolean>false</Boolean>
+				</field>
+				<field name="usingNamespaceOfRoot">
+					<Boolean>true</Boolean>
+				</field>
+				<field name="namespace">
+					<String>http://www.loc.gov/mods/v3</String>
+				</field>
+			</xPathDefaultNamespace>
+		</entry>
+		<entry>
+			<String>xpath.proxy.ns.mappings</String>
+			<String-array>
+				<String>xs</String>
+				<String>http://www.w3.org/2001/XMLSchema</String>
+				<String>fn</String>
+				<String>http://www.w3.org/2005/xpath-functions</String>
+				<String>err</String>
+				<String>http://www.w3.org/2005/xqt-errors</String>
+				<String>math</String>
+				<String>http://www.w3.org/2005/xpath-functions/math</String>
+				<String>mods</String>
+				<String>http://www.loc.gov/mods/v3</String>
+				<String>marc</String>
+				<String>http://www.loc.gov/MARC21/slim</String>
+				<String>html</String>
+				<String>http://www.w3.org/1999/xhtml</String>
+				<String>drb</String>
+				<String>http://www.dartmouth.edu/~library/catmet/</String>
+				<String>cmd</String>
+				<String>http://www.cdlib.org/inside/diglib/copyrightMD</String>
+				<String>xlink</String>
+				<String>http://www.w3.org/1999/xlink</String>
+			</String-array>
+		</entry>
+	</map>
+</serialized>
