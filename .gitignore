@@ -1,5 +1,6 @@
 # Project-specific exclusions
 /scenarios
+*.zip
 
 # Windows image file caches
 Thumbs.db
