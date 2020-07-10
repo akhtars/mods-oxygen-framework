@@ -60,6 +60,7 @@
 						<xsl:text>/</xsl:text>
 						<xsl:choose>
 							<xsl:when test="@script = 'Grek'">(S</xsl:when>
+							<xsl:when test="@script = 'Hans'">$1</xsl:when> <!-- SA add 2019-07-01 -->
 						</xsl:choose>
 					</marc:subfield>
 				</xsl:when>

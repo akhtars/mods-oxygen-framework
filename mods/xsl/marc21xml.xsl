@@ -158,12 +158,10 @@
 				</xsl:choose>
 			</xsl:for-each>
 		</xsl:variable>
+		<!-- SA remove fill-character spacer 2019-07-30 -->
 		<xsl:call-template name="makeSize">
 			<xsl:with-param name="string" select="$chars"/>
 			<xsl:with-param name="length" select="2"/>
-			<xsl:with-param name="spacer">
-				<xsl:text>|</xsl:text>
-			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
 
@@ -208,7 +206,7 @@
 				<xsl:choose>
 					<xsl:when test="mods:originInfo/mods:issuance='monographic'">m</xsl:when>
 					<xsl:when test="mods:originInfo/mods:issuance='continuing'">s</xsl:when>
-					<!--<xsl:when test="mods:typeOfResource/@collection='yes'">i</xsl:when>--> <!-- SA disable 2016-05-16 -->
+					<xsl:when test="mods:typeOfResource/text()='mixed material' and mods:typeOfResource/@collection='yes'">c</xsl:when> <!-- SA update 2019-06-28 -->
 					<!-- v3.4 Added mapping for single unit, serial, integrating resource, multipart monograph  -->
 					<xsl:when test="mods:originInfo/mods:issuance='multipart monograph'">m</xsl:when>
 					<xsl:when test="mods:originInfo/mods:issuance='single unit'">m</xsl:when>
@@ -279,7 +277,9 @@
 				</marc:controlfield>
 			</xsl:if>
 			<marc:controlfield tag="008">
-				<xsl:variable name="typeOf008"><xsl:apply-templates mode="ctrl008" select="mods:typeOfResource"/></xsl:variable>
+				<xsl:variable name="typeOf008">
+					<xsl:apply-templates mode="ctrl008" select="mods:typeOfResource[1]"/> <!-- SA limit to first 2019-06-28 -->
+				</xsl:variable>
 				<!-- 00-05 -->	
 				<xsl:choose>
 					<!-- 1/04 fix --> <!-- SA update 2016-08-17 -->
@@ -423,6 +423,16 @@
 						<!-- 21 -->
 						<xsl:text> </xsl:text>
 					</xsl:when>
+					<!-- SA add 2019-07-30 -->
+					<xsl:when test="$typeOf008='MU'">
+						<!-- 18-19 -->
+						<xsl:text>||</xsl:text>
+						<!-- 20-21 -->
+						<xsl:choose>
+							<xsl:when test="mods:typeOfResource=('sound recording', 'sound recording-musical')">nn</xsl:when>
+							<xsl:otherwise>||</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:otherwise>
 						<!-- SA change 2016-05-16 to support frequency, regularity for continuing resources -->
 						<!-- 18-19 -->
@@ -561,9 +571,9 @@
 					</xsl:otherwise>
 				</xsl:choose>
 				<!-- 28 -->
-				<!-- SA change 2015-02-05, 2018-08-24 -->
+				<!-- SA change 2015-02-05, 2018-08-24, 2019-07-30 -->
 				<xsl:choose>
-					<xsl:when test="$typeOf008='MP'">|</xsl:when>
+					<xsl:when test="$typeOf008='MP' or $typeOf008='MU'">|</xsl:when>
 					<xsl:otherwise>
 						<xsl:text> </xsl:text>
 					</xsl:otherwise>
@@ -658,6 +668,13 @@
 						<xsl:otherwise>0</xsl:otherwise> <!-- 2016-02-11 SA change default -->
 						</xsl:choose>
 					</xsl:when>
+					<!-- SA add 2019-07-30 -->
+					<xsl:when test="$typeOf008='MU'">
+						<xsl:choose>
+							<xsl:when test="mods:typeOfResource=('sound recording', 'sound recording-musical')">n</xsl:when>
+							<xsl:otherwise>|</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
 				</xsl:choose>
 				<!-- 34 -->	
@@ -675,6 +692,7 @@
 							<xsl:otherwise>n</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
+					<xsl:when test="$typeOf008='SE'">2</xsl:when> <!-- SA add 2019-08-07 -->
 					<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
 				</xsl:choose>
 				<!-- 35-37 -->	
@@ -684,7 +702,14 @@
 				<xsl:choose>
 				<!-- v3 language -->
 					<xsl:when test="$languageCodes &gt; 1">
-						<xsl:value-of select="mods:language[@usage='primary']/mods:languageTerm[@authority='iso639-2b']"/>
+						<xsl:choose> <!-- SA update 2019-07-01 -->
+							<xsl:when test="mods:language[@usage='primary']">
+								<xsl:value-of select="mods:language[@usage='primary']/mods:languageTerm[@authority='iso639-2b']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="mods:language[1]/mods:languageTerm[@authority='iso639-2b']"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:when>
 					<xsl:when test="$languageCodes = 1">
 						<xsl:value-of select="mods:language/mods:languageTerm[@authority='iso639-2b']"/>
@@ -1358,7 +1383,7 @@
 				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:for-each>
-		<xsl:for-each select="mods:frequency">
+		<xsl:for-each select="mods:frequency[not(.='Unknown')]"> <!-- SA update 2019-06-28 -->
 			<xsl:call-template name="datafield">
 				<xsl:with-param name="tag">310</xsl:with-param>
 				<xsl:with-param name="subfields">
@@ -1425,7 +1450,8 @@
 							</xsl:if>
 						</marc:subfield>
 					</xsl:for-each>
-					<xsl:for-each select="mods:dateIssued[not(@point='end')][not(@encoding='fast')]"> <!-- SA update 2017-11-16 -->
+					<xsl:for-each select="mods:dateIssued[not(@point='end')][not(@encoding='fast')]
+						[not(.=preceding-sibling::mods:dateIssued)]"> <!-- SA update 2017-11-16, 2019-06-28 -->
 						<marc:subfield code='c'>
 							<xsl:if test="@drb:supplied='yes' or @qualifier='questionable'"> <!-- SA add brackets when @drb:supplied 2017-05-05, @qualifier="questionable" 2018-05-30 -->
 								<xsl:text>[</xsl:text>
@@ -1943,6 +1969,20 @@
 		<xsl:for-each select="mods:recordInfo/mods:recordChangeDate[@encoding='iso8601']">
 			<marc:controlfield tag="005"><xsl:value-of select="."/></marc:controlfield>
 		</xsl:for-each>		
+	</xsl:template>
+	
+	<!-- SA add 2020-05-29 -->
+	<xsl:template match="mods:accessCondition[@type='use and reproduction'][position()=1]">
+		<xsl:if test="not(../mods:accessCondition[@type='restriction on access'])">
+			<xsl:call-template name="datafield">
+				<xsl:with-param name="tag">506</xsl:with-param>
+				<xsl:with-param name="ind1">0</xsl:with-param>
+				<xsl:with-param name="subfields">
+					<marc:subfield code="f">Unrestricted online access</marc:subfield>
+					<marc:subfield code="2">star</marc:subfield>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="recordIdentifier"> <!-- SA add 2015-01-23 -->
@@ -2937,7 +2977,7 @@
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
-	<xsl:template match="mods:identifier[@type=('uri', 'doi', 'ark')]"> <!-- SA add DOI 2014-09-22, add ARK 2018-06-12 -->
+	<xsl:template match="mods:identifier[@type=('uri', 'doi', 'ark')][not(@invalid='yes')]"> <!-- SA add DOI 2014-09-22, add ARK 2018-06-12, exclude invalid 2019-07-01 -->
 		<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">856</xsl:with-param>
 			<xsl:with-param name="ind1">4</xsl:with-param> <!-- SA add 2014-09-22 -->
@@ -3171,6 +3211,28 @@
 		</xsl:for-each>
 	</xsl:template>	
 	
+	<!-- Provide URL for first file's thumbnail, SA add 2020-05-29 -->
+	<xsl:template match="mods:extension[drb:filename]">
+		<xsl:variable name="collection-identifier" as="xs:string" 
+			select="../mods:relatedItem[@type='host']/mods:recordInfo/mods:recordIdentifier[@source='DRB']"/>
+		<xsl:for-each select="drb:filename[position()=1]">
+			<xsl:if test="$collection-identifier ne ''">
+				<xsl:call-template name="datafield">
+					<xsl:with-param name="tag">945</xsl:with-param>
+					<xsl:with-param name="subfields">
+						<marc:subfield code="u">
+							<xsl:text>https://collections.dartmouth.edu/content/deliver/inline/</xsl:text>
+							<xsl:value-of select="$collection-identifier"/>
+							<xsl:text>/jpeg-160x120/</xsl:text>
+							<xsl:value-of select="substring-before(., '.')"/>
+							<xsl:text>.jpg</xsl:text>
+						</marc:subfield>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
 	<!-- SA disable copying to 887 field 2013-10-25 -->
 	<!--<xsl:template match="mods:extension">
 		<xsl:call-template name="datafield">
@@ -3215,7 +3277,13 @@
 	<!-- v3 isReferencedBy -->
 	<xsl:template match="mods:relatedItem[@type='isReferencedBy']">	
 		<xsl:call-template name="datafield">
-			<xsl:with-param name="tag">510</xsl:with-param>		
+			<xsl:with-param name="tag">510</xsl:with-param>	
+			<xsl:with-param name="ind1"> <!-- SA add 2020-05-29 -->
+				<xsl:choose>
+					<xsl:when test="mods:part/mods:detail">4</xsl:when>
+					<xsl:otherwise>3</xsl:otherwise>
+				</xsl:choose>
+			</xsl:with-param>
 			<xsl:with-param name="subfields">
 				<xsl:variable name="noteString">
 					<xsl:for-each select="*">
@@ -3313,7 +3381,13 @@
 	<!-- v3 was type="related" -->
 		   	<xsl:call-template name="datafield">
 			<xsl:with-param name="tag">787</xsl:with-param>
-			<xsl:with-param name="ind1">0</xsl:with-param>			
+			<xsl:with-param name="ind1">0</xsl:with-param>
+			<xsl:with-param name="ind2"> <!-- SA add 2019-07-01 -->
+				<xsl:choose>
+					<xsl:when test="@displayLabel">8</xsl:when>
+					<xsl:otherwise> </xsl:otherwise>
+				</xsl:choose>
+			</xsl:with-param>	
 			<xsl:with-param name="subfields">
 				<xsl:call-template name="relatedItem76X-78X"/>
 			</xsl:with-param>
@@ -3601,6 +3675,19 @@
 						<xsl:value-of select="."/>
 					</marc:subfield>
 				</xsl:for-each>
+				<!-- SA add 2019-07-30 -->
+				<xsl:for-each select="mods:location/mods:physicalLocation">
+					<marc:subfield code="l">
+						<xsl:value-of select="."/>
+						<xsl:text>.</xsl:text>
+					</marc:subfield>
+				</xsl:for-each>
+				<xsl:for-each select="mods:location/mods:holdingSimple/mods:copyInformation/mods:shelfLocator">
+					<marc:subfield code="o">
+						<xsl:value-of select="."/>
+						<xsl:text>.</xsl:text>
+					</marc:subfield>
+				</xsl:for-each>
 			</xsl:when>
 			<xsl:when test="@type!='original'">
 				<xsl:for-each select="mods:physicalDescription/mods:extent">
@@ -3719,13 +3806,15 @@
 				<xsl:value-of select="."/>
 			</marc:subfield>
 		</xsl:for-each>-->
-		<xsl:for-each select="mods:recordInfo/mods:recordIdentifier[@source='OCoLC']"> <!-- SA add 2014-09-22, update 2018-07-20 -->
-			<marc:subfield code="w">
-				<xsl:text>(</xsl:text><xsl:value-of select="@source"/><xsl:text>)</xsl:text>
-				<!-- SA add 2017-11-09, remove leading zeroes from OCLC record numbers -->
-				<xsl:value-of select="xs:integer(replace(., 'on|ocn|ocm', ''))"/> <!-- SA update 2018-05-31 -->
-			</marc:subfield>
-		</xsl:for-each>
+		<xsl:if test="@type='otherFormat' or @type='host'"> <!-- SA add 2019-07-30, update 2020-05-29 -->
+			<xsl:for-each select="mods:recordInfo/mods:recordIdentifier[@source='OCoLC']"> <!-- SA add 2014-09-22, update 2018-07-20 -->
+				<marc:subfield code="w">
+					<xsl:text>(</xsl:text><xsl:value-of select="@source"/><xsl:text>)</xsl:text>
+					<!-- SA add 2017-11-09, remove leading zeroes from OCLC record numbers -->
+					<xsl:value-of select="xs:integer(replace(., 'on|ocn|ocm', ''))"/> <!-- SA update 2018-05-31 -->
+				</marc:subfield>
+			</xsl:for-each>
+		</xsl:if>
 		<!-- SA disable duplicate $n 2017-08-18 -->
 		<!--<xsl:for-each select="mods:note">  
 			<marc:subfield code="n">
@@ -3734,13 +3823,13 @@
 		</xsl:for-each>		-->		
 	</xsl:template>
 	
-	<!-- SA update 2017-11-15, 2017-11-20 -->
+	<!-- SA update 2017-11-15, 2017-11-20, 2019-07-30 -->
 	<xsl:template name="relatedItemNames">
 		<xsl:if test="mods:name[mods:role/mods:roleTerm='creator' or mods:role/mods:roleTerm='author']">
 			<xsl:choose>
-				<xsl:when test="@type='constituent'"> <!-- 700/710 name/title -->
+				<xsl:when test="@type=('constituent', 'original')"> <!-- 700/710 name/title, 534 -->
 					<marc:subfield code="a">
-						<xsl:for-each select="mods:name|../mods:name[@usage='primary']">
+						<xsl:for-each select="(mods:name|../mods:name[@usage='primary'])[1]"> <!-- SA update 2019-07-30 -->
 							<xsl:value-of select="string-join(mods:namePart, ', ')"/>
 							<xsl:if test="not(ends-with(mods:namePart[last()], '.'))"> <!-- SA add 2017-01-26 -->
 								<xsl:text>.</xsl:text>
