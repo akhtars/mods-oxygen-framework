@@ -16,6 +16,7 @@
                         <!-- Altered definition -->
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
+                                <xs:enumeration value="accessibility"/> <!-- 2020-07-10 -->
                                 <xs:enumeration value="additional physical form"/>
                                 <xs:enumeration value="bibliography"/>
                                 <xs:enumeration value="contact information"/>
@@ -24,12 +25,15 @@
                                 <xs:enumeration value="funding"/> <!-- 2016-10-19 -->
                                 <xs:enumeration value="issuing body"/>
                                 <xs:enumeration value="language"/>
+                                <xs:enumeration value="local"/> <!-- 2019-12-05 -->
                                 <xs:enumeration value="modifying agency"/>
+                                <xs:enumeration value="numbering"/> <!-- 2020-01-15 --> 
                                 <xs:enumeration value="performers"/> <!-- 2018-06-19 -->
                                 <xs:enumeration value="regularity"/>
                                 <xs:enumeration value="statement of responsibility"/>
                                 <xs:enumeration value="system details"/>
                                 <xs:enumeration value="thesis"/>
+                                <xs:enumeration value="venue"/> <!-- 2018-09-24 -->
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>

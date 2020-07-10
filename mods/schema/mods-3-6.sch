@@ -284,6 +284,9 @@
             <assert test="mods:extension/drb:filename[@type='master']">
                 Each master filename should be recorded under mods:extension/drb:filename[@type="master"].
             </assert>
+            <assert test="count(mods:extension/drb:filename[@type='master']) eq count(distinct-values(mods:extension/drb:filename[@type='master']))">
+                There should be no duplicate master filenames under mods:extension/drb:filename[@type="master"]/
+            </assert>
             
         </rule>
     </pattern>
@@ -480,8 +483,8 @@
     <!-- subject -->
     
     <pattern>
-        <rule context="mods:mods/mods:subject[not(mods:hierarchicalGeographic|mods:cartographics)]">
-            <assert role="warning" test="@authority">
+        <rule context="mods:mods/mods:subject[not(mods:hierarchicalGeographic|mods:cartographics|mods:geographicCode)]">
+            <assert role="warning" test="@authority or child::*/@authority">
                 <name/> should have @authority unless it is uncontrolled.
             </assert>
             <assert test="not(@authority='naf')" sqf:fix="subject-naf">
@@ -505,7 +508,7 @@
             </assert>
         </rule>
         
-        <rule context="mods:topic|mods:geographic|mods:temporal|mods:genre">
+        <rule context="mods:topic|mods:geographic|mods:temporal">
             <assert test="not(matches(., '--'))" sqf:fix="parse-subdivisions">
                 All subject headings should be parsed into multiple subelements.
             </assert>
@@ -612,10 +615,10 @@
 
     <pattern>
         <rule context="mods:mods/mods:recordInfo">
-            <assert test="mods:descriptionStandard[@authority='marcdescription']">
+            <assert test="mods:descriptionStandard[@authority='marcdescription']" role="warning">
                 <name/> should have mods:descriptionStandard with @authority="marcdescription".
             </assert>
-            <assert test="mods:recordContentSource[@authority='oclcorg']='DRB'">
+            <assert test="mods:recordContentSource[@authority='oclcorg']='DRB'" role="warning">
                 <name/> should have mods:recordContentSource with @authority="oclcorg" and a value of "DRB".
             </assert> <!-- Level 5 -->
             <assert test="not(mods:recordContentSource[not(@authority)])">
@@ -660,7 +663,7 @@
             <assert role="warning" test="not(normalize-space(text()) = '')">
                 All elements without children should contain text. [<name path=".."/>/<name/>]
             </assert>
-            <assert test=". = normalize-space(.)">
+            <assert role="warning" test=". = normalize-space(.)">
                 Elements with text should not contain extraneous whitespace (including line breaks). [<name path=".."/>/<name/>]
             </assert>
         </rule>
@@ -754,7 +757,7 @@
             <assert test="mods:physicalDescription/mods:form[@type='carrier'][@authority='rdacarrier']">
                 The record should have an RDA carrier term in mods:form.
             </assert>
-            <assert test="mods:recordInfo/mods:descriptionStandard='rda' or mods:recordInfo/mods:descriptionStandard='aacr'">
+            <assert test="mods:recordInfo/mods:descriptionStandard='rda' or mods:recordInfo/mods:descriptionStandard='aacr'" role="warning">
                 The record's mods:descriptionStandard should be marked as "rda" or "aacr".
             </assert>
         </rule>
