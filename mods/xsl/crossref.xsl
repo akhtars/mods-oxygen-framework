@@ -62,7 +62,7 @@
             <!-- Library info -->
             <depositor>
                 <depositor_name>Dartmouth College Library</depositor_name>
-                <email_address>Library.Catmet.Requests@Dartmouth.EDU</email_address>
+                <email_address>Cataloging.Metadata.Services@Dartmouth.EDU</email_address>
             </depositor>
             <registrant>Dartmouth College Library</registrant>
             
@@ -89,7 +89,7 @@
                 </xsl:when>
                 
                 <!-- Book or single-item collection -->
-                <xsl:when test="$genre = ('book', 'web site')">
+                <xsl:when test="$genre = ('book', 'web site', 'technical report')">
                     <xsl:for-each select="$source/mods:mods">
                         <xsl:call-template name="book"/>
                     </xsl:for-each>
