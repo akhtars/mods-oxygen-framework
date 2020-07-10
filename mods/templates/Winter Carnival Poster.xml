@@ -36,12 +36,12 @@
     <mods:genre type="content" authority="rdacontent">still image</mods:genre>
     <mods:genre authority="marcgt">picture</mods:genre>
     <mods:originInfo eventType="publication">
-        <mods:publisher></mods:publisher>
+        <mods:publisher>Trustees of Dartmouth College</mods:publisher>
         <mods:place>
-            <mods:placeTerm type="text"></mods:placeTerm>
-            <mods:placeTerm type="code" authority="marccountry"></mods:placeTerm>
+            <mods:placeTerm type="text">Hanover, NH</mods:placeTerm>
+            <mods:placeTerm type="code" authority="marccountry">nhu</mods:placeTerm>
         </mods:place>
-        <mods:dateIssued encoding="w3cdtf" keyDate="yes"></mods:dateIssued>
+        <mods:dateIssued encoding="w3cdtf" keyDate="yes">${date(yyyy)}</mods:dateIssued>
     </mods:originInfo>
     <mods:language>
         <mods:languageTerm type="text">English</mods:languageTerm>
@@ -81,15 +81,15 @@
             <mods:title>Dartmouth Winter Carnival Posters</mods:title>
         </mods:titleInfo>
         <mods:typeOfResource collection="yes">still image</mods:typeOfResource>
-        <mods:identifier type="doi">http://dx.doi.org/10.1349/ddlp.1378</mods:identifier>
+        <mods:identifier type="doi">https://doi.org/10.1349/ddlp.1378</mods:identifier>
         <mods:location>
             <mods:url usage="primary" access="object in context">http://www.dartmouth.edu/~library/digital/collections/other/WinterCarnivalPosters.html</mods:url>
         </mods:location>
     </mods:relatedItem>
     <mods:relatedItem type="otherFormat">
         <mods:originInfo eventType="production">
-            <mods:dateCreated encoding="fast"></mods:dateCreated>
-            <mods:dateCreated encoding="w3cdtf"></mods:dateCreated>
+            <mods:dateCreated encoding="fast">Twenty-first century</mods:dateCreated>
+            <mods:dateCreated encoding="w3cdtf">${date(yyyy)}</mods:dateCreated>
         </mods:originInfo>
     </mods:relatedItem>
     <mods:identifier type="doi" displayLabel="Electronic image"></mods:identifier>
@@ -97,12 +97,12 @@
         <mods:url usage="primary" access="object in context"></mods:url>
         <mods:url access="preview"></mods:url>
     </mods:location>
-    <mods:accessCondition type="use and reproduction"></mods:accessCondition>
-    <mods:accessCondition type="use and reproduction" displayLabel="Standardized rights statement" xlink:href=""></mods:accessCondition>
+    <mods:accessCondition type="use and reproduction">Made available by the Trustees of Dartmouth College under a Creative Commons Attribution-NonCommercial License.</mods:accessCondition>
+    <mods:accessCondition type="use and reproduction" displayLabel="Standardized rights statement" xlink:href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial License</mods:accessCondition>
     <mods:accessCondition>
-        <cmd:copyright copyright.status="" publication.status="">
+        <cmd:copyright copyright.status="copyrighted" publication.status="published">
             <cmd:rights.holder>
-                <cmd:name></cmd:name>
+                <cmd:name>Trustees of Dartmouth College</cmd:name>
             </cmd:rights.holder>
         </cmd:copyright>
     </mods:accessCondition>
