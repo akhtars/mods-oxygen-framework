@@ -15,7 +15,7 @@ else
    text {'(:unap)'}
    
 (: Put identifier in header comment for update operation :)
-let $header := if (/mods:mods/mods:identifier[@type = 'ark']) then
+let $header := if (/mods:mods/mods:identifier[@type = 'ark'][text()]) then
    concat(text {'# '}, substring-after(/mods:mods/mods:identifier[@type = 'ark'], 'https://n2t.net/'), text {'&#xA;'})
 else
    ''
@@ -24,14 +24,14 @@ else
 let $profile := concat(text {'_profile: '}, text {'dc'})
 let $status := concat(text {'_status: '}, text {'public'})
 let $target := concat(text {'_target: '}, /mods:mods/mods:location/mods:url[@usage = 'primary'])
-let $title := concat(text {'dc.title: '}, normalize-space(string-join(/mods:mods/mods:titleInfo[not(@type)])))
+let $title := concat(text {'dc.title: '}, normalize-space(string-join(/mods:mods/mods:titleInfo[not(@type)][1])))
 let $name := concat(if (/mods:mods/mods:name[@usage]) then
    text {'dc.creator: '}
 else
    text {'dc.contributor: '}, $name-string)
 let $publisher := concat(text {'dc.publisher: '}, /mods:mods/mods:originInfo/mods:publisher)
 let $date := concat(text {'dc.date: '}, /mods:mods/mods:originInfo/*[@keyDate])
-let $identifier := concat(text {'dc.identifier: '}, /mods:mods/mods:recordInfo/mods:recordIdentifier[@source = 'DRB'])
+let $identifier := concat(text {'dc.identifier: '}, /mods:mods/mods:recordInfo/mods:recordIdentifier[@source = 'DRB'][1])
 let $host := concat(text {'dc.relation: '}, $host-title)
 
 (: Output metadata file :)
