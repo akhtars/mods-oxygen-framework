@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<refactoringOperationDescriptor 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.oxygenxml.com/ns/xmlRefactoring" id="rainone" name="Apply Rainone record enhancements">
+    <description>Batch processing for the Joseph Rainone Early Comic Collection project.</description>    
+    <script type="XSLT" href="rainone.xsl"/>
+    <parameters>
+        <description>The number of the current box.</description>
+        <parameter label="Box number" name="box-number" type="TEXT" optional="false">   
+            <description>The box number</description>
+        </parameter>
+    </parameters>
+</refactoringOperationDescriptor>
