@@ -132,6 +132,7 @@
 		<xsl:call-template name="makeSize">
 			<xsl:with-param name="string" select="$chars"/>
 			<xsl:with-param name="length" select="4"/>
+			<xsl:with-param name="spacer">|</xsl:with-param> <!-- SA add 2021-03-31 -->
 		</xsl:call-template>
 	</xsl:template>
 
@@ -349,34 +350,42 @@
 				</xsl:choose>
 				<!-- 18-21 -->
 				<xsl:choose>
-					<!-- SA change 2016-03-18 to support illustration codes for books -->
+					<!-- SA change 2016-03-18 to support illustration codes for books, split 2021-03-31 -->
 					<xsl:when test="$typeOf008='BK'">
-						<xsl:variable name="chars">
-							<xsl:for-each select="tokenize(mods:physicalDescription/mods:note[@type='other physical details'],
-								'(,| )')">
-								<xsl:choose>
-									<xsl:when test="matches(., 'illustration')">a</xsl:when>
-									<xsl:when test="matches(., 'map')">b</xsl:when>
-									<xsl:when test="matches(., 'portrait')">c</xsl:when>
-									<xsl:when test="matches(., 'chart')">d</xsl:when>
-									<xsl:when test="matches(., 'plan')">e</xsl:when>
-									<xsl:when test="matches(., 'plate')">f</xsl:when>
-									<xsl:when test="matches(., 'music')">g</xsl:when>
-									<xsl:when test="matches(., 'facsimile')">h</xsl:when>
-									<xsl:when test="matches(., 'coat(s)? of arms')">i</xsl:when>
-									<xsl:when test="matches(., 'genealogical table')">j</xsl:when>
-									<xsl:when test="matches(., 'form')">k</xsl:when>
-									<xsl:when test="matches(., 'sample')">l</xsl:when>
-									<xsl:when test="matches(., 'audio')">m</xsl:when>
-									<xsl:when test="matches(., 'photograph')">o</xsl:when>
-									<xsl:when test="matches(., 'illumination')">p</xsl:when>
-								</xsl:choose>
-							</xsl:for-each>
-						</xsl:variable>
-						<xsl:call-template name="makeSize">
-							<xsl:with-param name="string" select="$chars"/>
-							<xsl:with-param name="length" select="4"/>
-						</xsl:call-template>
+						<xsl:choose>
+							<xsl:when test="not(mods:physicalDescription/mods:note[@type='other physical details'])">
+								<xsl:text>||||</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:variable name="chars">
+									<xsl:for-each select="tokenize(mods:physicalDescription/mods:note[@type='other physical details'],
+										'(,| )')">
+										<xsl:choose>
+											<xsl:when test="matches(., 'illustration')">a</xsl:when>
+											<xsl:when test="matches(., 'map')">b</xsl:when>
+											<xsl:when test="matches(., 'portrait')">c</xsl:when>
+											<xsl:when test="matches(., 'chart')">d</xsl:when>
+											<xsl:when test="matches(., 'plan')">e</xsl:when>
+											<xsl:when test="matches(., 'plate')">f</xsl:when>
+											<xsl:when test="matches(., 'music')">g</xsl:when>
+											<xsl:when test="matches(., 'facsimile')">h</xsl:when>
+											<xsl:when test="matches(., 'coat(s)? of arms')">i</xsl:when>
+											<xsl:when test="matches(., 'genealogical table')">j</xsl:when>
+											<xsl:when test="matches(., 'form')">k</xsl:when>
+											<xsl:when test="matches(., 'sample')">l</xsl:when>
+											<xsl:when test="matches(., 'audio')">m</xsl:when>
+											<xsl:when test="matches(., 'photograph')">o</xsl:when>
+											<xsl:when test="matches(., 'illumination')">p</xsl:when>
+										</xsl:choose>
+									</xsl:for-each>
+								</xsl:variable>
+								<xsl:call-template name="makeSize">
+									<xsl:with-param name="string" select="$chars"/>
+									<xsl:with-param name="length" select="4"/>
+									<xsl:with-param name="spacer">|</xsl:with-param> <!-- SA add 2021-03-31 -->
+								</xsl:call-template>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:when>
 					<!-- SA add 2018-03-14 to support relief information -->
 					<xsl:when test="$typeOf008='MP'">
@@ -744,7 +753,7 @@
 				<xsl:with-param name="tag">884</xsl:with-param>
 				<xsl:with-param name="subfields">
 					<marc:subfield code="a">
-						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.16</xsl:text>
+						<xsl:text>Dartmouth MODS to MARC transformation, version 0.9.18</xsl:text>
 					</marc:subfield>
 					<marc:subfield code="g">
 						<xsl:value-of select="format-date(current-date(), '[Y0001][M01][D01]')"/>
@@ -1081,17 +1090,17 @@
 			</xsl:with-param>
 			<xsl:with-param name="subfields">
 				<marc:subfield code="a">
-					<xsl:choose> <!-- SA update 2015-11-23 -->
+					<xsl:choose> <!-- SA update 2015-11-23, 2021-02-26 -->
 						<xsl:when test="mods:namePart[@type='family']">
 							<xsl:value-of select="concat(mods:namePart[@type='family'],', ',mods:namePart[@type='given'][1])"/>
 						</xsl:when>
-						<xsl:otherwise><xsl:value-of select="mods:namePart"/></xsl:otherwise>
+						<xsl:otherwise><xsl:value-of select="mods:namePart[not(@type)]"/></xsl:otherwise>
 					</xsl:choose>
-					<!-- SA add 2015-11-23, update 2016-03-21 -->
+					<!-- SA add 2015-11-23, update 2016-03-21, 2021-02-26 -->
 					<xsl:choose>
-						<xsl:when test="child::mods:namePart[@type='given'][2]"/>
+						<xsl:when test="child::mods:namePart[@type='given'][2] or child::mods:namePart[@type='termsOfAddress'][contains(., '(')]"/>
 						<xsl:when test="not(child::mods:namePart[@type='termsOfAddress' or @type='date'] or child::mods:role) and not(ends-with(child::mods:namePart[last()], '.'))">.</xsl:when>
-						<xsl:when test="child::mods:namePart[@type='termsOfAddress' or @type='date'] or child::mods:role">,</xsl:when>
+						<xsl:when test="child::mods:namePart[@type='termsOfAddress'] or child::mods:namePart[@type='date'] or child::mods:role">,</xsl:when>
 						<xsl:otherwise/>
 					</xsl:choose>
 				</marc:subfield>
@@ -1116,8 +1125,11 @@
 				<xsl:for-each select="mods:namePart[@type='termsOfAddress']">
 					<marc:subfield code="c">
 						<xsl:value-of select="."/>
-						<!-- SA add 2015-11-23 -->
-						<xsl:if test="not(following-sibling::mods:namePart[@type='date']) and not(following-sibling::mods:role) and not(ends-with(., '.'))">.</xsl:if>
+						<!-- SA add 2015-11-23, update 2021-02-26 -->
+						<xsl:choose>
+							<xsl:when test="not(following-sibling::mods:namePart[@type='date']) and not(following-sibling::mods:role) and not(ends-with(., '.'))">.</xsl:when>
+							<xsl:when test="following-sibling::mods:role">,</xsl:when>
+						</xsl:choose>
 					</marc:subfield>
 				</xsl:for-each>
 				<xsl:for-each select="mods:namePart[@type='date']">
@@ -1548,6 +1560,12 @@
 							</xsl:when>
 							<xsl:when test="../@objectPart='subtitles or captions' or ../@objectPart='subtitle or caption'">
 								<marc:subfield code='j'>
+									<xsl:value-of select="."/>
+								</marc:subfield>
+							</xsl:when>
+							<!-- SA add 2020-12-15 -->
+							<xsl:when test="../@objectPart='captions'">
+								<marc:subfield code='p'>
 									<xsl:value-of select="."/>
 								</marc:subfield>
 							</xsl:when>
@@ -3213,8 +3231,14 @@
 	
 	<!-- Provide URL for first file's thumbnail, SA add 2020-05-29 -->
 	<xsl:template match="mods:extension[drb:filename]">
-		<xsl:variable name="collection-identifier" as="xs:string" 
-			select="../mods:relatedItem[@type='host']/mods:recordInfo/mods:recordIdentifier[@source='DRB']"/>
+		<xsl:variable name="collection-identifier" as="xs:string">
+			<xsl:analyze-string select="../mods:location/mods:url[@usage]" 
+				regex="https://collections.dartmouth.edu/(archive/object|teitexts)/(.+?)/.+">
+				<xsl:matching-substring>
+					<xsl:value-of select="regex-group(2)"/>
+				</xsl:matching-substring>
+			</xsl:analyze-string>
+		</xsl:variable>
 		<xsl:for-each select="drb:filename[position()=1]">
 			<xsl:if test="$collection-identifier ne ''">
 				<xsl:call-template name="datafield">
