@@ -51,7 +51,7 @@
             <xsl:when test="$content-type = 'spoken word'">Streaming audio</xsl:when>
             <xsl:when test="$content-type = 'two-dimensional moving image'">Streaming video</xsl:when>
             <xsl:when test="$content-type = 'three-dimensional moving image'">Streaming video</xsl:when>
-            <xsl:when test="$content-type = 'text' and contains(mods:mods/mods:location/mods:url, 'https://collections.dartmouth.edu/archive/object')">Electronic book</xsl:when> <!-- DEBII object -->
+            <xsl:when test="$content-type = 'text' and contains(mods:mods/mods:location[@usage]/mods:url, 'https://collections.dartmouth.edu/archive/object')">Electronic book</xsl:when> <!-- DEBII object -->
             <xsl:when test="$content-type = 'text'">Digital text</xsl:when> <!-- TEITexts object -->
         </xsl:choose>
     </xsl:variable>
