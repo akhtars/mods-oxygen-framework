@@ -257,6 +257,7 @@
                         <xs:enumeration value="translation"/>
                         <xs:enumeration value="subtitles or captions"/>
                         <xs:enumeration value="subtitle or caption"/>
+                        <xs:enumeration value="captions"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>

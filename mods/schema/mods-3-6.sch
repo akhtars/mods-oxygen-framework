@@ -128,8 +128,8 @@
             
             <!--<assert test="mods:relatedItem"></assert>-->
             
-            <assert test="mods:identifier" sqf:fix="identifier">
-                The record should have mods:identifier.
+            <assert test="mods:identifier" sqf:fix="identifier" role="warning">
+                The record should have mods:identifier, containing an ARK or DOI, before publication.
             </assert>
             <sqf:fix id="identifier">
                 <sqf:description>
@@ -219,20 +219,6 @@
             <assert test="mods:subject">
                 Collection-level records should have mods:subject.
             </assert>
-            
-            <assert test="mods:note[not(@*)][matches(text(), 'Made available through the Dartmouth Digital Library.')]" sqf:fix="note-made-available">
-                The record should have the note "Made available through the Dartmouth Digital Library."
-            </assert>
-            <sqf:fix id="note-made-available">
-                <sqf:description>
-                    <sqf:title>Add mods:note about the Dartmouth Digital Library</sqf:title>
-                </sqf:description>
-                <sqf:add match="child::*[self::mods:physicalDescription or self::mods:tableOfContents][last()]" position="after">
-                    <xsl:text>
-   </xsl:text><mods:note>Made available through the Dartmouth Digital Library.</mods:note>
-                </sqf:add>
-            </sqf:fix>
-            
         </rule>
         <rule context="mods:mods/mods:originInfo/mods:issuance[matches(., '(serial|integrating resource)')]">
             <assert test="../mods:frequency[@authority='marcfrequency']">
@@ -338,7 +324,7 @@
     <pattern>
         <rule context="mods:mods/mods:name[@usage='primary']">
             <assert role="warning" test="mods:role/mods:roleTerm[@type='text'][normalize-space(text())]">
-                The primary name should have a text mods:roleTerm assigned from the MARC Code List for Relators.
+                The primary name should have a text mods:roleTerm assigned from the MARC Code List for Relators, if possible.
             </assert>
             <assert test="not(preceding-sibling::mods:name[@usage='primary'])">
                 There should not be multiple names in a record with @usage='primary'.
@@ -527,8 +513,8 @@
         </rule>
         
         <rule context="mods:mods/mods:subject/mods:cartographics/mods:coordinates">
-            <assert test="matches(., '^\([EW] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?(--[EW] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?)?/[NS] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?(--[NS] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?)?\)\.?$')">
-                <name/> should be formatted according to ISBD principles.
+            <assert test="matches(., '^\([EW] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?(--[EW] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?)?/[NS] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?(--[NS] \d{1,3}°(\d{1,2}[ʹ''](\d{1,2}[ʺ&quot;])?)?)?\)\.?$') or matches(., '^\-?\d+\.\d+, \-?\d+\.\d+$')">
+                <name/> should be formatted according to ISBD principles (using degrees-minutes-seconds) or as decimal coordinates.
             </assert>
         </rule>
     </pattern>
@@ -814,8 +800,8 @@
     
     <pattern>
         <rule context="*[not(child::*)][not(@type='splash') and not(ancestor-or-self::*/@script)][not(self::mods:coordinates)]">
-            <report role="warning" test="matches(., '[^\p{IsBasicLatin}]')">
-                This element contains non-ASCII characters and is not marked as using a non-Latin script. Please verify that all characters are encoded as intended. [<name path="../.."/>/<name path=".."/>]
+            <report role="warning" test="matches(., '[^\p{IsBasicLatin}\p{IsLatin-1Supplement}\p{IsLatinExtended-A}\p{IsLatinExtended-B}]')">
+                This element contains non-Latin characters and is not marked as using a non-Latin script. Please verify that all characters are encoded as intended. [<name path="../.."/>/<name path=".."/>]
             </report>
         </rule>
     </pattern>
