@@ -3,25 +3,22 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
     <xt:extension id="mods">
-        <xt:location href="mods_0-9-17.zip"/>
-        <xt:version>0.9.17</xt:version>
+        <xt:location href="mods_0-9-18.zip"/>
+        <xt:version>0.9.18</xt:version>
         <xt:oxy_version>14.0+</xt:oxy_version>
         <xt:type>framework</xt:type>
         <xt:author>Dartmouth College Library</xt:author>
         <xt:name>MODS (Metadata Object Description Schema)</xt:name>
         <xt:description xmlns="http://www.w3.org/1999/xhtml">
             <p>The Dartmouth College Library's local implementation of MODS, the Metadata Object Description Schema.</p>
-            <p>Release notes for version 0.9.17:</p>
+            <p>Release notes for version 0.9.18:</p>
             <ul>
-                <li>Add "MODS-to-DEBII" and "MODS-to-DPLA" transformations.</li>
-                <li>Update "MODS-to-MARCXML" transformation (field enhancements and support for thumbnails).</li>
-                <li>Update transformations for ARK support.</li>
-                <li>Update Poster and Films record templates.</li>
-                <li>Update "MODS-to-Crossref" transformation.</li>
-                <li>Update Schematron tests and reports.</li>
-                <li>Add schema support for accessibility, local, numbering, and venue notes.</li>
+                <li>Introduce project-specific custom refactoring operations.</li>
+                <li>Update "MODS-to-MARCXML" and ARK transformations.</li>
+                <li>Update Schematron validation.</li>
+                <li>Provide map for ISO 639-2 language codes.</li>
             </ul>
         </xt:description>
-        <xt:license>Copyright 2020 Trustees of Dartmouth College. Made available under the MIT License.</xt:license>
+        <xt:license>Copyright 2021 Trustees of Dartmouth College. Made available under the MIT License.</xt:license>
     </xt:extension>
 </xt:extensions>

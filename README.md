@@ -1,6 +1,6 @@
 # MODS Oxygen Framework
 
-This repository contains the Dartmouth College Library's Oxygen XML Editor framework for validating and transforming bibliographic records in the [MODS schema](https://www.loc.gov/standards/mods/). (See Oxygen's tutorial on ["Document Type Associations"](https://www.oxygenxml.com/doc/versions/18.0/ug-editor/topics/dg-complex-customization-tutorial.html) for general information about frameworks.)
+This repository contains the Dartmouth College Library's Oxygen XML Editor framework for validating and transforming bibliographic records in the [MODS schema](https://www.loc.gov/standards/mods/). (See Oxygen's documentation on ["Creating and Configuring Custom Frameworks"](https://www.oxygenxml.com/doc/versions/23.1/ug-editor/topics/author-devel-guide-intro.html) for general information about frameworks.)
 
 ## Components
 
@@ -23,6 +23,10 @@ This repository contains the Dartmouth College Library's Oxygen XML Editor frame
 
 - Application of Oxygen's content completion features to add our required sub-elements and attributes when a new top-level element is created
 
+### `/refactoring`
+
+- Custom refactoring operations for batch record updates
+
 ### `/css`
 
 - CSS for an alternate view of a MODS document in Oxygen's "Author" mode
@@ -33,6 +37,6 @@ This repository contains the Dartmouth College Library's Oxygen XML Editor frame
 
 ## License
 
-Original content: Copyright 2014-2017 Trustees of Dartmouth College
+Original content: Copyright 2014-2021 Trustees of Dartmouth College
 
 Made available under the MIT License. For details, see [LICENSE](https://github.com/akhtars/mods-oxygen-framework/blob/master/LICENSE.txt).
