@@ -18,7 +18,7 @@
         </xd:desc>
     </xd:doc>
     
-    <xsl:template match="mods:collection">
+    <xsl:template match="mods:modsCollection">
         <xsl:apply-templates/>
     </xsl:template>
     
